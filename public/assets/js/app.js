@@ -277,9 +277,9 @@ async function requestAiAdvice() {
       
       // Badge de salud financiera
       const health = data.salud_financiera || 'Bueno';
-      let badgeColor = 'bg-emerald-500/20 text-emerald-300 border border-emerald-400/30';
-      if (health === 'Precaución') badgeColor = 'bg-amber-500/20 text-amber-300 border border-amber-400/30';
-      if (health === 'Crítico') badgeColor = 'bg-red-500/20 text-red-300 border border-red-400/30';
+      let badgeColor = 'bg-emerald-100 text-emerald-800 border border-emerald-200';
+      if (health === 'Precaución') badgeColor = 'bg-amber-100 text-amber-800 border border-amber-200';
+      if (health === 'Crítico') badgeColor = 'bg-rose-100 text-rose-800 border border-rose-200';
 
       badge.className = `px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${badgeColor}`;
       badge.textContent = `Salud: ${health}`;
@@ -288,9 +288,9 @@ async function requestAiAdvice() {
       tipsGrid.innerHTML = '';
       (data.consejos || []).forEach((tip, idx) => {
         tipsGrid.innerHTML += `
-          <div class="p-3.5 rounded-2xl bg-white/5 border border-white/10 flex items-start gap-3">
-            <span class="w-6 h-6 rounded-lg bg-indigo-500/30 text-indigo-300 font-bold flex items-center justify-center text-xs shrink-0">${idx + 1}</span>
-            <p class="text-xs text-slate-300 leading-relaxed">${tip}</p>
+          <div class="p-3.5 rounded-2xl bg-white border border-emerald-100 shadow-sm flex items-start gap-3">
+            <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs shrink-0">${idx + 1}</span>
+            <p class="text-xs text-textMain leading-relaxed font-medium">${tip}</p>
           </div>
         `;
       });
@@ -365,9 +365,9 @@ function setExpenseCurrency(curr) {
   currentExpenseCurrency = curr;
   document.querySelectorAll('.curr-opt').forEach(btn => {
     if (btn.dataset.curr === curr) {
-      btn.className = 'curr-opt active py-1.5 text-xs font-bold rounded-lg transition bg-white dark:bg-slate-800 text-primary shadow-sm';
+      btn.className = 'curr-opt active py-1.5 text-xs font-bold rounded-lg transition bg-white text-emerald-700 shadow-sm border border-emerald-200';
     } else {
-      btn.className = 'curr-opt py-1.5 text-xs font-bold rounded-lg transition text-slate-500 hover:text-slate-800 dark:hover:text-white';
+      btn.className = 'curr-opt py-1.5 text-xs font-bold rounded-lg transition text-textMuted hover:text-textMain';
     }
   });
 
@@ -496,7 +496,7 @@ function switchView(viewName) {
   // Actualizar botones desktop
   document.querySelectorAll('.nav-btn').forEach(btn => {
     if (btn.dataset.view === viewName) {
-      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-amber-50 text-secondary border border-amber-200/80 shadow-sm';
+      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm';
     } else {
       btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all text-textMuted hover:bg-surfaceSoft hover:text-textMain';
     }
@@ -505,7 +505,7 @@ function switchView(viewName) {
   // Actualizar botones móvil
   document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
     if (btn.dataset.view === viewName) {
-      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-secondary text-xs font-bold';
+      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-emerald-700 text-xs font-bold';
     } else {
       btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-textLight text-xs font-semibold';
     }
