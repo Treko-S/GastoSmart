@@ -299,7 +299,7 @@ async function requestAiAdvice() {
   const tipsGrid = document.getElementById('ai-tips-grid');
 
   btn.disabled = true;
-  btn.innerHTML = '<i class="fas fa-brain fa-spin"></i> <span>Analizando con Gemini...</span>';
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Analizando tus gastos...</span>';
 
   try {
     const res = await fetch('/api/ai/advice', { method: 'POST' });
@@ -322,24 +322,24 @@ async function requestAiAdvice() {
       tipsGrid.innerHTML = '';
       (data.consejos || []).forEach((tip, idx) => {
         tipsGrid.innerHTML += `
-          <div class="p-3.5 rounded-2xl bg-white border border-emerald-100 shadow-sm flex items-start gap-3">
+          <div class="p-3.5 rounded-2xl bg-white border border-emerald-200 shadow-sm flex items-start gap-3">
             <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs shrink-0">${idx + 1}</span>
-            <p class="text-xs text-textMain leading-relaxed font-medium">${tip}</p>
+            <p class="text-xs text-slate-800 leading-relaxed font-semibold">${escapeHtml(tip)}</p>
           </div>
         `;
       });
 
       container.classList.remove('hidden');
-      showToast('¡Análisis de IA completado con éxito!', 'success');
+      showToast('¡Consejos generados con éxito!', 'success');
     } else {
-      showToast(result.message || 'No se pudo obtener el consejo de IA', 'error');
+      showToast(result.message || 'No se pudo obtener el consejo de ahorro', 'error');
     }
   } catch (err) {
     console.error(err);
-    showToast('Error de conexión al consultar Gemini', 'error');
+    showToast('Error de conexión al consultar el asistente', 'error');
   } finally {
     btn.disabled = false;
-    btn.innerHTML = '<i class="fas fa-brain"></i> <span>Analizar mis Gastos con IA</span>';
+    btn.innerHTML = '<i class="fas fa-sparkles"></i> <span>Generar Consejos de Ahorro</span>';
   }
 }
 
