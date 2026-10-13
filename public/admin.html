@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - GastoSmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: '#10B981', dark: '#0F172A' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 min-h-screen antialiased">
+    <!-- Navbar -->
+    <header class="bg-white dark:bg-slate-900 border-b border-slate-200 dark:border-slate-800 px-6 py-4 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+            <img src="/logo.png" alt="Logo" class="w-9 h-9 object-contain" onerror="this.src='https://placehold.co/36x36/10B981/ffffff?text=GS'">
+            <div>
+                <h1 class="font-extrabold text-lg text-slate-900 dark:text-white leading-tight">GastoSmart Admin</h1>
+                <span class="text-[10px] bg-purple-100 dark:bg-purple-950 text-purple-700 dark:text-purple-300 font-bold px-2 py-0.5 rounded-full">Super Admin</span>
+            </div>
+        </div>
+        <div class="flex items-center gap-3">
+            <a href="/dashboard.html" class="text-xs font-bold text-primary hover:underline">Ir al Dashboard</a>
+            <button onclick="Auth.logout()" class="text-xs font-bold text-red-600 hover:text-red-700 ml-3">Cerrar Sesión</button>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto p-6 md:p-8 space-y-8">
+        <!-- Stats Grid -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-xs font-semibold uppercase text-slate-400">Total Usuarios</span>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="stat-users">0</div>
+                <div class="text-xs text-emerald-600 mt-1"><i class="fas fa-users mr-1"></i>En Supabase</div>
+            </div>
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-xs font-semibold uppercase text-slate-400">Transacciones Totales</span>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="stat-txs">0</div>
+                <div class="text-xs text-blue-600 mt-1"><i class="fas fa-receipt mr-1"></i>Registradas</div>
+            </div>
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-xs font-semibold uppercase text-slate-400">Volumen Acumulado (USD)</span>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="stat-volume-usd">$0.00</div>
+                <div class="text-xs text-slate-400 mt-1">Normalizado</div>
+            </div>
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <span class="text-xs font-semibold uppercase text-slate-400">Volumen en Guaraníes</span>
+                <div class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1" id="stat-volume-pyg">Gs. 0</div>
+                <div class="text-xs text-purple-600 mt-1">Moneda PYG</div>
+            </div>
+        </div>
+
+        <!-- Tabla de Usuarios Registrados -->
+        <div class="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl overflow-hidden shadow-sm">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800">
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white">Usuarios Registrados en el Sistema</h3>
+                <p class="text-xs text-slate-400">Monitoreo de cuentas activas en Supabase PostgreSQL</p>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-50 dark:bg-slate-800/50 text-slate-400 uppercase text-[11px] font-bold">
+                        <tr>
+                            <th class="py-3.5 px-6">Usuario</th>
+                            <th class="py-3.5 px-6">Email</th>
+                            <th class="py-3.5 px-6">Rol</th>
+                            <th class="py-3.5 px-6 text-right">Límite USD</th>
+                            <th class="py-3.5 px-6 text-right">Fecha Registro</th>
+                        </tr>
+                    </thead>
+                    <tbody id="users-table-body" class="divide-y divide-slate-100 dark:divide-slate-800">
+                        <!-- Inyectado por JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const user = await Auth.checkSession(true);
+            if (!user || user.rol !== 'admin') {
+                window.location.href = '/dashboard.html';
+                return;
+            }
+
+            try {
+                const res = await fetch('/api/admin/stats');
+                const data = await res.json();
+                if (data.success) {
+                    const stats = data.stats;
+                    document.getElementById('stat-users').textContent = stats.total_usuarios;
+                    document.getElementById('stat-txs').textContent = stats.total_transacciones;
+                    document.getElementById('stat-volume-usd').textContent = '$' + Number(stats.volumen_total_usd).toFixed(2);
+                    document.getElementById('stat-volume-pyg').textContent = 'Gs. ' + Math.round(stats.volumen_total_pyg).toLocaleString('es-PY');
+
+                    const tbody = document.getElementById('users-table-body');
+                    tbody.innerHTML = '';
+                    (data.usuarios || []).forEach(u => {
+                        tbody.innerHTML += `
+                            <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
+                                <td class="py-4 px-6 font-bold text-slate-900 dark:text-white">${u.nombre}</td>
+                                <td class="py-4 px-6 text-slate-500">${u.email}</td>
+                                <td class="py-4 px-6">
+                                    <span class="px-2.5 py-1 rounded-full text-xs font-bold ${u.rol === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-950 dark:text-purple-300' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300'}">
+                                        ${u.rol}
+                                    </span>
+                                </td>
+                                <td class="py-4 px-6 text-right font-bold text-slate-800 dark:text-slate-200">$${Number(u.limite_mensual_usd).toFixed(2)}</td>
+                                <td class="py-4 px-6 text-right text-slate-400 text-xs">${new Date(u.creado_en).toLocaleDateString('es-ES')}</td>
+                            </tr>
+                        `;
+                    });
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        });
+    </script>
+</body>
+</html>

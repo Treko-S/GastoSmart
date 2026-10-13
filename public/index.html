@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GastoSmart - Control Inteligente de Finanzas Personales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: '#10B981', dark: '#0F172A' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-100 antialiased selection:bg-emerald-500 selection:text-white">
+
+    <!-- Header / Navbar -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white/80 dark:bg-slate-950/80 backdrop-blur-md border-b border-slate-200/80 dark:border-slate-800">
+        <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="/logo.png" alt="GastoSmart Logo" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/40x40/10B981/ffffff?text=GS'">
+                <span class="font-extrabold text-2xl tracking-tight text-slate-900 dark:text-white">GastoSmart</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <a href="/login.html" class="text-sm font-semibold text-slate-600 dark:text-slate-300 hover:text-primary px-4 py-2 transition">Iniciar Sesión</a>
+                <a href="/register.html" class="bg-primary hover:bg-emerald-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md shadow-emerald-500/20 transition">Empezar Gratis</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero -->
+    <section class="pt-36 pb-24 px-6 max-w-6xl mx-auto text-center">
+        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-950/50 border border-emerald-200 dark:border-emerald-800 text-emerald-700 dark:text-emerald-400 text-xs font-bold mb-6">
+            <i class="fas fa-sparkles"></i>
+            <span>Edición Cloud 2026 • Supabase + ExchangeRate + Brevo + Gemini IA</span>
+        </div>
+        
+        <h1 class="text-4xl sm:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight max-w-4xl mx-auto mb-6">
+            Controla tus gastos diarios con <span class="text-transparent bg-clip-text bg-gradient-to-r from-emerald-500 to-teal-500">inteligencia en tiempo real</span>
+        </h1>
+        
+        <p class="text-lg sm:text-xl text-slate-500 dark:text-slate-400 max-w-2xl mx-auto mb-10 leading-relaxed">
+            Gestión financiera multidivisa con cotización oficial en vivo, almacenamiento en la nube, alertas automáticas por correo y asesoramiento personalizado con Inteligencia Artificial.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <a href="/register.html" class="w-full sm:w-auto bg-primary hover:bg-emerald-600 text-white font-bold text-base px-8 py-4 rounded-2xl shadow-xl shadow-emerald-500/25 transition transform hover:-translate-y-0.5">
+                Crear Cuenta Gratuita
+            </a>
+            <a href="/login.html" class="w-full sm:w-auto bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-200 font-bold text-base px-8 py-4 rounded-2xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-800 transition">
+                Acceder a mi Panel
+            </a>
+        </div>
+
+        <!-- Previsualización Cards -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-20 text-left">
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-xl mb-4 font-bold">
+                    <i class="fas fa-coins"></i>
+                </div>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Multidivisa en Tiempo Real</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Cotizaciones en vivo con ExchangeRate-API V6. Soporta Guaraníes (PYG), Dólares (USD), Euros (EUR) y Reales (BRL).</p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center text-xl mb-4">
+                    <i class="fas fa-wand-magic-sparkles"></i>
+                </div>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Asesor IA con Gemini</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Analiza tus patrones de gasto mensual y recibe consejos personalizados para optimizar tu ahorro y salud financiera.</p>
+            </div>
+
+            <div class="p-6 rounded-3xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 shadow-sm">
+                <div class="w-12 h-12 rounded-2xl bg-blue-100 dark:bg-blue-950 text-blue-600 dark:text-blue-400 flex items-center justify-center text-xl mb-4">
+                    <i class="fas fa-envelope-open-text"></i>
+                </div>
+                <h3 class="font-bold text-lg text-slate-900 dark:text-white mb-2">Alertas Brevo por Email</h3>
+                <p class="text-xs text-slate-500 dark:text-slate-400">Notificaciones automáticas ante sobregiro de presupuesto y reportes financieros mensuales directo a tu bandeja de entrada.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-slate-200 dark:border-slate-800 py-8 text-center text-xs text-slate-400">
+        <p>© 2026 GastoSmart. Proyecto de Programación 4 • Desarrollado con Vercel & Supabase.</p>
+    </footer>
+
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        // Si el usuario ya tiene sesión iniciada, puede ir al dashboard directamente
+        Auth.checkSession(false).then(user => {
+            if (user) {
+                const navLinks = document.querySelector('header .flex.items-center.gap-3');
+                if (navLinks) {
+                    navLinks.innerHTML = `
+                        <a href="/dashboard.html" class="bg-primary hover:bg-emerald-600 text-white font-semibold text-sm px-5 py-2.5 rounded-xl shadow-md transition flex items-center gap-2">
+                            <span>Ir a mi Dashboard</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
+                        </a>
+                    `;
+                }
+            }
+        });
+    </script>
+</body>
+</html>

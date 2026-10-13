@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear Cuenta - GastoSmart</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: { primary: '#10B981', dark: '#0F172A' }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex items-center justify-center min-h-screen p-4 transition-colors">
+    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+        
+        <div class="text-center mb-8">
+            <a href="/index.html" class="inline-flex items-center justify-center gap-2 mb-3">
+                <img src="/logo.png" alt="GastoSmart" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/10B981/ffffff?text=GS'">
+                <span class="font-extrabold text-2xl tracking-tight text-slate-900 dark:text-white">GastoSmart</span>
+            </a>
+            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Crea tu Cuenta</h2>
+            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Comienza a controlar tus finanzas de forma inteligente</p>
+        </div>
+
+        <div id="msg-box" class="hidden mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2"></div>
+
+        <form id="register-form" class="space-y-4">
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Nombre Completo</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fas fa-user"></i>
+                    </span>
+                    <input type="text" id="nombre" required placeholder="Juan Pérez"
+                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Correo Electrónico</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fas fa-envelope"></i>
+                    </span>
+                    <input type="email" id="email" required placeholder="tu@correo.com"
+                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Contraseña</label>
+                <div class="relative">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                        <i class="fas fa-lock"></i>
+                    </span>
+                    <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres"
+                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                </div>
+            </div>
+
+            <div class="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-xl flex items-center gap-3 text-xs text-blue-700 dark:text-blue-300">
+                <i class="fas fa-paper-plane text-base text-blue-500"></i>
+                <span>Te enviaremos una confirmación de bienvenida oficial a través de la <strong>API de Brevo</strong>.</span>
+            </div>
+
+            <button type="submit" id="btn-submit"
+                class="w-full bg-primary hover:bg-emerald-600 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-500/20 transition-all duration-200 flex items-center justify-center gap-2 mt-4">
+                <span>Registrarme Gratis</span>
+                <i class="fas fa-check text-sm"></i>
+            </button>
+        </form>
+
+        <p class="text-center mt-6 text-sm text-slate-500 dark:text-slate-400">
+            ¿Ya tienes una cuenta? <a href="/login.html" class="text-primary font-semibold hover:underline">Inicia sesión</a>
+        </p>
+    </div>
+
+    <script src="/assets/js/auth.js"></script>
+    <script>
+        Auth.checkSession(false);
+
+        document.getElementById('register-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = document.getElementById('btn-submit');
+            const msgBox = document.getElementById('msg-box');
+
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Registrando...';
+            msgBox.classList.add('hidden');
+
+            const nombre = document.getElementById('nombre').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const res = await Auth.register(nombre, email, password);
+                if (res.success) {
+                    msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
+                    msgBox.innerHTML = '<i class="fas fa-check-circle"></i> <span>¡Cuenta creada con éxito! Redirigiendo...</span>';
+                    msgBox.classList.remove('hidden');
+                    setTimeout(() => {
+                        window.location.href = '/dashboard.html';
+                    }, 1200);
+                } else {
+                    msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800';
+                    msgBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${res.message || 'Error al registrarse'}</span>`;
+                    msgBox.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Registrarme Gratis</span> <i class="fas fa-check text-sm"></i>';
+                }
+            } catch (err) {
+                msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800';
+                msgBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span>Error de conexión con el servidor</span>';
+                msgBox.classList.remove('hidden');
+                btn.disabled = false;
+                btn.innerHTML = '<span>Registrarme Gratis</span> <i class="fas fa-check text-sm"></i>';
+            }
+        });
+    </script>
+</body>
+</html>

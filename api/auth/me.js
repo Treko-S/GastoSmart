@@ -1,0 +1,55 @@
+import { getUserFromRequest } from '../_lib/auth.js';
+import { supabase } from '../_lib/supabase.js';
+
+export default async function handler(req, res) {
+  const user = getUserFromRequest(req);
+  if (!user) {
+    return res.status(401).json({ success: false, message: 'No autenticado' });
+  }
+
+  try {
+    if (req.method === 'GET') {
+      const { data: dbUser, error } = await supabase
+        .from('usuarios')
+        .select('id, nombre, email, rol, limite_mensual_usd, moneda_principal, notificaciones_email, creado_en')
+        .eq('id', user.id)
+        .single();
+
+      if (error || !dbUser) {
+        return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
+      }
+
+      return res.status(200).json({ success: true, user: dbUser });
+    }
+
+    if (req.method === 'PUT') {
+      const { nombre, limite_mensual_usd, notificaciones_email, moneda_principal } = req.body || {};
+      const updates = {};
+
+      if (nombre) updates.nombre = nombre.trim();
+      if (limite_mensual_usd !== undefined) updates.limite_mensual_usd = Number(limite_mensual_usd);
+      if (notificaciones_email !== undefined) updates.notificaciones_email = Boolean(notificaciones_email);
+      if (moneda_principal) updates.moneda_principal = moneda_principal;
+
+      updates.actualizado_en = new Date().toISOString();
+
+      const { data: updatedUser, error: updateError } = await supabase
+        .from('usuarios')
+        .update(updates)
+        .eq('id', user.id)
+        .select('id, nombre, email, rol, limite_mensual_usd, moneda_principal, notificaciones_email')
+        .single();
+
+      if (updateError) {
+        return res.status(500).json({ success: false, message: 'Error al actualizar perfil' });
+      }
+
+      return res.status(200).json({ success: true, message: 'Perfil actualizado', user: updatedUser });
+    }
+
+    return res.status(405).json({ success: false, message: 'Método no permitido' });
+  } catch (error) {
+    console.error('Error en /api/auth/me:', error);
+    return res.status(500).json({ success: false, message: 'Error del servidor' });
+  }
+}
