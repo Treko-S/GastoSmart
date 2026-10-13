@@ -59,12 +59,12 @@ const CurrencyManager = {
       const pyg = Math.round(this.rates.PYG || 7500);
       const eur = (this.rates.EUR || 0.92).toFixed(2);
       tickerEl.innerHTML = `
-        <div class="inline-flex items-center gap-3 text-xs font-semibold px-3 py-1.5 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-400 rounded-full border border-emerald-200 dark:border-emerald-800">
+        <div class="inline-flex items-center gap-2.5 text-xs font-medium px-3.5 py-1.5 bg-white text-slate-800 rounded-full border border-emerald-200 shadow-sm">
           <span class="inline-block w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-          <span>1 USD ≈ <strong>${pyg.toLocaleString('es-PY')} Gs.</strong></span>
-          <span class="hidden sm:inline opacity-60">|</span>
-          <span class="hidden sm:inline">1 USD ≈ <strong>€${eur}</strong></span>
-          <span class="text-[10px] bg-emerald-200 dark:bg-emerald-900 px-1.5 py-0.5 rounded text-emerald-800 dark:text-emerald-200">En vivo</span>
+          <span>1 USD ≈ <strong class="text-emerald-700 font-extrabold">${pyg.toLocaleString('es-PY')} Gs.</strong></span>
+          <span class="hidden sm:inline text-slate-300">|</span>
+          <span class="hidden sm:inline">1 USD ≈ <strong class="text-emerald-700 font-extrabold">€${eur}</strong></span>
+          <span class="text-[10px] bg-emerald-600 px-2 py-0.5 rounded-full font-bold text-white tracking-wide shadow-xs">En vivo</span>
         </div>
       `;
     }

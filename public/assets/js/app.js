@@ -153,12 +153,15 @@ function renderCategoryChart(categories) {
   // Leyenda interactiva personalizada
   categories.forEach(c => {
     legendEl.innerHTML += `
-      <div class="flex items-center justify-between text-slate-600 dark:text-slate-400">
+      <div class="flex items-center justify-between py-1.5 px-2 rounded-lg hover:bg-slate-50 transition text-xs border border-transparent hover:border-slate-100">
         <div class="flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full" style="background-color: ${c.color}"></span>
-          <span>${c.nombre}</span>
+          <span class="w-2.5 h-2.5 rounded-full shrink-0 shadow-xs" style="background-color: ${c.color}"></span>
+          <span class="font-bold text-slate-800">${escapeHtml(c.nombre)}</span>
         </div>
-        <span class="font-bold text-slate-800 dark:text-slate-200">$${Number(c.total_usd).toFixed(2)} (${c.porcentaje}%)</span>
+        <div class="text-right">
+          <span class="font-extrabold text-slate-900">$${Number(c.total_usd).toFixed(2)}</span>
+          <span class="text-slate-500 font-semibold ml-1">(${c.porcentaje}%)</span>
+        </div>
       </div>
     `;
   });
@@ -172,26 +175,44 @@ function renderRecentExpenses(expenses) {
   listEl.innerHTML = '';
 
   if (!expenses || expenses.length === 0) {
-    listEl.innerHTML = '<div class="py-6 text-center text-slate-400 text-sm">No has registrado transacciones aún.</div>';
+    listEl.innerHTML = `
+      <div class="py-10 text-center">
+        <div class="w-12 h-12 mx-auto rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center text-xl mb-3 border border-emerald-100">
+          <i class="fas fa-receipt"></i>
+        </div>
+        <div class="font-bold text-sm text-slate-800">Aún no tienes gastos registrados</div>
+        <p class="text-xs text-slate-500 mt-1 mb-4">Comienza anotando tu primer gasto del mes</p>
+        <button onclick="openModal()" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition">
+          <i class="fas fa-plus"></i>
+          <span>Registrar Primer Gasto</span>
+        </button>
+      </div>
+    `;
     return;
   }
 
   expenses.forEach(t => {
-    const cat = t.categorias || { nombre: 'Otros', icono: 'fa-tags', color: '#6B7280' };
+    const cat = t.categorias || { nombre: 'Otros', icono: 'fa-tags', color: '#10B981' };
     listEl.innerHTML += `
-      <div class="py-3.5 flex items-center justify-between">
-        <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold shrink-0" style="background-color: ${cat.color}20; color: ${cat.color}">
+      <div class="py-3.5 flex items-center justify-between hover:bg-slate-50/80 px-2 rounded-2xl transition">
+        <div class="flex items-center gap-3.5">
+          <div class="w-11 h-11 rounded-2xl flex items-center justify-center text-base font-bold shrink-0 shadow-xs" style="background-color: ${cat.color}15; color: ${cat.color}; border: 1px solid ${cat.color}30">
             <i class="fas ${cat.icono}"></i>
           </div>
           <div>
-            <div class="font-bold text-sm text-slate-800 dark:text-white">${escapeHtml(t.descripcion)}</div>
-            <div class="text-xs text-slate-400">${t.fecha} • <span style="color: ${cat.color}">${cat.nombre}</span></div>
+            <div class="font-extrabold text-sm text-slate-900 leading-snug">${escapeHtml(t.descripcion || 'Gasto registrado')}</div>
+            <div class="text-xs text-slate-500 font-medium flex items-center gap-2 mt-0.5">
+              <span>${t.fecha}</span>
+              <span class="inline-block w-1 h-1 rounded-full bg-slate-300"></span>
+              <span class="font-bold px-2 py-0.5 rounded-md text-[11px]" style="background-color: ${cat.color}15; color: ${cat.color}">
+                ${escapeHtml(cat.nombre)}
+              </span>
+            </div>
           </div>
         </div>
         <div class="text-right">
-          <div class="font-extrabold text-sm text-slate-900 dark:text-white">${CurrencyManager.format(t.monto, t.moneda)}</div>
-          <div class="text-[11px] text-slate-400">≈ $${Number(t.monto_usd).toFixed(2)} USD</div>
+          <div class="font-black text-sm text-slate-900">${CurrencyManager.format(t.monto, t.moneda)}</div>
+          <div class="text-[11px] font-bold text-emerald-700 mt-0.5">≈ $${Number(t.monto_usd).toFixed(2)} USD</div>
         </div>
       </div>
     `;
@@ -206,26 +227,39 @@ function renderHistoryTable(expenses) {
   tbody.innerHTML = '';
 
   if (!expenses || expenses.length === 0) {
-    tbody.innerHTML = '<tr><td colspan="6" class="py-8 text-center text-slate-400">No hay transacciones registradas</td></tr>';
+    tbody.innerHTML = `
+      <tr>
+        <td colspan="6" class="py-12 text-center">
+          <div class="w-12 h-12 mx-auto rounded-2xl bg-slate-100 text-slate-400 flex items-center justify-center text-xl mb-2">
+            <i class="fas fa-folder-open"></i>
+          </div>
+          <div class="font-bold text-slate-700 text-sm">No hay transacciones registradas</div>
+          <p class="text-xs text-slate-400 mt-1 mb-3">No se encontraron movimientos para el filtro seleccionado</p>
+          <button onclick="openModal()" class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-emerald-600 text-white font-bold text-xs shadow-sm hover:bg-emerald-700 transition">
+            <i class="fas fa-plus"></i> Registrar Gasto
+          </button>
+        </td>
+      </tr>
+    `;
     return;
   }
 
   expenses.forEach(t => {
-    const cat = t.categorias || { nombre: 'Otros', icono: 'fa-tags', color: '#6B7280' };
+    const cat = t.categorias || { nombre: 'Otros', icono: 'fa-tags', color: '#10B981' };
     tbody.innerHTML += `
-      <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition">
-        <td class="py-3.5 px-4 text-slate-500 font-medium">${t.fecha}</td>
-        <td class="py-3.5 px-4 font-bold text-slate-900 dark:text-white">${escapeHtml(t.descripcion)}</td>
+      <tr class="hover:bg-emerald-50/40 transition border-b border-slate-100 last:border-none">
+        <td class="py-3.5 px-4 text-slate-600 font-semibold text-xs">${t.fecha}</td>
+        <td class="py-3.5 px-4 font-bold text-slate-900 text-sm">${escapeHtml(t.descripcion || 'Sin descripción')}</td>
         <td class="py-3.5 px-4">
-          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-semibold" style="background-color: ${cat.color}15; color: ${cat.color}">
+          <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold" style="background-color: ${cat.color}15; color: ${cat.color}; border: 1px solid ${cat.color}25">
             <i class="fas ${cat.icono} text-[10px]"></i>
-            ${cat.nombre}
+            ${escapeHtml(cat.nombre)}
           </span>
         </td>
-        <td class="py-3.5 px-4 text-right font-bold text-slate-900 dark:text-white">${CurrencyManager.format(t.monto, t.moneda)}</td>
-        <td class="py-3.5 px-4 text-right font-semibold text-slate-500">$${Number(t.monto_usd).toFixed(2)}</td>
+        <td class="py-3.5 px-4 text-right font-black text-slate-900">${CurrencyManager.format(t.monto, t.moneda)}</td>
+        <td class="py-3.5 px-4 text-right font-bold text-emerald-700 text-xs">$${Number(t.monto_usd).toFixed(2)} USD</td>
         <td class="py-3.5 px-4 text-center">
-          <button onclick="deleteExpense('${t.id}')" class="text-slate-400 hover:text-red-500 transition p-1.5" title="Eliminar gasto">
+          <button onclick="deleteExpense('${t.id}')" class="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-2 rounded-lg transition" title="Eliminar gasto">
             <i class="fas fa-trash-alt text-xs"></i>
           </button>
         </td>
@@ -496,18 +530,18 @@ function switchView(viewName) {
   // Actualizar botones desktop
   document.querySelectorAll('.nav-btn').forEach(btn => {
     if (btn.dataset.view === viewName) {
-      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-emerald-50 text-emerald-700 border border-emerald-200 shadow-sm';
+      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-black text-sm transition-all bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-xs';
     } else {
-      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all text-textMuted hover:bg-surfaceSoft hover:text-textMain';
+      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all text-slate-600 hover:bg-slate-100 hover:text-slate-900';
     }
   });
 
   // Actualizar botones móvil
   document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
     if (btn.dataset.view === viewName) {
-      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-emerald-700 text-xs font-bold';
+      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-emerald-700 text-xs font-black';
     } else {
-      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-textLight text-xs font-semibold';
+      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-slate-500 text-xs font-bold';
     }
   });
 
