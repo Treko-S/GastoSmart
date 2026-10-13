@@ -3,21 +3,43 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
-    <title>GastoSmart - Control Inteligente de Gastos y Presupuesto Multidivisa</title>
+    <title>GastoSmart - Control Fácil de Gastos y Ahorro Inteligente</title>
+    
+    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
     <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    
+    <!-- AOS (Animate On Scroll) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+
     <style>
         @layer base {
-            html, body { margin: 0; padding: 0; }
+            html, body { margin: 0; padding: 0; scroll-behavior: smooth; }
             body { overscroll-behavior: none; }
-            main > :first-child { margin-top: 0 !important; }
-            main > :last-child { margin-bottom: 0 !important; }
         }
         ::-webkit-scrollbar { display: none; }
+
+        /* Animaciones suaves personalizadas */
+        @keyframes floatSlow {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-8px); }
+        }
+        .animate-float {
+            animation: floatSlow 5s ease-in-out infinite;
+        }
+
+        @keyframes pulseGlow {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
+        .animate-glow {
+            animation: pulseGlow 4s ease-in-out infinite;
+        }
     </style>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script id="tailwind-config">
         tailwind.config = {
@@ -25,763 +47,508 @@
             theme: {
                 extend: {
                     colors: {
-                        background: "#0e131f",
-                        "on-secondary-container": "#003f38",
-                        "on-primary-container": "#00422b",
-                        "surface-variant": "#2f3542",
-                        error: "#ffb4ab",
-                        "on-tertiary": "#1000a9",
-                        "on-secondary": "#003731",
-                        "inverse-on-surface": "#2b303d",
-                        "surface-bright": "#343946",
-                        "secondary-container": "#04b4a2",
-                        "surface-tint": "#4edea3",
-                        surface: "#0e131f",
-                        "tertiary-container": "#9699ff",
-                        "on-tertiary-container": "#1d17b2",
-                        "inverse-surface": "#dde2f3",
-                        "primary-container": "#10b981",
-                        "on-surface-variant": "#bbcabf",
-                        "error-container": "#93000a",
-                        "tertiary-fixed": "#e1e0ff",
-                        outline: "#86948a",
-                        secondary: "#4fdbc8",
-                        "on-error": "#690005",
-                        primary: "#4edea3",
-                        "inverse-primary": "#006c49",
-                        "on-tertiary-fixed": "#07006c",
-                        "on-secondary-fixed": "#00201c",
-                        "on-primary": "#003824",
-                        "on-primary-fixed-variant": "#005236",
-                        "secondary-fixed-dim": "#4fdbc8",
-                        "on-tertiary-fixed-variant": "#2f2ebe",
-                        "surface-container-low": "#161c28",
-                        "tertiary-fixed-dim": "#c0c1ff",
-                        "primary-fixed": "#6ffbbe",
-                        tertiary: "#c0c1ff",
-                        "secondary-fixed": "#71f8e4",
-                        "surface-container-lowest": "#080e1a",
-                        "on-surface": "#dde2f3",
-                        "surface-container-high": "#242a36",
-                        "on-background": "#dde2f3",
-                        "on-error-container": "#ffdad6",
-                        "on-secondary-fixed-variant": "#005048",
-                        "surface-container": "#1a202c",
-                        "surface-dim": "#0e131f",
-                        "primary-fixed-dim": "#4edea3",
-                        "surface-container-highest": "#2f3542",
-                        "outline-variant": "#3c4a42",
-                        "on-primary-fixed": "#002113"
-                    },
-                    borderRadius: { DEFAULT: "0.25rem", lg: "0.5rem", xl: "0.75rem", full: "9999px" },
-                    spacing: {
-                        "space-xs": "0.375rem",
-                        "space-lg": "2rem",
-                        "space-xl": "3.5rem",
-                        "margin-mobile": "1.25rem",
-                        "space-sm": "0.75rem",
-                        gutter: "1.5rem",
-                        "space-md": "1.25rem",
-                        margin: "3rem",
-                        "gutter-mobile": "1rem"
+                        // Paleta Cálida Premium (Carbón cálido, ámbar, dorado, terracota suave)
+                        background: "#12100e",          // Fondo oscuro cálido
+                        "surface": "#1a1613",             // Contenedores principales
+                        "surface-low": "#161310",         // Superficie sutil
+                        "surface-high": "#241f1a",        // Tarjetas elevadas
+                        "surface-highest": "#2f2822",     // Hover y bordes destacados
+                        
+                        // Acentos Cálidos Vibrantes
+                        primary: "#f59e0b",               // Ámbar Dorado
+                        "primary-hover": "#d97706",       // Ámbar Intenso
+                        secondary: "#ea580c",             // Terracota / Naranja cálido
+                        tertiary: "#fbbf24",              // Miel brillante
+                        emeraldWarm: "#10b981",           // Verde esmeralda para balances positivos
+                        
+                        // Textos cálidos
+                        "on-background": "#faf5ee",       // Blanco cálido
+                        "on-surface-variant": "#c4b5a5",  // Gris cálido secundario
+                        "outline-warm": "#3d342c"         // Bordes sutiles cálidos
                     },
                     fontFamily: {
-                        "body-md": ["Inter"],
-                        "headline-lg-mobile": ["Plus Jakarta Sans"],
-                        "label-sm": ["Inter"],
-                        "headline-xl": ["Plus Jakarta Sans"],
-                        "label-md": ["Inter"],
-                        "body-lg": ["Inter"],
-                        "label-lg": ["Inter"],
-                        "headline-md": ["Plus Jakarta Sans"],
-                        "body-sm": ["Inter"],
-                        "headline-lg": ["Plus Jakarta Sans"],
-                        "headline-xl-mobile": ["Plus Jakarta Sans"],
-                        "headline-sm": ["Plus Jakarta Sans"]
-                    },
-                    fontSize: {
-                        "body-md": ["15px", { lineHeight: "24px", fontWeight: "400" }],
-                        "headline-lg-mobile": ["28px", { lineHeight: "36px", fontWeight: "700" }],
-                        "label-sm": ["10px", { lineHeight: "14px", fontWeight: "600" }],
-                        "headline-xl": ["56px", { lineHeight: "64px", fontWeight: "800" }],
-                        "label-md": ["12px", { lineHeight: "16px", fontWeight: "500" }],
-                        "body-lg": ["18px", { lineHeight: "28px", fontWeight: "400" }],
-                        "label-lg": ["14px", { lineHeight: "20px", fontWeight: "600" }],
-                        "headline-md": ["28px", { lineHeight: "36px", fontWeight: "600" }],
-                        "body-sm": ["13px", { lineHeight: "20px", fontWeight: "400" }],
-                        "headline-lg": ["40px", { lineHeight: "48px", fontWeight: "700" }],
-                        "headline-xl-mobile": ["36px", { lineHeight: "44px", fontWeight: "800" }],
-                        "headline-sm": ["20px", { lineHeight: "28px", fontWeight: "600" }]
+                        sans: ["'Plus Jakarta Sans'", "sans-serif"],
+                        display: ["'Outfit'", "sans-serif"]
                     }
                 }
             }
         };
     </script>
 </head>
-<body class="bg-background font-body-md text-on-background selection:bg-primary-container selection:text-on-primary-container min-h-screen relative overflow-x-hidden">
-    <!-- Atmospheric Background Glows -->
+<body class="bg-background font-sans text-on-background selection:bg-primary selection:text-surface min-h-screen relative overflow-x-hidden">
+
+    <!-- Luces Ambientales Cálidas (Atmospheric Glow) -->
     <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div class="absolute -top-[20%] left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-[radial-gradient(ellipse_at_center,rgba(99,102,241,0.12)_0%,rgba(14,19,31,0)_70%)] blur-3xl"></div>
-        <div class="absolute top-[40%] right-[-10%] w-[650px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.08)_0%,rgba(14,19,31,0)_70%)] blur-3xl"></div>
-        <div class="absolute bottom-0 left-[-5%] w-[600px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(4,180,162,0.06)_0%,rgba(14,19,31,0)_70%)] blur-3xl"></div>
+        <div class="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.14)_0%,rgba(18,16,14,0)_70%)] blur-3xl animate-glow"></div>
+        <div class="absolute top-[35%] right-[-5%] w-[600px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(234,88,12,0.10)_0%,rgba(18,16,14,0)_70%)] blur-3xl"></div>
+        <div class="absolute bottom-[10%] left-[-5%] w-[650px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.08)_0%,rgba(18,16,14,0)_70%)] blur-3xl"></div>
     </div>
 
-    <!-- Header / Navbar -->
-    <header class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl shadow-[0_1px_8px_rgba(0,0,0,0.04)]">
-        <div class="h-20 max-w-[1280px] mx-auto px-margin-mobile md:px-space-lg lg:px-margin flex items-center justify-between gap-gutter">
-            <div class="flex items-center gap-space-md">
-                <a class="flex items-center gap-space-xs transition-opacity hover:opacity-90" href="/index.html">
-                    <img alt="GastoSmart Logo" class="h-9 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/36x36/10B981/ffffff?text=GS'"/>
-                    <span class="font-headline-sm text-headline-sm tracking-tight text-on-surface flex items-center gap-1.5">
+    <!-- Barra de Navegación Fija -->
+    <header class="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-xl border-b border-outline-warm/60">
+        <div class="h-20 max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-6">
+            <!-- Logo -->
+            <div class="flex items-center gap-3">
+                <a class="flex items-center gap-2.5 transition-transform hover:scale-105" href="/index.html">
+                    <img alt="GastoSmart Logo" class="h-9 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/36x36/f59e0b/12100e?text=GS'"/>
+                    <span class="font-display font-extrabold text-2xl tracking-tight text-on-background flex items-center gap-1.5">
                         GastoSmart
-                        <span class="inline-block w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(78,222,163,0.8)]"></span>
+                        <span class="inline-block w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(245,158,11,0.8)]"></span>
                     </span>
                 </a>
             </div>
 
-            <nav class="hidden lg:flex items-center gap-space-sm p-1.5 rounded-full bg-surface-container-lowest/60">
-                <a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#caracteristicas-principales">Características</a>
-                <a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#mercados-en-vivo">Cotizaciones en Vivo</a>
-                <a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#asesor-gemini-ia">Asesor IA</a>
-                <a class="px-space-md py-space-xs rounded-full font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface hover:bg-surface-container-high transition-all" href="#seguridad-y-confianza">Seguridad</a>
+            <!-- Enlaces Simples -->
+            <nav class="hidden lg:flex items-center gap-2 p-1.5 rounded-full bg-surface-low border border-outline-warm/40">
+                <a class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant hover:text-on-background hover:bg-surface-high transition-all" href="#beneficios">¿Por qué usarlo?</a>
+                <a class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant hover:text-on-background hover:bg-surface-high transition-all" href="#mercados-en-vivo">Monedas en Vivo</a>
+                <a class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant hover:text-on-background hover:bg-surface-high transition-all" href="#como-funciona">Cómo Funciona</a>
             </nav>
 
-            <div class="flex items-center gap-space-sm" id="auth-buttons-container">
-                <a class="hidden sm:inline-flex items-center justify-center px-space-md py-space-xs rounded-xl font-label-lg text-label-lg text-on-surface hover:text-primary hover:bg-surface-container-high transition-all" href="/login.html">Iniciar Sesión</a>
-                <a class="inline-flex items-center justify-center px-space-md py-space-xs rounded-xl font-label-lg text-label-lg text-on-primary bg-primary-container hover:bg-primary shadow-[0_4px_14px_0_rgba(16,185,129,0.39)] hover:shadow-[0_6px_20px_0_rgba(16,185,129,0.55)] transition-all transform hover:-translate-y-0.5" href="/register.html">Empezar Gratis</a>
+            <!-- Acciones -->
+            <div class="flex items-center gap-3" id="auth-buttons-container">
+                <a class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-on-background hover:text-primary hover:bg-surface-high transition-all" href="/login.html">Iniciar Sesión</a>
+                <a class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-surface bg-gradient-to-r from-primary to-amber-500 hover:from-amber-400 hover:to-orange-500 shadow-[0_4px_18px_rgba(245,158,11,0.35)] transition-all transform hover:-translate-y-0.5" href="/register.html">Empezar Gratis</a>
             </div>
         </div>
     </header>
 
-    <main class="w-full pt-20 bg-transparent min-h-[calc(100vh-5rem)]">
-        <div class="flex flex-col w-full">
+    <main class="w-full pt-20">
+        
+        <!-- SECTION 1: HERO (Cálido y Amigable) -->
+        <section class="relative w-full px-5 sm:px-8 pt-12 pb-20 max-w-7xl mx-auto flex flex-col items-center text-center">
+            
+            <!-- Badge Destacado -->
+            <div data-aos="fade-down" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-high/90 border border-primary/30 shadow-lg mb-6">
+                <span class="w-5 h-5 rounded-full bg-gradient-to-tr from-primary to-orange-500 flex items-center justify-center text-surface text-xs font-bold">
+                    <i class="fas fa-sparkles"></i>
+                </span>
+                <span class="text-xs font-bold text-on-background tracking-wide">
+                    Nuevo: <span class="text-primary font-bold">Asistente Inteligente</span> que te ayuda a ahorrar mes a mes
+                </span>
+            </div>
 
-            <!-- SECTION 1: HERO SECTION -->
-            <section class="relative w-full overflow-hidden px-margin-mobile md:px-space-lg lg:px-margin pt-space-lg pb-space-xl">
-                <!-- Ambient Glows -->
-                <div class="pointer-events-none absolute -top-24 left-1/2 -translate-x-1/2 w-[850px] h-[480px] bg-gradient-to-b from-primary-container/15 via-tertiary-container/10 to-transparent blur-3xl opacity-75"></div>
-                <div class="pointer-events-none absolute top-1/3 -right-48 w-96 h-96 bg-secondary/10 blur-3xl rounded-full"></div>
+            <!-- Título Principal sin tecnicismos -->
+            <h1 data-aos="fade-up" data-aos-delay="100" class="max-w-4xl font-display font-extrabold text-4xl sm:text-6xl text-on-background tracking-tight leading-tight">
+                El control de tus gastos diarios, <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-secondary">fácil y sin enredos</span>
+            </h1>
 
-                <div class="max-w-[1280px] mx-auto flex flex-col items-center text-center">
-                    <!-- Floating Feature Badge -->
-                    <a class="group inline-flex items-center gap-space-xs px-3.5 py-1.5 rounded-full bg-surface-container-high/80 backdrop-blur-xl shadow-lg transition-all duration-300 hover:scale-[1.02] hover:bg-surface-container-highest" href="#asesor-gemini-ia">
-                        <span class="flex items-center justify-center w-5 h-5 rounded-full bg-gradient-to-tr from-primary-container to-tertiary-container text-on-primary">
-                            <span class="material-symbols-outlined text-[13px]" style="font-variation-settings: 'FILL' 1;">bolt</span>
-                        </span>
-                        <span class="font-label-md text-label-md text-on-surface flex items-center gap-1.5">
-                            <span class="font-semibold text-primary">Nuevo:</span> Asesor Financiero impulsado por Google Gemini 2.5 Flash
-                            <span class="material-symbols-outlined text-[14px] text-on-surface-variant transition-transform group-hover:translate-x-0.5">arrow_forward</span>
-                        </span>
-                    </a>
+            <!-- Subtítulo en lenguaje cotidiano -->
+            <p data-aos="fade-up" data-aos-delay="200" class="mt-6 max-w-2xl text-lg sm:text-xl text-on-surface-variant leading-relaxed">
+                Registra tus compras en <strong>Guaraníes, Dólares o Euros</strong> sin hacer cálculos manuales. Recibe avisos en tu correo antes de pasarte de tu presupuesto y consejos prácticos para que te sobre dinero a fin de mes.
+            </p>
 
-                    <!-- Headline & Subtitle -->
-                    <h1 class="mt-space-md max-w-4xl font-headline-xl text-headline-xl text-on-surface tracking-tight">
-                        Toma el control total de tus gastos con <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-primary-container">inteligencia en tiempo real</span>
-                    </h1>
-                    <p class="mt-space-md max-w-2xl font-body-lg text-body-lg text-on-surface-variant leading-relaxed">
-                        Registra compras en Dólares, Guaraníes o Euros con cotizaciones en vivo, recibe alertas preventivas por correo antes de sobregirarte y ahorra con recomendaciones personalizadas de IA.
-                    </p>
+            <!-- Botones de Acción -->
+            <div data-aos="fade-up" data-aos-delay="300" class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
+                <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-extrabold text-surface bg-gradient-to-r from-primary via-amber-400 to-orange-500 shadow-[0_6px_25px_rgba(245,158,11,0.4)] hover:shadow-[0_8px_32px_rgba(245,158,11,0.55)] transition-all transform hover:-translate-y-1" href="/register.html">
+                    <span>Crear Mi Cuenta Gratis</span>
+                    <i class="fas fa-arrow-right text-sm"></i>
+                </a>
+                <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-bold text-on-background bg-surface-high hover:bg-surface-highest border border-outline-warm transition-all" href="/login.html">
+                    <i class="fas fa-play text-xs text-primary"></i>
+                    <span>Ya Tengo Cuenta</span>
+                </a>
+            </div>
 
-                    <!-- Dual CTA Buttons -->
-                    <div class="mt-space-lg flex flex-col sm:flex-row items-center justify-center gap-space-sm w-full sm:w-auto">
-                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-6 py-3.5 rounded-xl font-label-lg text-label-lg text-on-primary bg-primary-container shadow-[0_4px_20px_0_rgba(16,185,129,0.39)] hover:shadow-[0_8px_28px_0_rgba(16,185,129,0.55)] hover:bg-primary transition-all duration-200 transform hover:-translate-y-0.5 font-bold" href="/register.html">
-                            <span>Crear Cuenta Gratuita</span>
-                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
-                        </a>
-                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-6 py-3.5 rounded-xl font-label-lg text-label-lg text-on-surface bg-surface-container-high/80 hover:bg-surface-container-highest backdrop-blur-md transition-all duration-200" href="/login.html">
-                            <span class="material-symbols-outlined text-secondary text-[20px]" style="font-variation-settings: 'FILL' 1;">play_circle</span>
-                            <span>Acceder a mi Panel</span>
-                        </a>
+            <!-- Píldora de Moneda en Vivo -->
+            <div data-aos="zoom-in" data-aos-delay="400" class="mt-8 inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-surface-low border border-outline-warm shadow-md">
+                <span class="flex h-2.5 w-2.5 relative">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                </span>
+                <span class="text-xs sm:text-sm text-on-surface-variant">
+                    Cotización oficial al instante: <strong class="text-on-background font-bold" id="hero-pyg-rate">1 USD ≈ 7.550 Gs.</strong> • <strong class="text-on-background font-bold" id="hero-eur-rate">1 USD ≈ €0.92</strong>
+                    <span class="text-primary font-bold ml-1">(Actualizado)</span>
+                </span>
+            </div>
+
+            <!-- Simplicidad Garantizada -->
+            <div class="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-on-surface-variant/80">
+                <span><i class="fas fa-check text-primary mr-1"></i> 100% Gratis</span>
+                <span><i class="fas fa-check text-primary mr-1"></i> Sin tarjetas de crédito</span>
+                <span><i class="fas fa-check text-primary mr-1"></i> Funciona en celular y compu</span>
+            </div>
+
+            <!-- Tarjeta Visual del Panel (Mockup Cálido) -->
+            <div data-aos="fade-up" data-aos-delay="500" class="mt-14 w-full max-w-5xl relative animate-float">
+                <div class="absolute -inset-2 bg-gradient-to-r from-primary/20 via-orange-500/15 to-amber-500/20 rounded-3xl blur-2xl opacity-70"></div>
+                
+                <div class="relative rounded-3xl bg-surface border border-outline-warm/80 p-6 sm:p-8 text-left shadow-2xl">
+                    <!-- Cabecera de la Tarjeta -->
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-outline-warm/60">
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-2.5 h-2.5 rounded-full bg-emeraldWarm animate-pulse"></span>
+                                <span class="text-xs uppercase font-extrabold tracking-wider text-on-surface-variant">Tu Presupuesto de Este Mes</span>
+                            </div>
+                            <div class="flex items-baseline gap-3 mt-1">
+                                <span class="font-display font-extrabold text-3xl sm:text-4xl text-on-background">$1,200.00 <span class="text-sm font-semibold text-on-surface-variant">USD</span></span>
+                                <span class="text-xs font-bold text-primary bg-surface-high px-3 py-1 rounded-lg" id="mockup-pyg-calc">≈ 9.060.000 ₲</span>
+                            </div>
+                        </div>
+
+                        <!-- Selector de Moneda de demostración -->
+                        <div class="flex items-center gap-1.5 bg-surface-low p-1.5 rounded-xl border border-outline-warm/50">
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-primary text-surface shadow-sm">Dólares ($)</span>
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant">Guaraníes (₲)</span>
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant">Euros (€)</span>
+                        </div>
                     </div>
 
-                    <!-- Live Micro-Ticker Pill -->
-                    <div class="mt-space-md inline-flex flex-wrap items-center justify-center gap-2 px-4 py-2 rounded-full bg-surface-container-low/90 backdrop-blur-md shadow-sm">
-                        <span class="relative flex h-2 w-2">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                        </span>
-                        <span class="font-label-md text-label-md text-on-surface-variant" id="hero-ticker-text">
-                            Tasa oficial de hoy: <strong class="text-on-surface font-semibold" id="hero-pyg-rate">1 USD ≈ 7.550 Gs.</strong> • <strong class="text-on-surface font-semibold" id="hero-eur-rate">1 USD ≈ €0.92</strong> <span class="text-secondary">(En vivo vía ExchangeRate-API)</span>
-                        </span>
-                    </div>
+                    <!-- Contenido Central Dividido -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 items-start">
+                        
+                        <!-- Columna Izquierda: Gráfico y Resumen de Gastos -->
+                        <div class="lg:col-span-7 bg-surface-low rounded-2xl p-5 border border-outline-warm/40 flex flex-col gap-5">
+                            <div class="flex items-center justify-between">
+                                <h4 class="font-bold text-base text-on-background">En qué vas gastando</h4>
+                                <span class="text-xs font-bold text-emeraldWarm bg-emeraldWarm/10 px-2.5 py-1 rounded-full border border-emeraldWarm/20">65% de tu meta</span>
+                            </div>
 
-                    <!-- Trust Micro-Copy -->
-                    <p class="mt-space-xs font-label-sm text-label-sm text-outline flex items-center justify-center gap-2">
-                        <span>✓ Sin tarjeta requerida</span>
-                        <span class="opacity-40">•</span>
-                        <span>Configuración en 2 minutos</span>
-                        <span class="opacity-40">•</span>
-                        <span>100% Cifrado TLS 1.3</span>
-                    </p>
+                            <!-- Barra Visual de Progreso -->
+                            <div>
+                                <div class="flex justify-between text-xs text-on-surface-variant mb-1.5">
+                                    <span>Gastado: <strong>$780.00</strong></span>
+                                    <span>Te queda disponible: <strong class="text-emeraldWarm">$420.00</strong></span>
+                                </div>
+                                <div class="w-full bg-surface-highest h-3 rounded-full overflow-hidden">
+                                    <div class="bg-gradient-to-r from-primary via-amber-400 to-orange-500 h-full rounded-full" style="width: 65%;"></div>
+                                </div>
+                            </div>
 
-                    <!-- Hero Mockup: Rich Glassmorphic Dashboard Showcase -->
-                    <div class="mt-space-xl w-full max-w-5xl relative">
-                        <div class="absolute -inset-1.5 bg-gradient-to-r from-primary-container/20 via-tertiary-container/15 to-secondary/20 rounded-3xl blur-xl opacity-60"></div>
-                        <div class="relative rounded-3xl bg-surface-container-low/90 backdrop-blur-2xl shadow-2xl p-space-md sm:p-space-lg text-left overflow-hidden">
-                            <!-- Mockup Top Bar -->
-                            <div class="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-space-sm pb-space-md border-b border-surface-container-high/60">
-                                <div>
+                            <!-- Lista de Movimientos Cotidianos -->
+                            <div class="space-y-2.5">
+                                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Últimos Gastos Anotados</span>
+                                
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-surface-high border border-outline-warm/30">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold">
+                                            <i class="fas fa-utensils"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-on-background">Supermercado y Almuerzo</p>
+                                            <p class="text-xs text-on-surface-variant">Pagado en Guaraníes</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-rose-400">-250.000 ₲</p>
+                                        <p class="text-xs text-on-surface-variant">≈ $33.10 USD</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-surface-high border border-outline-warm/30">
+                                    <div class="flex items-center gap-3">
+                                        <div class="w-9 h-9 rounded-xl bg-secondary/20 text-secondary flex items-center justify-center font-bold">
+                                            <i class="fas fa-car"></i>
+                                        </div>
+                                        <div>
+                                            <p class="text-sm font-bold text-on-background">Combustible del auto</p>
+                                            <p class="text-xs text-on-surface-variant">Pagado en Guaraníes</p>
+                                        </div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="text-sm font-bold text-rose-400">-180.000 ₲</p>
+                                        <p class="text-xs text-on-surface-variant">≈ $23.80 USD</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Columna Derecha: El Asistente de Ahorro y Consejos -->
+                        <div class="lg:col-span-5 flex flex-col gap-4">
+                            <!-- Consejo del Asistente -->
+                            <div class="rounded-2xl bg-gradient-to-br from-surface-high to-surface p-5 border border-primary/30 shadow-lg relative overflow-hidden">
+                                <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center gap-2">
-                                        <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-                                        <span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Presupuesto Mensual • GastoSmart Cloud</span>
+                                        <div class="w-8 h-8 rounded-xl bg-primary/20 text-primary flex items-center justify-center text-sm font-bold">
+                                            <i class="fas fa-lightbulb"></i>
+                                        </div>
+                                        <span class="text-sm font-extrabold text-on-background">Consejo de tu Asistente</span>
                                     </div>
-                                    <div class="flex items-baseline gap-space-sm mt-1">
-                                        <span class="font-headline-lg text-headline-lg text-on-surface font-bold tracking-tight">$4,850.00 <span class="font-body-md text-body-md text-on-surface-variant font-normal">USD</span></span>
-                                        <span class="font-label-md text-label-md text-secondary bg-surface-container px-2.5 py-1 rounded-md" id="mockup-pyg-calc">≈ 36.617.500 ₲</span>
-                                    </div>
+                                    <span class="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">Ahorro Fácil</span>
                                 </div>
-                                <div class="flex items-center gap-1.5 bg-surface-container-lowest p-1 rounded-xl">
-                                    <span class="px-3 py-1 rounded-lg font-label-sm text-label-sm bg-surface-container-high text-primary shadow-sm font-semibold">USD $4,850</span>
-                                    <span class="px-3 py-1 rounded-lg font-label-sm text-label-sm text-on-surface-variant">PYG ₲ 36.6M</span>
-                                    <span class="px-3 py-1 rounded-lg font-label-sm text-label-sm text-on-surface-variant">EUR €4,490</span>
-                                </div>
-                            </div>
-
-                            <!-- Mockup Grid Content -->
-                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-space-md mt-space-sm items-start">
-                                <!-- Left Col: Budget Donut & Breakdown (7 cols) -->
-                                <div class="lg:col-span-7 rounded-2xl bg-surface-container p-space-md flex flex-col gap-space-md">
-                                    <div class="flex items-center justify-between">
-                                        <span class="font-headline-sm text-headline-sm text-on-surface">Distribución por Categorías</span>
-                                        <span class="font-label-md text-label-md text-primary bg-primary-container/15 px-2.5 py-0.5 rounded-full font-semibold">68% Consumido</span>
-                                    </div>
-                                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-space-md items-center">
-                                        <!-- SVG Donut Chart -->
-                                        <div class="relative flex items-center justify-center">
-                                            <svg class="w-40 h-40 transform -rotate-90" viewbox="0 0 120 120">
-                                                <circle class="text-surface-container-highest" cx="60" cy="60" fill="transparent" r="46" stroke="currentColor" stroke-width="12"></circle>
-                                                <circle class="text-primary" cx="60" cy="60" fill="transparent" r="46" stroke="currentColor" stroke-dasharray="289" stroke-dashoffset="188" stroke-width="12"></circle>
-                                                <circle class="text-secondary" cx="60" cy="60" fill="transparent" r="46" stroke="currentColor" stroke-dasharray="289" stroke-dashoffset="220" stroke-width="12" style="transform: rotate(126deg); transform-origin: 60px 60px;"></circle>
-                                                <circle class="text-tertiary-container" cx="60" cy="60" fill="transparent" r="46" stroke="currentColor" stroke-dasharray="289" stroke-dashoffset="246" stroke-width="12" style="transform: rotate(212deg); transform-origin: 60px 60px;"></circle>
-                                                <circle class="text-primary-container" cx="60" cy="60" fill="transparent" r="46" stroke="currentColor" stroke-dasharray="289" stroke-dashoffset="214" stroke-width="12" style="transform: rotate(266deg); transform-origin: 60px 60px;"></circle>
-                                            </svg>
-                                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
-                                                <span class="font-headline-md text-headline-md text-on-surface font-bold">$3,298</span>
-                                                <span class="font-label-sm text-label-sm text-on-surface-variant">Gastado</span>
-                                            </div>
-                                        </div>
-                                        <!-- Legend Breakdown -->
-                                        <div class="flex flex-col gap-2">
-                                            <div class="flex items-center justify-between text-body-sm font-body-sm">
-                                                <div class="flex items-center gap-2">
-                                                    <span class="w-2.5 h-2.5 rounded-full bg-primary"></span>
-                                                    <span class="text-on-surface">Vivienda</span>
-                                                </div>
-                                                <span class="font-semibold text-on-surface">35% ($1,697)</span>
-                                            </div>
-                                            <div class="flex items-center justify-between text-body-sm font-body-sm">
-                                                <div class="flex items-center gap-2">
-                                                    <span class="w-2.5 h-2.5 rounded-full bg-secondary"></span>
-                                                    <span class="text-on-surface">Alimentación</span>
-                                                </div>
-                                                <span class="font-semibold text-on-surface">24% ($1,164)</span>
-                                            </div>
-                                            <div class="flex items-center justify-between text-body-sm font-body-sm">
-                                                <div class="flex items-center gap-2">
-                                                    <span class="w-2.5 h-2.5 rounded-full bg-tertiary-container"></span>
-                                                    <span class="text-on-surface">Servicios</span>
-                                                </div>
-                                                <span class="font-semibold text-on-surface">15% ($727)</span>
-                                            </div>
-                                            <div class="flex items-center justify-between text-body-sm font-body-sm">
-                                                <div class="flex items-center gap-2">
-                                                    <span class="w-2.5 h-2.5 rounded-full bg-primary-container"></span>
-                                                    <span class="text-on-surface">Ahorros</span>
-                                                </div>
-                                                <span class="font-semibold text-on-surface">26% ($1,262)</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- Transactions Mini-List -->
-                                    <div class="pt-space-xs flex flex-col gap-2">
-                                        <span class="font-label-md text-label-md uppercase tracking-wider text-on-surface-variant">Movimientos Recientes Multidivisa</span>
-                                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-high/60">
-                                            <div class="flex items-center gap-space-xs">
-                                                <div class="w-8 h-8 rounded-lg bg-surface-variant flex items-center justify-center text-primary">
-                                                    <span class="material-symbols-outlined text-[18px]">shopping_cart</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-label-lg text-label-lg text-on-surface">Supermercado</p>
-                                                    <p class="font-label-sm text-label-sm text-on-surface-variant">Pago con Guaraníes (PYG)</p>
-                                                </div>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="font-label-lg text-label-lg text-error font-medium">-380.000 ₲</p>
-                                                <p class="font-label-sm text-label-sm text-on-surface-variant">≈ $50.33 USD</p>
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center justify-between p-2.5 rounded-xl bg-surface-container-high/60">
-                                            <div class="flex items-center gap-space-xs">
-                                                <div class="w-8 h-8 rounded-lg bg-surface-variant flex items-center justify-center text-tertiary">
-                                                    <span class="material-symbols-outlined text-[18px]">cloud</span>
-                                                </div>
-                                                <div>
-                                                    <p class="font-label-lg text-label-lg text-on-surface">Servicios Cloud</p>
-                                                    <p class="font-label-sm text-label-sm text-on-surface-variant">Facturación en Dólares (USD)</p>
-                                                </div>
-                                            </div>
-                                            <div class="text-right">
-                                                <p class="font-label-lg text-label-lg text-error font-medium">-$45.00 USD</p>
-                                                <p class="font-label-sm text-label-sm text-on-surface-variant">≈ 339.750 ₲</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <!-- Right Col: Gemini 2.5 Floating Intelligence Popover (5 cols) -->
-                                <div class="lg:col-span-5 flex flex-col gap-space-md">
-                                    <div class="relative rounded-2xl bg-gradient-to-b from-surface-container-high to-surface-container p-space-md shadow-xl overflow-hidden border border-tertiary/20">
-                                        <div class="flex items-center justify-between">
-                                            <div class="flex items-center gap-2">
-                                                <div class="w-7 h-7 rounded-lg bg-tertiary-container/30 flex items-center justify-center text-tertiary">
-                                                    <span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">auto_awesome</span>
-                                                </div>
-                                                <span class="font-label-lg text-label-lg text-on-surface font-semibold">Asesor IA Gemini 2.5 Flash</span>
-                                            </div>
-                                            <span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-tertiary/15 text-tertiary font-bold">Proactivo</span>
-                                        </div>
-                                        <p class="mt-space-sm font-body-sm text-body-sm text-on-surface leading-relaxed">
-                                            “Notamos un aumento del <strong class="text-secondary font-semibold">14% en suscripciones digitales</strong>. Te sugerimos consolidar 2 servicios para ahorrar <strong class="text-primary font-semibold">$38.50 USD</strong> este mes.”
-                                        </p>
-                                        <div class="mt-space-md flex items-center gap-2">
-                                            <a href="/login.html" class="flex-1 py-2 px-3 rounded-lg bg-gradient-to-r from-tertiary-container to-secondary-container text-on-tertiary-container font-label-md text-label-md font-semibold text-center hover:opacity-90 transition-opacity">
-                                                Probar Asesor IA
-                                            </a>
-                                        </div>
-                                    </div>
-
-                                    <!-- Live Conversion Sparkline Card -->
-                                    <div class="rounded-2xl bg-surface-container p-space-md flex flex-col gap-2">
-                                        <div class="flex items-center justify-between">
-                                            <span class="font-label-md text-label-md text-on-surface-variant">Tendencia USD / PYG</span>
-                                            <span class="font-label-sm text-label-sm text-primary font-semibold">En tiempo real</span>
-                                        </div>
-                                        <div class="flex items-baseline gap-2">
-                                            <span class="font-headline-sm text-headline-sm text-on-surface font-bold" id="card-rate-pyg">7.550 ₲</span>
-                                            <span class="font-label-sm text-label-sm text-on-surface-variant">Equivalente a 1 USD</span>
-                                        </div>
-                                        <div class="w-full h-12 pt-1">
-                                            <svg class="w-full h-full overflow-visible" preserveaspectratio="none" viewbox="0 0 240 40">
-                                                <defs>
-                                                    <lineargradient id="sparklineGrad" x1="0" x2="0" y1="0" y2="1">
-                                                        <stop offset="0%" stop-color="#4edea3" stop-opacity="0.3"></stop>
-                                                        <stop offset="100%" stop-color="#4edea3" stop-opacity="0"></stop>
-                                                    </lineargradient>
-                                                </defs>
-                                                <path d="M0,32 Q30,28 60,30 T120,18 T180,22 T240,8 L240,40 L0,40 Z" fill="url(#sparklineGrad)"></path>
-                                                <path d="M0,32 Q30,28 60,30 T120,18 T180,22 T240,8" fill="none" stroke="#4edea3" stroke-linecap="round" stroke-width="2.5"></path>
-                                            </svg>
-                                        </div>
-                                    </div>
+                                <p class="text-xs sm:text-sm text-on-background leading-relaxed">
+                                    “Notamos que tus gastos en salidas de fin de semana subieron este mes. Si cocinas en casa este sábado, <strong>te ahorrarás unos 150.000 ₲</strong> para tu meta de vacaciones.”
+                                </p>
+                                <div class="mt-4">
+                                    <a href="/login.html" class="block w-full text-center py-2.5 px-3 rounded-xl bg-gradient-to-r from-primary to-amber-500 text-surface font-extrabold text-xs hover:opacity-95 transition-all">
+                                        Ver Mis Consejos Personalizados
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
 
-            <!-- SECTION 2: LIVE CURRENCY MARQUEE / TICKER BAR -->
-            <section class="w-full bg-surface-container-lowest/80 backdrop-blur-md py-3.5 overflow-hidden border-y border-surface-container-high/40" id="mercados-en-vivo">
-                <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-space-lg flex flex-col md:flex-row items-center justify-between gap-3">
-                    <div class="flex items-center gap-2 shrink-0">
-                        <span class="flex h-2 w-2 relative">
-                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
-                            <span class="relative inline-flex rounded-full h-2 w-2 bg-primary"></span>
-                        </span>
-                        <span class="font-label-sm text-label-sm uppercase tracking-wider text-on-surface-variant font-bold">Mercados en tiempo real</span>
-                    </div>
-
-                    <div class="flex items-center flex-wrap gap-x-6 gap-y-2 justify-center font-label-md text-label-md" id="live-marquee-rates">
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-on-surface-variant">USD / PYG:</span>
-                            <span class="text-on-surface font-semibold" id="ticker-pyg">7.550,00 ₲</span>
-                            <span class="text-primary text-[11px] font-bold">●</span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-on-surface-variant">EUR / USD:</span>
-                            <span class="text-on-surface font-semibold" id="ticker-eur">$1,08</span>
-                            <span class="text-primary text-[11px] font-bold">●</span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-on-surface-variant">USD / BRL:</span>
-                            <span class="text-on-surface font-semibold" id="ticker-brl">R$ 5,20</span>
-                            <span class="text-primary text-[11px] font-bold">●</span>
-                        </div>
-                        <div class="flex items-center gap-1.5">
-                            <span class="text-on-surface-variant">USD / ARS:</span>
-                            <span class="text-on-surface font-semibold" id="ticker-ars">$ 1.200</span>
-                            <span class="text-outline text-[11px] font-bold">●</span>
-                        </div>
-                    </div>
-
-                    <div class="shrink-0 hidden lg:block">
-                        <span class="font-label-sm text-label-sm text-secondary bg-surface-container px-2.5 py-1 rounded-md font-semibold">
-                            ExchangeRate-API V6 • Oficial
-                        </span>
-                    </div>
-                </div>
-            </section>
-
-            <!-- SECTION 3: 3 CORE PILLARS (Feature Grid) -->
-            <section class="w-full px-margin-mobile md:px-space-lg lg:px-margin py-space-xl relative" id="caracteristicas-principales">
-                <div class="max-w-[1280px] mx-auto flex flex-col gap-space-lg">
-                    <div class="flex flex-col items-center text-center max-w-2xl mx-auto">
-                        <span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold">Arquitectura de vanguardia</span>
-                        <h2 class="mt-space-xs font-headline-lg text-headline-lg text-on-surface font-bold">Potencia tus finanzas personales</h2>
-                        <p class="mt-space-xs font-body-lg text-body-lg text-on-surface-variant">
-                            Tres tecnologías conectadas para que nunca más te preguntes a dónde se fue tu dinero.
-                        </p>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter items-stretch">
-                        <!-- Pillar 1: Multidivisa Automática -->
-                        <div class="rounded-3xl bg-surface-container-low/90 backdrop-blur-xl p-space-lg flex flex-col justify-between shadow-xl hover:shadow-[0_0_35px_-10px_rgba(78,222,163,0.2)] transition-all duration-300 group border border-surface-container-high/40">
-                            <div class="flex flex-col gap-space-md">
-                                <div class="w-12 h-12 rounded-2xl bg-secondary-container/20 flex items-center justify-center text-secondary group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-[28px]">currency_exchange</span>
+                            <!-- Alerta Preventiva Amigable -->
+                            <div class="rounded-2xl bg-surface-low p-4 border border-outline-warm/40 flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-lg shrink-0">
+                                    <i class="fas fa-envelope-open-text"></i>
                                 </div>
                                 <div>
-                                    <span class="font-label-sm text-label-sm uppercase tracking-wider text-secondary font-semibold">ExchangeRate-API Live</span>
-                                    <h3 class="mt-1 font-headline-md text-headline-md text-on-surface font-bold">Multidivisa Automática</h3>
-                                    <p class="mt-2 font-body-md text-body-md text-on-surface-variant">
-                                        Registro simultáneo en USD, PYG, EUR o BRL con normalización automática instantánea en tu moneda base de preferencia. Sin cálculos manuales de tipo de cambio.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="mt-space-lg rounded-2xl bg-surface-container p-space-md flex flex-col gap-space-xs">
-                                <div class="flex items-center justify-between text-body-sm font-body-sm">
-                                    <span class="text-on-surface-variant">Gasto de Entrada:</span>
-                                    <span class="font-semibold text-on-surface">€ 120.00 EUR</span>
-                                </div>
-                                <div class="flex items-center justify-center py-1">
-                                    <span class="material-symbols-outlined text-secondary text-[20px]">sync_alt</span>
-                                </div>
-                                <div class="flex items-center justify-between text-body-sm font-body-sm">
-                                    <span class="text-on-surface-variant">Base en Guaraníes:</span>
-                                    <span class="font-bold text-primary">978.400 ₲</span>
-                                </div>
-                                <div class="flex items-center justify-between text-body-sm font-body-sm">
-                                    <span class="text-on-surface-variant">Base en Dólares:</span>
-                                    <span class="font-medium text-on-surface">$129.58 USD</span>
+                                    <h5 class="text-xs font-bold text-on-background">Avisos automáticos a tu correo</h5>
+                                    <p class="text-[11px] text-on-surface-variant mt-0.5">Te llega un mensaje claro antes de que te quedes sin presupuesto.</p>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Pillar 2: Inteligencia Artificial (Google Gemini) -->
-                        <div class="rounded-3xl bg-surface-container-low/90 backdrop-blur-xl p-space-lg flex flex-col justify-between shadow-xl hover:shadow-[0_0_35px_-10px_rgba(150,153,255,0.25)] transition-all duration-300 group border border-surface-container-high/40" id="asesor-gemini-ia">
-                            <div class="flex flex-col gap-space-md">
-                                <div class="w-12 h-12 rounded-2xl bg-tertiary-container/20 flex items-center justify-center text-tertiary group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">psychology</span>
-                                </div>
-                                <div>
-                                    <span class="font-label-sm text-label-sm uppercase tracking-wider text-tertiary font-semibold">Google Gemini 2.5 Flash</span>
-                                    <h3 class="mt-1 font-headline-md text-headline-md text-on-surface font-bold">Inteligencia Artificial</h3>
-                                    <p class="mt-2 font-body-md text-body-md text-on-surface-variant">
-                                        Diagnóstico mensual de salud financiera con matriz de consumo y generación de 3 consejos concretos de ahorro adaptados a tus hábitos reales.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="mt-space-lg rounded-2xl bg-surface-container p-space-md flex flex-col gap-2">
-                                <div class="flex items-center gap-2">
-                                    <span class="w-2 h-2 rounded-full bg-tertiary-container animate-pulse"></span>
-                                    <span class="font-label-sm text-label-sm text-tertiary font-bold uppercase">Auditoría IA Reciente</span>
-                                </div>
-                                <p class="font-body-sm text-body-sm text-on-surface italic">
-                                    “Detectamos compras hormiga por ₲ 420.000 en delivery. Trasladar la mitad a preparación hogareña aumentará tu fondo de emergencia un 18%.”
-                                </p>
-                                <div class="mt-1 flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
-                                    <span>Impacto estimado:</span>
-                                    <span class="font-semibold text-primary">+₲ 2.520.000 / año</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Pillar 3: Alertas Proactivas (Brevo Notifications) -->
-                        <div class="rounded-3xl bg-surface-container-low/90 backdrop-blur-xl p-space-lg flex flex-col justify-between shadow-xl hover:shadow-[0_0_35px_-10px_rgba(78,222,163,0.2)] transition-all duration-300 group border border-surface-container-high/40">
-                            <div class="flex flex-col gap-space-md">
-                                <div class="w-12 h-12 rounded-2xl bg-primary-container/20 flex items-center justify-center text-primary group-hover:scale-110 transition-transform">
-                                    <span class="material-symbols-outlined text-[28px]">mark_email_unread</span>
-                                </div>
-                                <div>
-                                    <span class="font-label-sm text-label-sm uppercase tracking-wider text-primary font-semibold">Notificaciones Brevo</span>
-                                    <h3 class="mt-1 font-headline-md text-headline-md text-on-surface font-bold">Alertas Proactivas</h3>
-                                    <p class="mt-2 font-body-md text-body-md text-on-surface-variant">
-                                        Emails transaccionales inmediatos cuando alcanzas tu límite presupuestario mensual, más envío de resúmenes consolidados directo a tu correo.
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="mt-space-lg rounded-2xl bg-surface-container p-space-md flex flex-col gap-2">
-                                <div class="flex items-center justify-between">
-                                    <span class="font-label-sm text-label-sm text-error font-bold flex items-center gap-1">
-                                        <span class="material-symbols-outlined text-[14px]">warning</span> Límite Crítico
-                                    </span>
-                                    <span class="font-label-sm text-label-sm text-on-surface-variant">Automático</span>
-                                </div>
-                                <div class="flex flex-col gap-1">
-                                    <p class="font-label-lg text-label-lg text-on-surface">Presupuesto al 90%</p>
-                                    <div class="w-full bg-surface-variant h-2 rounded-full overflow-hidden mt-1">
-                                        <div class="bg-error h-full rounded-full" style="width: 90%;"></div>
-                                    </div>
-                                    <p class="font-label-sm text-label-sm text-on-surface-variant mt-1">Alerta enviada a tu correo para evitar sobregiro.</p>
-                                </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
-            </section>
+            </div>
+        </section>
 
-            <!-- SECTION 4: INTERACTIVE WORKFLOW PREVIEW ('Cómo Funciona en 3 Pasos') -->
-            <section class="w-full px-margin-mobile md:px-space-lg lg:px-margin py-space-xl bg-surface-container-lowest/50" id="como-funciona">
-                <div class="max-w-[1280px] mx-auto flex flex-col gap-space-xl">
-                    <div class="flex flex-col items-center text-center max-w-2xl mx-auto">
-                        <span class="font-label-sm text-label-sm uppercase tracking-widest text-secondary font-bold">Flujo sin fricción</span>
-                        <h2 class="mt-space-xs font-headline-lg text-headline-lg text-on-surface font-bold">Cómo Funciona GastoSmart</h2>
-                        <p class="mt-space-xs font-body-lg text-body-lg text-on-surface-variant">
-                            Pasa del desorden de recibos a la claridad patrimonial en tres pasos intuitivos.
+        <!-- SECTION 2: TICKER EN VIVO (Cálido y Dinámico) -->
+        <section class="w-full bg-surface-low border-y border-outline-warm/60 py-3.5 overflow-hidden" id="mercados-en-vivo">
+            <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <div class="flex items-center gap-2 shrink-0">
+                    <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
+                    <span class="text-xs uppercase font-extrabold tracking-wider text-primary">Conversor en tiempo real</span>
+                </div>
+
+                <div class="flex items-center flex-wrap gap-x-6 gap-y-2 justify-center text-xs font-semibold" id="live-marquee-rates">
+                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
+                        <span class="text-on-surface-variant">Dólar a Guaraní:</span>
+                        <span class="text-primary font-bold" id="ticker-pyg">7.550 ₲</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
+                        <span class="text-on-surface-variant">Euro a Dólar:</span>
+                        <span class="text-tertiary font-bold" id="ticker-eur">$1.08</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
+                        <span class="text-on-surface-variant">Dólar a Real:</span>
+                        <span class="text-secondary font-bold" id="ticker-brl">R$ 5.20</span>
+                    </div>
+                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
+                        <span class="text-on-surface-variant">Dólar a Peso:</span>
+                        <span class="text-on-background font-bold" id="ticker-ars">$ 1.200</span>
+                    </div>
+                </div>
+
+                <div class="shrink-0 hidden lg:block text-xs text-on-surface-variant font-medium">
+                    ✓ Sin calcular mentalmente
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 3: LOS 3 BENEFICIOS PRINCIPALES (Explicados para personas normales) -->
+        <section class="w-full px-5 sm:px-8 py-24 max-w-7xl mx-auto" id="beneficios">
+            <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-primary">Diseñado para tu tranquilidad</span>
+                <h2 class="mt-2 font-display font-extrabold text-3xl sm:text-4xl text-on-background">Todo lo que necesitas para cuidar tu bolsillo</h2>
+                <p class="mt-3 text-base text-on-surface-variant">
+                    Olvídate de las planillas de Excel difíciles y de anotar números en papeles que siempre se pierden.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <!-- Pilar 1: Multidivisa sin enredos -->
+                <div data-aos="fade-up" data-aos-delay="100" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-xl hover:border-primary/50 transition-all duration-300 group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-primary/15 text-primary flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-coins"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl text-on-background mb-3">Guaraníes, Dólares o Euros</h3>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">
+                            Si compras en Guaraníes en el súper o pagas servicios en Dólares por internet, la aplicación <strong>convierte todo automáticamente</strong> al valor del día sin que tengas que sacar una calculadora.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-gutter">
-                        <!-- Step 1 -->
-                        <div class="relative rounded-3xl bg-surface-container p-space-lg flex flex-col justify-between shadow-lg border border-surface-container-high/30">
-                            <div>
-                                <div class="font-headline-xl text-headline-xl text-surface-variant font-extrabold select-none">01</div>
-                                <h3 class="mt-space-xs font-headline-sm text-headline-sm text-on-surface font-bold">Registra tus gastos al instante</h3>
-                                <p class="mt-2 font-body-md text-body-md text-on-surface-variant">
-                                    Desde tu teléfono inteligente o navegador web con auto-categorización rápida. Selecciona la divisa en la que compraste y el sistema se encarga del resto.
-                                </p>
-                            </div>
-                            <div class="mt-space-lg p-space-md rounded-2xl bg-surface-container-high flex flex-col gap-2">
-                                <div class="flex items-center justify-between font-label-sm text-label-sm text-on-surface-variant">
-                                    <span>Nueva Transacción</span>
-                                    <span class="text-primary font-semibold">Conversión en vivo</span>
-                                </div>
-                                <div class="p-2.5 rounded-xl bg-surface-container flex items-center justify-between">
-                                    <span class="font-label-md text-label-md text-on-surface">Supermercado</span>
-                                    <span class="font-label-md text-label-md text-on-surface font-bold">-380.000 ₲</span>
-                                </div>
-                                <div class="flex items-center gap-1.5 text-label-sm font-label-sm text-on-surface-variant">
-                                    <span class="material-symbols-outlined text-[15px] text-secondary">verified</span>
-                                    Categorizado en: Alimentación
-                                </div>
-                            </div>
+                    <!-- Mini Tarjeta de Ejemplo -->
+                    <div class="mt-8 p-4 rounded-2xl bg-surface-high border border-outline-warm/40 text-xs space-y-2">
+                        <div class="flex justify-between text-on-surface-variant">
+                            <span>Compraste:</span>
+                            <span class="font-bold text-on-background">50 USD</span>
                         </div>
-
-                        <!-- Step 2 -->
-                        <div class="relative rounded-3xl bg-surface-container p-space-lg flex flex-col justify-between shadow-lg border border-surface-container-high/30">
-                            <div>
-                                <div class="font-headline-xl text-headline-xl text-surface-variant font-extrabold select-none">02</div>
-                                <h3 class="mt-space-xs font-headline-sm text-headline-sm text-on-surface font-bold">Visualiza tus límites en tiempo real</h3>
-                                <p class="mt-2 font-body-md text-body-md text-on-surface-variant">
-                                    Monitorea gráficos interactivos (Chart.js), barras dinámicas de avance presupuestario y detecta gastos excesivos antes de finalizar el mes.
-                                </p>
-                            </div>
-                            <div class="mt-space-lg p-space-md rounded-2xl bg-surface-container-high flex flex-col gap-space-xs">
-                                <div class="flex justify-between items-center text-label-md font-label-md">
-                                    <span class="text-on-surface">Presupuesto Mensual</span>
-                                    <span class="text-primary font-bold">$850 / $1,000</span>
-                                </div>
-                                <div class="w-full bg-surface-container h-3 rounded-full overflow-hidden">
-                                    <div class="bg-gradient-to-r from-primary to-secondary h-full rounded-full" style="width: 85%;"></div>
-                                </div>
-                                <div class="flex justify-between text-label-sm font-label-sm text-on-surface-variant mt-1">
-                                    <span>85% Consumido</span>
-                                    <span>Restante: $150 USD</span>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Step 3 -->
-                        <div class="relative rounded-3xl bg-surface-container p-space-lg flex flex-col justify-between shadow-lg border border-surface-container-high/30">
-                            <div>
-                                <div class="font-headline-xl text-headline-xl text-surface-variant font-extrabold select-none">03</div>
-                                <h3 class="mt-space-xs font-headline-sm text-headline-sm text-on-surface font-bold">Recibe asesoramiento con IA</h3>
-                                <p class="mt-2 font-body-md text-body-md text-on-surface-variant">
-                                    Recomendaciones accionables impulsadas por Gemini 2.5 para optimizar tus gastos secundarios, protegerte de la devaluación y hacer crecer tu ahorro.
-                                </p>
-                            </div>
-                            <div class="mt-space-lg p-space-md rounded-2xl bg-surface-container-high flex flex-col gap-2">
-                                <div class="flex items-center gap-2 text-tertiary font-label-sm text-label-sm font-bold">
-                                    <span class="material-symbols-outlined text-[16px]">bolt</span>
-                                    <span>Gemini Insight Activo</span>
-                                </div>
-                                <p class="font-body-sm text-body-sm text-on-surface">
-                                    “Tu capacidad de ahorro crecerá un 20% si moderas los consumos en restaurantes los fines de semana.”
-                                </p>
-                                <div class="flex gap-2 mt-1">
-                                    <span class="px-2 py-0.5 rounded bg-primary-container/20 text-primary font-label-sm text-label-sm">Meta alcanzable</span>
-                                    <span class="px-2 py-0.5 rounded bg-secondary/20 text-secondary font-label-sm text-label-sm">Salud: Buena</span>
-                                </div>
-                            </div>
+                        <div class="flex justify-between text-on-surface-variant border-t border-outline-warm/30 pt-2">
+                            <span>Equivale en Guaraníes:</span>
+                            <span class="font-extrabold text-primary">≈ 377.500 ₲</span>
                         </div>
                     </div>
                 </div>
-            </section>
 
-            <!-- SECTION 5: SECURITY & INFRASTRUCTURE TRUST -->
-            <section class="w-full px-margin-mobile md:px-space-lg lg:px-margin py-space-xl relative" id="seguridad-y-confianza">
-                <div class="max-w-[1280px] mx-auto flex flex-col gap-space-lg">
-                    <div class="flex flex-col items-center text-center max-w-2xl mx-auto">
-                        <span class="font-label-sm text-label-sm uppercase tracking-widest text-primary font-bold">Protección Criptográfica</span>
-                        <h2 class="mt-space-xs font-headline-lg text-headline-lg text-on-surface font-bold">Seguridad y Rendimiento de Nivel Bancario</h2>
-                        <p class="mt-space-xs font-body-lg text-body-lg text-on-surface-variant">
-                            Diseñado bajo estándares de ciberseguridad estrictos evaluados y aprobados por VulnScope.
+                <!-- Pilar 2: Asistente Inteligente de Ahorro -->
+                <div data-aos="fade-up" data-aos-delay="200" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-xl hover:border-tertiary/50 transition-all duration-300 group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-tertiary/15 text-tertiary flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="font-display font-bold text-2xl text-on-background mb-3">Consejos Claros de Ahorro</h3>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">
+                            Con solo tocar un botón, tu asistente analiza en qué estás gastando más este mes y te entrega <strong>3 ideas sencillas y prácticas</strong> para recortar gastos innecesarios sin que afecte tu estilo de vida.
                         </p>
                     </div>
 
-                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter">
-                        <!-- Card 1: TLS 1.3 -->
-                        <div class="rounded-2xl bg-surface-container-low p-space-md flex flex-col gap-space-sm shadow-md border border-surface-container-high/30">
-                            <div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary">
-                                <span class="material-symbols-outlined text-[24px]">lock</span>
-                            </div>
-                            <h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Cifrado TLS 1.3 &amp; HTTPS</h4>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant">
-                                Redirección forzada 301 con certificado digital SSL automático en Vercel para comunicación cifrada punto a punto.
-                            </p>
+                    <!-- Mini Tarjeta de Ejemplo -->
+                    <div class="mt-8 p-4 rounded-2xl bg-surface-high border border-outline-warm/40 text-xs">
+                        <div class="flex items-center gap-2 text-tertiary font-bold mb-1">
+                            <i class="fas fa-check-circle"></i>
+                            <span>Idea recomendada:</span>
                         </div>
-
-                        <!-- Card 2: Supabase PostgreSQL -->
-                        <div class="rounded-2xl bg-surface-container-low p-space-md flex flex-col gap-space-sm shadow-md border border-surface-container-high/30">
-                            <div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-secondary">
-                                <span class="material-symbols-outlined text-[24px]">database</span>
-                            </div>
-                            <h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Supabase PostgreSQL</h4>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant">
-                                Almacenamiento relacional en la nube con claves UUID criptográficas y consultas indexadas de alta velocidad.
-                            </p>
-                        </div>
-
-                        <!-- Card 3: JWT HttpOnly -->
-                        <div class="rounded-2xl bg-surface-container-low p-space-md flex flex-col gap-space-sm shadow-md border border-surface-container-high/30">
-                            <div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-tertiary">
-                                <span class="material-symbols-outlined text-[24px]">security</span>
-                            </div>
-                            <h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">JWT HttpOnly &amp; SameSite</h4>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant">
-                                Cookies de sesión blindadas contra ataques XSS y CSRF, inaccesibles desde scripts de terceros en el navegador.
-                            </p>
-                        </div>
-
-                        <!-- Card 4: Vercel Cloud Serverless -->
-                        <div class="rounded-2xl bg-surface-container-low p-space-md flex flex-col gap-space-sm shadow-md border border-surface-container-high/30">
-                            <div class="w-10 h-10 rounded-xl bg-surface-container-high flex items-center justify-center text-primary-container">
-                                <span class="material-symbols-outlined text-[24px]">cloud_done</span>
-                            </div>
-                            <h4 class="font-headline-sm text-headline-sm text-on-surface font-bold">Cabeceras CSP &amp; HSTS</h4>
-                            <p class="font-body-sm text-body-sm text-on-surface-variant">
-                                Políticas de seguridad contra Clickjacking (X-Frame-Options: DENY) y bloqueo de sondeo de vulnerabilidades.
-                            </p>
-                        </div>
+                        <p class="text-on-background italic">"Tienes 3 suscripciones que casi no usas. Cancela una y ahorra 120.000 ₲ este mes."</p>
                     </div>
                 </div>
-            </section>
 
-            <!-- SECTION 6: HIGH-CONVERTING BOTTOM CTA BANNER -->
-            <section class="w-full px-margin-mobile md:px-space-lg lg:px-margin pb-space-xl pt-space-md">
-                <div class="max-w-[1280px] mx-auto relative rounded-3xl overflow-hidden bg-gradient-to-br from-surface-container to-surface-container-high p-space-lg sm:p-space-xl shadow-2xl border border-surface-container-high/50">
-                    <div class="pointer-events-none absolute -top-24 -left-24 w-96 h-96 bg-primary-container/20 blur-3xl rounded-full"></div>
-                    <div class="pointer-events-none absolute -bottom-24 -right-24 w-96 h-96 bg-tertiary-container/20 blur-3xl rounded-full"></div>
-
-                    <div class="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
-                        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-surface-container-highest font-label-sm text-label-sm text-primary mb-space-sm font-bold">
-                            <span class="material-symbols-outlined text-[14px]">rocket_launch</span>
-                            Empieza en menos de 2 minutos
-                        </span>
-
-                        <h2 class="font-headline-xl text-headline-xl text-on-surface tracking-tight font-black">
-                            ¿Listo para transformar tu salud financiera?
-                        </h2>
-
-                        <p class="mt-space-sm font-body-lg text-body-lg text-on-surface-variant max-w-xl">
-                            Únete hoy y comienza a presupuestar con precisión multidivisa y asesoramiento de inteligencia artificial.
-                        </p>
-
-                        <div class="mt-space-lg flex flex-col sm:flex-row items-center justify-center gap-space-sm w-full sm:w-auto">
-                            <a class="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-8 py-4 rounded-xl font-label-lg text-label-lg text-on-primary bg-primary-container shadow-[0_4px_25px_0_rgba(16,185,129,0.45)] hover:shadow-[0_8px_30px_0_rgba(16,185,129,0.65)] hover:bg-primary transition-all duration-200 transform hover:-translate-y-0.5 font-bold" href="/register.html">
-                                <span>Comenzar Ahora — Es Gratis</span>
-                                <span class="material-symbols-outlined text-[20px]">arrow_forward</span>
-                            </a>
-                            <a class="w-full sm:w-auto inline-flex items-center justify-center gap-space-xs px-8 py-4 rounded-xl font-label-lg text-label-lg text-on-surface bg-surface-container-highest/60 hover:bg-surface-container-highest transition-all duration-200" href="/login.html">
-                                <span>Iniciar Sesión</span>
-                            </a>
+                <!-- Pilar 3: Avisos al Correo -->
+                <div data-aos="fade-up" data-aos-delay="300" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-xl hover:border-secondary/50 transition-all duration-300 group">
+                    <div>
+                        <div class="w-14 h-14 rounded-2xl bg-secondary/15 text-secondary flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-bell"></i>
                         </div>
-
-                        <p class="mt-space-md font-label-sm text-label-sm text-outline flex flex-wrap items-center justify-center gap-2">
-                            <span>Sin tarjetas de crédito requeridas</span>
-                            <span class="opacity-40">•</span>
-                            <span>Compatible con móviles y PC</span>
-                            <span class="opacity-40">•</span>
-                            <span>100% Gratuito</span>
+                        <h3 class="font-display font-bold text-2xl text-on-background mb-3">Alertas Antes de Sobregirarte</h3>
+                        <p class="text-sm text-on-surface-variant leading-relaxed">
+                            Tú decides cuánto quieres gastar al mes como máximo. Si un día estás cerca de pasarte del límite, <strong>te llega un aviso a tu correo</strong> para que estés al tanto antes de quedarte corto.
                         </p>
                     </div>
+
+                    <!-- Mini Tarjeta de Ejemplo -->
+                    <div class="mt-8 p-4 rounded-2xl bg-surface-high border border-outline-warm/40 text-xs">
+                        <div class="flex justify-between items-center mb-1 text-rose-400 font-bold">
+                            <span>⚠️ Aviso Preventivo:</span>
+                            <span>Alerta 90%</span>
+                        </div>
+                        <p class="text-on-surface-variant">"Te quedan 100.000 ₲ para terminar el mes dentro de tu meta."</p>
+                    </div>
                 </div>
-            </section>
-        </div>
+
+            </div>
+        </section>
+
+        <!-- SECTION 4: CÓMO FUNCIONA EN 3 PASOS (Directo y Comprensible) -->
+        <section class="w-full px-5 sm:px-8 py-20 bg-surface-low border-t border-outline-warm/60" id="como-funciona">
+            <div class="max-w-7xl mx-auto">
+                <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
+                    <span class="text-xs font-extrabold uppercase tracking-widest text-secondary">Simple y rápido</span>
+                    <h2 class="mt-2 font-display font-extrabold text-3xl sm:text-4xl text-on-background">Empieza a usarlo en 3 simples pasos</h2>
+                    <p class="mt-3 text-base text-on-surface-variant">
+                        No necesitas saber de contabilidad ni de finanzas complejas.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    
+                    <!-- Paso 1 -->
+                    <div data-aos="fade-up" data-aos-delay="100" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-md">
+                        <div>
+                            <div class="text-5xl font-extrabold text-primary/30 font-display mb-4">01</div>
+                            <h3 class="font-display font-bold text-xl text-on-background mb-2">Anota tus compras en segundos</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">
+                                Entras desde tu celular o computadora. Escribes lo que compraste, el monto y eliges si fue en Guaraníes o Dólares. ¡Listo!
+                            </p>
+                        </div>
+                        <div class="mt-6 p-3.5 rounded-xl bg-surface-high border border-outline-warm/40 text-xs font-semibold text-on-background flex items-center justify-between">
+                            <span>"Cena con amigos: 120.000 ₲"</span>
+                            <span class="text-emeraldWarm"><i class="fas fa-check"></i> Guardado</span>
+                        </div>
+                    </div>
+
+                    <!-- Paso 2 -->
+                    <div data-aos="fade-up" data-aos-delay="200" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-md">
+                        <div>
+                            <div class="text-5xl font-extrabold text-secondary/30 font-display mb-4">02</div>
+                            <h3 class="font-display font-bold text-xl text-on-background mb-2">Mira tus totales en gráficos claros</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">
+                                Tu pantalla te muestra gráficos de colores fáciles de entender para saber en qué categoría se te va más plata cada semana.
+                            </p>
+                        </div>
+                        <div class="mt-6 p-3.5 rounded-xl bg-surface-high border border-outline-warm/40 text-xs font-semibold text-on-background flex items-center justify-between">
+                            <span>Comida: 45% • Auto: 25%</span>
+                            <span class="text-primary"><i class="fas fa-chart-pie"></i> Visual</span>
+                        </div>
+                    </div>
+
+                    <!-- Paso 3 -->
+                    <div data-aos="fade-up" data-aos-delay="300" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-md">
+                        <div>
+                            <div class="text-5xl font-extrabold text-tertiary/30 font-display mb-4">03</div>
+                            <h3 class="font-display font-bold text-xl text-on-background mb-2">Ahorra con ideas personalizadas</h3>
+                            <p class="text-sm text-on-surface-variant leading-relaxed">
+                                Presiona el botón del Asistente y recibe consejos adaptados a tus gastos para que llegues a fin de mes tranquilo y con ahorro.
+                            </p>
+                        </div>
+                        <div class="mt-6 p-3.5 rounded-xl bg-surface-high border border-outline-warm/40 text-xs font-semibold text-on-background flex items-center justify-between">
+                            <span>"Meta de ahorro alcanzable"</span>
+                            <span class="text-tertiary"><i class="fas fa-star"></i> Listo</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- SECTION 5: BANNER FINAL DE ACCIÓN (Invitación Cálida y Confiable) -->
+        <section class="w-full px-5 sm:px-8 py-20 max-w-7xl mx-auto">
+            <div data-aos="zoom-in" class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-surface-high via-surface to-surface-high p-8 sm:p-14 text-center shadow-2xl border border-primary/30">
+                <div class="pointer-events-none absolute -top-24 -left-24 w-80 h-80 bg-primary/20 blur-3xl rounded-full"></div>
+                <div class="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 bg-orange-500/15 blur-3xl rounded-full"></div>
+
+                <div class="relative z-10 max-w-2xl mx-auto">
+                    <span class="inline-block px-4 py-1.5 rounded-full bg-primary/15 text-primary text-xs font-extrabold mb-4 uppercase tracking-wider border border-primary/25">
+                        Tu tranquilidad financiera empieza hoy
+                    </span>
+                    
+                    <h2 class="font-display font-black text-3xl sm:text-5xl text-on-background tracking-tight">
+                        ¿Listo para tener el control real de tu dinero?
+                    </h2>
+
+                    <p class="mt-4 text-base sm:text-lg text-on-surface-variant">
+                        Crea tu cuenta en menos de un minuto y empieza a organizar tus gastos de forma sencilla, rápida y gratuita.
+                    </p>
+
+                    <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-extrabold text-surface bg-gradient-to-r from-primary to-amber-500 hover:from-amber-400 hover:to-orange-500 shadow-[0_6px_25px_rgba(245,158,11,0.4)] transition-all transform hover:-translate-y-1" href="/register.html">
+                            <span>Comenzar Ahora — Es Gratis</span>
+                            <i class="fas fa-arrow-right text-sm"></i>
+                        </a>
+                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-bold text-on-background bg-surface-high hover:bg-surface-highest border border-outline-warm transition-all" href="/login.html">
+                            <span>Iniciar Sesión</span>
+                        </a>
+                    </div>
+
+                    <p class="mt-6 text-xs text-on-surface-variant flex flex-wrap items-center justify-center gap-3">
+                        <span>✓ Sin costos ocultos</span>
+                        <span>•</span>
+                        <span>✓ Tus datos están 100% protegidos</span>
+                        <span>•</span>
+                        <span>✓ Cancela cuando quieras</span>
+                    </p>
+                </div>
+            </div>
+        </section>
+
     </main>
 
-    <!-- Footer -->
-    <footer class="w-full bg-surface-container-lowest/90 backdrop-blur-md border-t border-surface-container-high/40">
-        <div class="max-w-[1280px] mx-auto px-margin-mobile md:px-space-lg lg:px-margin py-space-xl">
-            <div class="grid grid-cols-1 md:grid-cols-12 gap-gutter items-start pb-space-lg">
-                <div class="md:col-span-5 flex flex-col gap-space-sm">
-                    <div class="flex items-center gap-space-xs">
-                        <img alt="GastoSmart Logo" class="h-8 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/32x32/10B981/ffffff?text=GS'"/>
-                        <span class="font-headline-sm text-headline-sm tracking-tight text-on-surface flex items-center gap-1.5 font-bold">
-                            GastoSmart
-                            <span class="inline-block w-1.5 h-1.5 rounded-full bg-primary"></span>
-                        </span>
-                    </div>
-                    <p class="font-body-sm text-body-sm text-on-surface-variant max-w-sm">
-                        Plataforma inteligente de gestión de gastos, optimización de presupuesto multi-divisa y analítica predictiva asistida por Inteligencia Artificial.
-                    </p>
-                    <div class="flex flex-wrap items-center gap-space-xs pt-space-xs">
-                        <span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-on-surface-variant">Google Gemini 2.5</span>
-                        <span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-on-surface-variant">Supabase</span>
-                        <span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-on-surface-variant">Vercel</span>
-                        <span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-on-surface-variant">ExchangeRate-API</span>
-                        <span class="px-2 py-0.5 rounded font-label-sm text-label-sm bg-surface-container text-on-surface-variant">Brevo</span>
-                    </div>
-                </div>
-
-                <div class="md:col-span-7 grid grid-cols-2 sm:grid-cols-3 gap-gutter">
-                    <div class="flex flex-col gap-space-xs">
-                        <span class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-bold">Plataforma</span>
-                        <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/login.html">Iniciar Sesión</a>
-                        <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/register.html">Registro</a>
-                        <a class="font-body-sm text-body-sm text-on-surface-variant hover:text-primary transition-colors" href="/dashboard.html">Dashboard</a>
-                    </div>
-                    <div class="flex flex-col gap-space-xs">
-                        <span class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-bold">Tecnología</span>
-                        <span class="font-body-sm text-body-sm text-on-surface-variant">Google Gemini IA</span>
-                        <span class="font-body-sm text-body-sm text-on-surface-variant">Supabase PostgreSQL</span>
-                        <span class="font-body-sm text-body-sm text-on-surface-variant">Vercel Serverless</span>
-                    </div>
-                    <div class="flex flex-col gap-space-xs">
-                        <span class="font-label-md text-label-md text-on-surface uppercase tracking-wider font-bold">Seguridad</span>
-                        <span class="font-body-sm text-body-sm text-on-surface-variant">Cifrado TLS 1.3</span>
-                        <span class="font-body-sm text-body-sm text-on-surface-variant">Auditoría VulnScope</span>
-                        <span class="font-body-sm text-body-sm text-on-surface-variant">Cookies HttpOnly</span>
-                    </div>
-                </div>
+    <!-- Footer Amigable -->
+    <footer class="w-full bg-surface-low border-t border-outline-warm/60 py-12">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
+            <div class="flex items-center gap-3">
+                <img alt="GastoSmart Logo" class="h-8 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/32x32/f59e0b/12100e?text=GS'"/>
+                <span class="font-display font-bold text-xl text-on-background">GastoSmart</span>
+                <span class="text-xs text-on-surface-variant ml-2">Control de Gastos Personales</span>
             </div>
 
-            <div class="pt-space-md flex flex-col sm:flex-row items-center justify-between gap-space-sm text-on-surface-variant font-label-md text-label-md border-t border-surface-container-high/30">
-                <p>© 2026 GastoSmart • Edición Cloud. Examen Final de Programación 4.</p>
-                <div class="flex items-center gap-space-md">
-                    <span class="flex items-center gap-1.5 text-primary">
-                        <span class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse"></span>
-                        Servicios en Línea 100%
-                    </span>
-                </div>
+            <div class="flex items-center gap-6 text-sm font-semibold text-on-surface-variant">
+                <a href="/login.html" class="hover:text-primary transition-colors">Iniciar Sesión</a>
+                <a href="/register.html" class="hover:text-primary transition-colors">Crear Cuenta</a>
+                <a href="/dashboard.html" class="hover:text-primary transition-colors">Mi Panel</a>
             </div>
+
+            <p class="text-xs text-on-surface-variant">
+                © 2026 GastoSmart • Todos los derechos reservados.
+            </p>
         </div>
     </footer>
 
-    <!-- Script de Cotizaciones en Vivo y Estado de Sesión -->
+    <!-- Scripts de Animación AOS & Cotizaciones en Vivo -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="/assets/js/auth.js"></script>
     <script>
-        // 1. Cargar cotizaciones reales en vivo para el Ticker
+        // 1. Inicializar animaciones de scroll (AOS)
+        AOS.init({
+            duration: 750,
+            once: true,
+            offset: 60,
+            easing: 'ease-out-cubic'
+        });
+
+        // 2. Cargar cotizaciones reales en vivo para los tickers
         async function fetchLiveRates() {
             try {
                 const res = await fetch('/api/currency/rates');
@@ -798,31 +565,30 @@
 
                     if (document.getElementById('ticker-pyg')) document.getElementById('ticker-pyg').textContent = pygText;
                     if (document.getElementById('hero-pyg-rate')) document.getElementById('hero-pyg-rate').textContent = `1 USD ≈ ${pygText}`;
-                    if (document.getElementById('card-rate-pyg')) document.getElementById('card-rate-pyg').textContent = pygText;
                     if (document.getElementById('ticker-eur')) document.getElementById('ticker-eur').textContent = eurText;
                     if (document.getElementById('hero-eur-rate')) document.getElementById('hero-eur-rate').textContent = `1 USD ≈ ${eurText}`;
                     if (document.getElementById('ticker-brl')) document.getElementById('ticker-brl').textContent = `R$ ${brl}`;
                     if (document.getElementById('ticker-ars')) document.getElementById('ticker-ars').textContent = `$ ${ars}`;
                     
-                    const mockupCalc = Math.round(4850 * (r.PYG || 7550)).toLocaleString('es-PY');
+                    const mockupCalc = Math.round(1200 * (r.PYG || 7550)).toLocaleString('es-PY');
                     if (document.getElementById('mockup-pyg-calc')) document.getElementById('mockup-pyg-calc').textContent = `≈ ${mockupCalc} ₲`;
                 }
             } catch (e) {
-                console.warn('Usando valores de referencia para el ticker:', e);
+                console.warn('Usando valores de referencia:', e);
             }
         }
 
         fetchLiveRates();
 
-        // 2. Si el usuario ya está autenticado, cambiar botones a "Ir a mi Dashboard"
+        // 3. Detectar si el usuario ya está autenticado
         Auth.checkSession(false).then(user => {
             if (user) {
                 const container = document.getElementById('auth-buttons-container');
                 if (container) {
                     container.innerHTML = `
-                        <a href="/dashboard.html" class="inline-flex items-center gap-2 px-space-md py-space-xs rounded-xl font-label-lg text-label-lg text-on-primary bg-primary-container hover:bg-primary shadow-[0_4px_14px_0_rgba(16,185,129,0.39)] transition-all transform hover:-translate-y-0.5 font-bold">
+                        <a href="/dashboard.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-surface bg-gradient-to-r from-primary to-amber-500 hover:from-amber-400 hover:to-orange-500 shadow-md transition-all transform hover:-translate-y-0.5">
                             <span>Ir a mi Dashboard</span>
-                            <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+                            <i class="fas fa-arrow-right text-xs"></i>
                         </a>
                     `;
                 }
