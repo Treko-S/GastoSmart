@@ -16,20 +16,21 @@ document.addEventListener('DOMContentLoaded', async () => {
   document.getElementById('user-role').textContent = user.rol === 'admin' ? 'Administrador' : 'Usuario';
   document.getElementById('user-avatar').textContent = (user.nombre || 'U').charAt(0).toUpperCase();
 
-  // Inicializar ajustes
-  if (document.getElementById('setting-name')) document.getElementById('setting-name').value = user.nombre || '';
-  if (document.getElementById('setting-limit')) document.getElementById('setting-limit').value = user.limite_mensual_usd || 1000;
-  if (document.getElementById('setting-email-alerts')) document.getElementById('setting-email-alerts').checked = user.notificaciones_email !== false;
-
   // 2. Inicializar Cotizaciones en Tiempo Real
   await CurrencyManager.init();
 
-  // Fecha por defecto en modal
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('modal-fecha').value = today;
+  // Inicializar ajustes con datos del usuario
+  initUserSettings(user);
+
+  // Fecha fija y bloqueada por defecto en modal
+  updateModalLockedDate();
 
   // 3. Cargar Gastos
   await loadExpenses('mes');
+
+  // Inicializar Conversor y Pizarra de Cotizaciones
+  calculateConversion();
+  renderQuotesBoard();
 
   // Inicializar tema guardado
   initTheme();
@@ -59,18 +60,49 @@ async function loadExpenses(period = 'mes') {
 function renderDashboard(data) {
   const { resumen, desglose_categorias, transacciones, categorias } = data;
 
-  // Métricas principales
   const totalUSD = Number(resumen.total_usd) || 0;
-  const limiteUSD = Number(resumen.limite_usd) || 1000;
-  const restanteUSD = Number(resumen.restante_usd) || 0;
-  const porcentaje = Number(resumen.porcentaje_usado) || 0;
+  const storedPeriod = localStorage.getItem('gastosmart_budget_period') || 'mensual';
+  const storedCurr = localStorage.getItem('gastosmart_budget_curr') || 'USD';
+  const defaultAmount = Number(resumen.limite_usd) || 1000;
+  const storedAmount = parseFloat(localStorage.getItem('gastosmart_budget_amount')) || 
+    (storedCurr === 'USD' ? defaultAmount : CurrencyManager.convert(defaultAmount, 'USD', storedCurr));
 
+  // Gasto Total (USD y PYG)
   document.getElementById('stat-total-usd').textContent = CurrencyManager.format(totalUSD, 'USD');
   document.getElementById('stat-total-pyg').textContent = '≈ ' + CurrencyManager.format(CurrencyManager.convert(totalUSD, 'USD', 'PYG'), 'PYG');
-  
-  document.getElementById('stat-limite-usd').textContent = CurrencyManager.format(limiteUSD, 'USD');
+
+  // Calcular gasto del período fijado (semanal o mensual)
+  let gastoPeriodoUSD = totalUSD;
+  if (storedPeriod === 'semanal') {
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+    const dateLimitStr = sevenDaysAgo.toISOString().split('T')[0];
+    gastoPeriodoUSD = (transacciones || [])
+      .filter(t => t.fecha >= dateLimitStr)
+      .reduce((acc, t) => acc + (Number(t.monto_usd) || 0), 0);
+  }
+
+  const gastoPeriodoEnMoneda = CurrencyManager.convert(gastoPeriodoUSD, 'USD', storedCurr);
+  const restanteEnMoneda = Math.max(0, storedAmount - gastoPeriodoEnMoneda);
+  const porcentaje = storedAmount > 0 ? Math.min(Math.round((gastoPeriodoEnMoneda / storedAmount) * 100), 100) : 0;
+
+  // Actualizar tarjeta métrica de presupuesto adaptada
+  const labelEl = document.getElementById('stat-limite-label');
+  if (labelEl) labelEl.textContent = storedPeriod === 'semanal' ? 'Presupuesto Semanal' : 'Presupuesto Mensual';
+
+  document.getElementById('stat-limite-usd').textContent = CurrencyManager.format(storedAmount, storedCurr);
+
+  const subEl = document.getElementById('stat-limite-sub');
+  if (subEl) {
+    if (storedCurr === 'USD') {
+      subEl.textContent = '≈ ' + CurrencyManager.format(CurrencyManager.convert(storedAmount, 'USD', 'PYG'), 'PYG');
+    } else {
+      subEl.textContent = '≈ ' + CurrencyManager.format(CurrencyManager.convert(storedAmount, storedCurr, 'USD'), 'USD');
+    }
+  }
+
   document.getElementById('stat-porcentaje').textContent = `${porcentaje}% consumido`;
-  document.getElementById('stat-restante').textContent = `Restante: ${CurrencyManager.format(restanteUSD, 'USD')}`;
+  document.getElementById('stat-restante').textContent = `Restante: ${CurrencyManager.format(restanteEnMoneda, storedCurr)}`;
 
   // Barra de progreso y colores
   const progressBar = document.getElementById('stat-progress-bar');
@@ -86,7 +118,7 @@ function renderDashboard(data) {
 
   // Banner Alerta Presupuesto
   const alertBanner = document.getElementById('budget-alert-banner');
-  if (resumen.alerta_superada) {
+  if (gastoPeriodoEnMoneda >= storedAmount && storedAmount > 0) {
     alertBanner.classList.remove('hidden');
   } else {
     alertBanner.classList.add('hidden');
@@ -371,7 +403,27 @@ async function sendMonthlyReport() {
 // ==========================================
 // Modal Nuevo Gasto & Conversión en Vivo
 // ==========================================
-function openModal() {
+function updateModalLockedDate() {
+  const today = new Date();
+  const todayStr = today.toISOString().split('T')[0];
+  const dateInput = document.getElementById('modal-fecha');
+  const dateDisplay = document.getElementById('modal-fecha-texto');
+  if (dateInput) dateInput.value = todayStr;
+  if (dateDisplay) {
+    const formatted = today.toLocaleDateString('es-PY', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' });
+    dateDisplay.textContent = 'Hoy, ' + formatted.charAt(0).toUpperCase() + formatted.slice(1);
+  }
+}
+
+function openModal(prefillAmount, prefillCurr) {
+  updateModalLockedDate();
+  if (prefillAmount !== undefined && prefillAmount !== null) {
+    document.getElementById('modal-monto').value = prefillAmount;
+  }
+  if (prefillCurr) {
+    setExpenseCurrency(prefillCurr);
+  }
+
   const modal = document.getElementById('expense-modal');
   const container = document.getElementById('modal-container');
   modal.classList.remove('hidden');
@@ -390,7 +442,7 @@ function closeModal() {
   setTimeout(() => {
     modal.classList.add('hidden');
     document.getElementById('new-expense-form').reset();
-    document.getElementById('modal-fecha').value = new Date().toISOString().split('T')[0];
+    updateModalLockedDate();
     setExpenseCurrency('USD');
   }, 200);
 }
@@ -399,9 +451,9 @@ function setExpenseCurrency(curr) {
   currentExpenseCurrency = curr;
   document.querySelectorAll('.curr-opt').forEach(btn => {
     if (btn.dataset.curr === curr) {
-      btn.className = 'curr-opt active py-1.5 text-xs font-bold rounded-lg transition bg-white text-emerald-700 shadow-sm border border-emerald-200';
+      btn.className = 'curr-opt active py-2 text-xs font-black rounded-lg transition bg-white text-emerald-800 shadow-xs border border-emerald-300';
     } else {
-      btn.className = 'curr-opt py-1.5 text-xs font-bold rounded-lg transition text-textMuted hover:text-textMain';
+      btn.className = 'curr-opt py-2 text-xs font-bold rounded-lg transition text-slate-600 hover:text-slate-900';
     }
   });
 
@@ -429,12 +481,15 @@ document.getElementById('new-expense-form').addEventListener('submit', async (e)
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
+  // Asegurar fecha de hoy
+  const fechaHoy = new Date().toISOString().split('T')[0];
+
   const payload = {
     descripcion: document.getElementById('modal-descripcion').value,
     monto: parseFloat(document.getElementById('modal-monto').value),
     moneda: currentExpenseCurrency,
     categoria_id: parseInt(document.getElementById('modal-categoria').value),
-    fecha: document.getElementById('modal-fecha').value,
+    fecha: fechaHoy,
     tasa_usd: CurrencyManager.rates.PYG || 7500
   };
 
@@ -451,7 +506,7 @@ document.getElementById('new-expense-form').addEventListener('submit', async (e)
       showToast('¡Gasto registrado correctamente!', 'success');
       loadExpenses('mes');
       if (data.alerta_presupuesto) {
-        showToast('⚠️ Presupuesto mensual superado. Alerta enviada por Brevo.', 'error');
+        showToast('⚠️ Presupuesto superado. Alerta enviada por correo.', 'error');
       }
     } else {
       showToast(data.message || 'Error al guardar gasto', 'error');
@@ -465,57 +520,269 @@ document.getElementById('new-expense-form').addEventListener('submit', async (e)
 });
 
 // ==========================================
-// Conversor de Divisas Interactivo
+// Conversor de Divisas Bidireccional
 // ==========================================
 function calculateConversion() {
   const amount = parseFloat(document.getElementById('calc-amount').value) || 0;
   const from = document.getElementById('calc-from').value;
+  const to = document.getElementById('calc-to').value;
   const resEl = document.getElementById('calc-result');
+  const ratesDetailEl = document.getElementById('calc-rates-detail');
   const subEl = document.getElementById('calc-sub-results');
 
-  const inUSD = CurrencyManager.convert(amount, from, 'USD');
-  const inPYG = CurrencyManager.convert(amount, from, 'PYG');
-  const inEUR = CurrencyManager.convert(amount, from, 'EUR');
-  const inBRL = CurrencyManager.convert(amount, from, 'BRL');
+  const converted = CurrencyManager.convert(amount, from, to);
+  resEl.textContent = CurrencyManager.format(converted, to);
 
-  if (from === 'USD') {
-    resEl.textContent = CurrencyManager.format(inPYG, 'PYG');
-  } else {
-    resEl.textContent = CurrencyManager.format(inUSD, 'USD');
+  // Tasas directas e inversas
+  const rateDirect = CurrencyManager.convert(1, from, to);
+  const rateInverse = CurrencyManager.convert(1, to, from);
+
+  let rateDirectStr = `1 ${from} = ${CurrencyManager.format(rateDirect, to)}`;
+  let rateInverseStr = `1 ${to} = ${CurrencyManager.format(rateInverse, from)}`;
+
+  if (from === 'PYG') {
+    const direct100k = CurrencyManager.convert(100000, 'PYG', to);
+    rateDirectStr = `100.000 Gs. = ${CurrencyManager.format(direct100k, to)}`;
+  }
+  if (to === 'PYG') {
+    const inverse100k = CurrencyManager.convert(100000, 'PYG', from);
+    rateInverseStr = `100.000 Gs. = ${CurrencyManager.format(inverse100k, from)}`;
   }
 
-  subEl.innerHTML = `
-    <span>${CurrencyManager.format(inEUR, 'EUR')}</span> • 
-    <span>${CurrencyManager.format(inBRL, 'BRL')}</span> • 
-    <span>${CurrencyManager.format(inPYG, 'PYG')}</span>
-  `;
+  if (ratesDetailEl) {
+    ratesDetailEl.innerHTML = `
+      <span class="px-3 py-1 bg-white rounded-lg border border-emerald-200 shadow-2xs">${rateDirectStr}</span>
+      <span class="text-emerald-500 font-black">•</span>
+      <span class="px-3 py-1 bg-white rounded-lg border border-emerald-200 shadow-2xs">${rateInverseStr}</span>
+    `;
+  }
+
+  // Equivalencias Rápidas en otras monedas
+  if (subEl) {
+    const inUSD = CurrencyManager.convert(amount, from, 'USD');
+    const inPYG = CurrencyManager.convert(amount, from, 'PYG');
+    const inEUR = CurrencyManager.convert(amount, from, 'EUR');
+    const inBRL = CurrencyManager.convert(amount, from, 'BRL');
+    subEl.innerHTML = `
+      <span>USD: <strong class="text-slate-800">${CurrencyManager.format(inUSD, 'USD')}</strong></span>
+      <span class="text-slate-300">|</span>
+      <span>PYG: <strong class="text-emerald-700">${CurrencyManager.format(inPYG, 'PYG')}</strong></span>
+      <span class="text-slate-300">|</span>
+      <span>EUR: <strong class="text-slate-800">${CurrencyManager.format(inEUR, 'EUR')}</strong></span>
+      <span class="text-slate-300">|</span>
+      <span>BRL: <strong class="text-slate-800">${CurrencyManager.format(inBRL, 'BRL')}</strong></span>
+    `;
+  }
+}
+
+function swapCurrencies() {
+  const fromEl = document.getElementById('calc-from');
+  const toEl = document.getElementById('calc-to');
+  const temp = fromEl.value;
+  fromEl.value = toEl.value;
+  toEl.value = temp;
+  calculateConversion();
+}
+
+function useCalcAsExpense() {
+  const amount = parseFloat(document.getElementById('calc-amount').value) || 0;
+  const from = document.getElementById('calc-from').value;
+  openModal(amount, from);
+}
+
+function setCalcCurrencies(from, to) {
+  document.getElementById('calc-from').value = from;
+  document.getElementById('calc-to').value = to;
+  calculateConversion();
+  const input = document.getElementById('calc-amount');
+  if (input) input.focus();
+}
+
+function renderQuotesBoard() {
+  const boardGrid = document.getElementById('quotes-board-grid');
+  if (!boardGrid) return;
+
+  const pairs = [
+    { from: 'USD', to: 'PYG', label: 'Dólar ↔ Guaraní' },
+    { from: 'EUR', to: 'PYG', label: 'Euro ↔ Guaraní' },
+    { from: 'BRL', to: 'PYG', label: 'Real ↔ Guaraní' },
+    { from: 'EUR', to: 'USD', label: 'Euro ↔ Dólar' }
+  ];
+
+  boardGrid.innerHTML = '';
+  pairs.forEach(p => {
+    const direct = CurrencyManager.convert(1, p.from, p.to);
+    const inverseVal = p.to === 'PYG' ? 100000 : 1;
+    const inverse = CurrencyManager.convert(inverseVal, p.to, p.from);
+    const inverseLabel = p.to === 'PYG' ? '100.000 Gs.' : `1 ${p.to}`;
+
+    boardGrid.innerHTML += `
+      <div onclick="setCalcCurrencies('${p.from}', '${p.to}')" class="p-4 rounded-2xl bg-white border border-slate-200 hover:border-emerald-300 hover:shadow-md transition cursor-pointer flex flex-col justify-between group">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-xs font-black text-slate-800">${p.label}</span>
+          <span class="text-[10px] bg-emerald-50 text-emerald-700 font-extrabold px-2 py-0.5 rounded-full border border-emerald-200 group-hover:bg-emerald-600 group-hover:text-white transition">Calcular</span>
+        </div>
+        <div class="space-y-1">
+          <div class="text-sm font-black text-emerald-800">1 ${p.from} = ${CurrencyManager.format(direct, p.to)}</div>
+          <div class="text-xs font-bold text-slate-500">${inverseLabel} = ${CurrencyManager.format(inverse, p.from)}</div>
+        </div>
+      </div>
+    `;
+  });
 }
 
 // ==========================================
-// Ajustes de Perfil
+// Ajustes de Perfil y Presupuesto
 // ==========================================
+function initUserSettings(user) {
+  if (document.getElementById('setting-name')) {
+    document.getElementById('setting-name').value = user.nombre || '';
+  }
+  if (document.getElementById('setting-email')) {
+    document.getElementById('setting-email').value = user.email || '';
+  }
+  if (document.getElementById('setting-email-alerts')) {
+    document.getElementById('setting-email-alerts').checked = user.notificaciones_email !== false;
+  }
+
+  const storedPeriod = localStorage.getItem('gastosmart_budget_period') || 'mensual';
+  const storedCurr = localStorage.getItem('gastosmart_budget_curr') || user.moneda_principal || 'USD';
+  const storedAmount = localStorage.getItem('gastosmart_budget_amount') || user.limite_mensual_usd || 1000;
+
+  setBudgetPeriod(storedPeriod, false);
+  setBudgetCurrency(storedCurr, false);
+
+  const limitInput = document.getElementById('setting-limit');
+  if (limitInput) limitInput.value = storedAmount;
+
+  updateBudgetEquivalences();
+}
+
+function setBudgetPeriod(period, triggerEquivalences = true) {
+  document.getElementById('setting-period').value = period;
+  const btnMensual = document.getElementById('btn-period-mensual');
+  const btnSemanal = document.getElementById('btn-period-semanal');
+  const badge = document.getElementById('budget-projection-badge');
+
+  if (period === 'mensual') {
+    btnMensual.className = 'py-2.5 px-3 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300';
+    btnSemanal.className = 'py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
+    if (badge) badge.textContent = 'Base Mensual';
+  } else {
+    btnSemanal.className = 'py-2.5 px-3 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300';
+    btnMensual.className = 'py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
+    if (badge) badge.textContent = 'Base Semanal (x4.33 proyectado)';
+  }
+
+  if (triggerEquivalences) updateBudgetEquivalences();
+}
+
+function setBudgetCurrency(curr, triggerEquivalences = true) {
+  document.getElementById('setting-currency').value = curr;
+  const symbols = { USD: '$', PYG: '₲', EUR: '€', BRL: 'R$' };
+  const names = { USD: 'Dólares (USD)', PYG: 'Guaraníes (PYG)', EUR: 'Euros (EUR)', BRL: 'Reales (BRL)' };
+
+  document.querySelectorAll('.budget-curr-btn').forEach(btn => {
+    if (btn.dataset.curr === curr) {
+      btn.className = 'budget-curr-btn py-2.5 text-xs font-black rounded-xl transition bg-white text-emerald-800 shadow-xs border border-emerald-300';
+    } else {
+      btn.className = 'budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200';
+    }
+  });
+
+  const symEl = document.getElementById('setting-curr-symbol');
+  if (symEl) symEl.textContent = symbols[curr] || '$';
+
+  const currLabel = document.getElementById('budget-curr-label');
+  if (currLabel) currLabel.textContent = `En ${names[curr] || curr}`;
+
+  if (triggerEquivalences) updateBudgetEquivalences();
+}
+
+function updateBudgetEquivalences() {
+  const amount = parseFloat(document.getElementById('setting-limit').value) || 0;
+  const curr = document.getElementById('setting-currency').value || 'USD';
+  const period = document.getElementById('setting-period').value || 'mensual';
+  const grid = document.getElementById('budget-equivalences-grid');
+  if (!grid) return;
+
+  const inUSD = CurrencyManager.convert(amount, curr, 'USD');
+  const inPYG = CurrencyManager.convert(amount, curr, 'PYG');
+  const inEUR = CurrencyManager.convert(amount, curr, 'EUR');
+  const inBRL = CurrencyManager.convert(amount, curr, 'BRL');
+
+  const suffix = period === 'semanal' ? '/sem' : '/mes';
+
+  grid.innerHTML = `
+    <div class="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
+      <span class="text-[10px] uppercase font-black text-slate-500">Dólares</span>
+      <div class="text-xs font-black text-slate-900 mt-0.5">${CurrencyManager.format(inUSD, 'USD')} ${suffix}</div>
+    </div>
+    <div class="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
+      <span class="text-[10px] uppercase font-black text-slate-500">Guaraníes</span>
+      <div class="text-xs font-black text-emerald-800 mt-0.5">${CurrencyManager.format(inPYG, 'PYG')} ${suffix}</div>
+    </div>
+    <div class="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
+      <span class="text-[10px] uppercase font-black text-slate-500">Euros</span>
+      <div class="text-xs font-black text-slate-900 mt-0.5">${CurrencyManager.format(inEUR, 'EUR')} ${suffix}</div>
+    </div>
+    <div class="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs">
+      <span class="text-[10px] uppercase font-black text-slate-500">Reales</span>
+      <div class="text-xs font-black text-slate-900 mt-0.5">${CurrencyManager.format(inBRL, 'BRL')} ${suffix}</div>
+    </div>
+  `;
+}
+
 document.getElementById('settings-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-  const nombre = document.getElementById('setting-name').value;
-  const limite_mensual_usd = parseFloat(document.getElementById('setting-limit').value);
+  const btn = document.getElementById('btn-save-settings');
+  btn.disabled = true;
+  btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando ajustes...';
+
+  const nombre = document.getElementById('setting-name').value.trim();
+  const email = document.getElementById('setting-email').value.trim();
+  const limitAmount = parseFloat(document.getElementById('setting-limit').value) || 0;
+  const limitCurr = document.getElementById('setting-currency').value;
+  const limitPeriod = document.getElementById('setting-period').value;
   const notificaciones_email = document.getElementById('setting-email-alerts').checked;
+
+  // Calcular el límite normalizado mensual en USD para Supabase
+  const limitInUSD = CurrencyManager.convert(limitAmount, limitCurr, 'USD');
+  const monthlyUSD = limitPeriod === 'semanal' ? Number((limitInUSD * 4.33).toFixed(2)) : Number(limitInUSD.toFixed(2));
 
   try {
     const res = await fetch('/api/auth/me', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ nombre, limite_mensual_usd, notificaciones_email })
+      body: JSON.stringify({
+        nombre,
+        email,
+        limite_mensual_usd: monthlyUSD,
+        moneda_principal: limitCurr,
+        notificaciones_email
+      })
     });
     const data = await res.json();
     if (data.success) {
-      showToast('Ajustes guardados exitosamente', 'success');
+      // Guardar preferencias locales
+      localStorage.setItem('gastosmart_budget_period', limitPeriod);
+      localStorage.setItem('gastosmart_budget_curr', limitCurr);
+      localStorage.setItem('gastosmart_budget_amount', limitAmount.toString());
+
       document.getElementById('user-name').textContent = nombre;
-      loadExpenses('mes');
+      document.getElementById('user-avatar').textContent = (nombre || 'U').charAt(0).toUpperCase();
+
+      showToast('¡Ajustes guardados exitosamente!', 'success');
+      await loadExpenses('mes');
     } else {
-      showToast(data.message || 'Error al actualizar', 'error');
+      showToast(data.message || 'Error al guardar ajustes', 'error');
     }
   } catch (err) {
-    showToast('Error de conexión', 'error');
+    console.error(err);
+    showToast('Error de conexión al guardar ajustes', 'error');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Guardar Ajustes';
   }
 });
 

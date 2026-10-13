@@ -23,11 +23,21 @@ export default async function handler(req, res) {
     }
 
     if (req.method === 'PUT') {
-      const { nombre, limite_mensual_usd, notificaciones_email, moneda_principal } = req.body || {};
+      const { nombre, email, limite_mensual_usd, notificaciones_email, moneda_principal } = req.body || {};
       const updates = {};
 
       if (nombre) updates.nombre = nombre.trim();
-      if (limite_mensual_usd !== undefined) updates.limite_mensual_usd = Number(limite_mensual_usd);
+      if (email) {
+        const cleanEmail = email.trim().toLowerCase();
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailRegex.test(cleanEmail)) {
+          return res.status(400).json({ success: false, message: 'Formato de correo electrónico inválido' });
+        }
+        updates.email = cleanEmail;
+      }
+      if (limite_mensual_usd !== undefined && !isNaN(limite_mensual_usd)) {
+        updates.limite_mensual_usd = Number(limite_mensual_usd);
+      }
       if (notificaciones_email !== undefined) updates.notificaciones_email = Boolean(notificaciones_email);
       if (moneda_principal) updates.moneda_principal = moneda_principal;
 
@@ -41,10 +51,14 @@ export default async function handler(req, res) {
         .single();
 
       if (updateError) {
-        return res.status(500).json({ success: false, message: 'Error al actualizar perfil' });
+        console.error('Error al actualizar usuario:', updateError);
+        if (updateError.code === '23505') {
+          return res.status(400).json({ success: false, message: 'Este correo ya pertenece a otra cuenta' });
+        }
+        return res.status(500).json({ success: false, message: 'Error al actualizar perfil: ' + (updateError.message || '') });
       }
 
-      return res.status(200).json({ success: true, message: 'Perfil actualizado', user: updatedUser });
+      return res.status(200).json({ success: true, message: 'Ajustes guardados correctamente', user: updatedUser });
     }
 
     return res.status(405).json({ success: false, message: 'Método no permitido' });

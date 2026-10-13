@@ -177,15 +177,16 @@
                     <div class="text-xs font-bold text-emerald-700 mt-1 flex items-center gap-1" id="stat-total-pyg">≈ Gs. 0</div>
                 </div>
 
-                <!-- Presupuesto y Progreso -->
+                <!-- Presupuesto y Progreso (Dinámico) -->
                 <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-teal-300 hover:shadow-md transition">
                     <div class="flex items-center justify-between text-slate-500 mb-2">
-                        <span class="text-xs font-black uppercase tracking-wider">Presupuesto Mensual</span>
+                        <span class="text-xs font-black uppercase tracking-wider" id="stat-limite-label">Presupuesto Mensual</span>
                         <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60 flex items-center justify-center text-sm">
                             <i class="fas fa-wallet"></i>
                         </div>
                     </div>
                     <div class="text-3xl font-black text-slate-900" id="stat-limite-usd">$1,000.00</div>
+                    <div class="text-xs font-bold text-slate-500 mt-1" id="stat-limite-sub">≈ Gs. 0</div>
                     <div class="w-full bg-slate-100 h-2.5 rounded-full mt-3 overflow-hidden border border-slate-200">
                         <div id="stat-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
                     </div>
@@ -347,46 +348,94 @@
             </div>
         </div>
 
-        <!-- View 3: Conversor de Monedas -->
-        <div id="view-conversor" class="view-panel hidden p-4 md:p-8 space-y-6 max-w-3xl mx-auto w-full">
-            <div>
-                <h2 class="text-2xl font-display font-black text-slate-900">Conversor de Monedas</h2>
-                <p class="text-xs text-slate-500 font-medium">Calcula al instante entre Guaraníes, Dólares, Euros y Reales</p>
+        <!-- View 3: Conversor de Monedas y Cotizaciones en Vivo -->
+        <div id="view-conversor" class="view-panel hidden p-4 md:p-8 space-y-6 max-w-4xl mx-auto w-full">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <div>
+                    <h2 class="text-2xl font-display font-black text-slate-900">Conversor y Cotizaciones en Vivo</h2>
+                    <p class="text-xs text-slate-500 font-medium">Conversión bidireccional instantánea entre Dólares, Guaraníes, Euros y Reales</p>
+                </div>
+                <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 bg-emerald-50 px-3.5 py-1.5 rounded-xl border border-emerald-200">
+                    <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                    <span>Tasas actualizadas al minuto</span>
+                </div>
             </div>
 
+            <!-- Calculadora Conversora Interactiva Bidireccional -->
             <div class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
-                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
+                <!-- Selectores de Monedas y Monto -->
+                <div class="grid grid-cols-1 md:grid-cols-7 gap-3 items-end">
+                    <!-- Monto -->
+                    <div class="md:col-span-3">
                         <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Monto a Convertir</label>
-                        <input type="number" id="calc-amount" value="100" oninput="calculateConversion()"
-                            class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-lg text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/30 focus:bg-white focus:border-emerald-500">
+                        <input type="number" id="calc-amount" value="100" step="any" oninput="calculateConversion()"
+                            class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl font-black text-lg text-slate-900 outline-none focus:ring-2 focus:ring-emerald-500/30 focus:bg-white focus:border-emerald-500 shadow-2xs">
                     </div>
-                    <div>
-                        <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Moneda de Origen</label>
+
+                    <!-- De (Moneda Origen) -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Moneda Origen</label>
                         <select id="calc-from" onchange="calculateConversion()"
-                            class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500">
-                            <option value="USD" selected>Dólares (USD)</option>
-                            <option value="PYG">Guaraníes (PYG)</option>
-                            <option value="EUR">Euros (EUR)</option>
-                            <option value="BRL">Reales Brasileños (BRL)</option>
-                            <option value="ARS">Pesos Argentinos (ARS)</option>
+                            class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 shadow-2xs">
+                            <option value="USD" selected>USD - Dólares ($)</option>
+                            <option value="PYG">PYG - Guaraníes (₲)</option>
+                            <option value="EUR">EUR - Euros (€)</option>
+                            <option value="BRL">BRL - Reales (R$)</option>
+                            <option value="ARS">ARS - Pesos Argentinos ($)</option>
+                        </select>
+                    </div>
+
+                    <!-- Botón Invertir / Swap -->
+                    <div class="md:col-span-0 flex items-center justify-center pb-1">
+                        <button type="button" onclick="swapCurrencies()" title="Invertir monedas (⇄)" class="w-12 h-12 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 shadow-xs flex items-center justify-center transition active:scale-90 cursor-pointer">
+                            <i class="fas fa-exchange-alt text-base"></i>
+                        </button>
+                    </div>
+
+                    <!-- A (Moneda Destino) -->
+                    <div class="md:col-span-2">
+                        <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Moneda Destino</label>
+                        <select id="calc-to" onchange="calculateConversion()"
+                            class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500 shadow-2xs">
+                            <option value="PYG" selected>PYG - Guaraníes (₲)</option>
+                            <option value="USD">USD - Dólares ($)</option>
+                            <option value="EUR">EUR - Euros (€)</option>
+                            <option value="BRL">BRL - Reales (R$)</option>
+                            <option value="ARS">ARS - Pesos Argentinos ($)</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="p-6 rounded-2xl bg-emerald-50/60 border border-emerald-200 text-center">
+                <!-- Tarjeta de Resultado Principal -->
+                <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-50/90 to-teal-50/60 border border-emerald-200 text-center relative overflow-hidden shadow-2xs">
                     <span class="text-xs uppercase font-black text-emerald-800 tracking-wider">Resultado de la Conversión</span>
-                    <div class="text-3xl sm:text-4xl font-black text-emerald-800 mt-2" id="calc-result">
-                        ≈ Gs. 755.000
+                    <div class="text-3xl sm:text-4xl font-black text-slate-900 mt-2" id="calc-result">
+                        ≈ Gs. 0
                     </div>
-                    <div class="text-xs text-slate-600 mt-2 font-bold" id="calc-sub-results"></div>
+                    <!-- Tasa Directa e Inversa -->
+                    <div class="text-xs text-emerald-800 font-extrabold mt-2 flex flex-wrap items-center justify-center gap-3" id="calc-rates-detail">
+                        <!-- 1 USD = 5.715 Gs. • 1.000.000 Gs. = 174.98 USD -->
+                    </div>
+                    <!-- Equivalencias Rápidas en otras monedas -->
+                    <div class="mt-3 pt-3 border-t border-emerald-200/60 flex flex-wrap items-center justify-center gap-2 text-[11px] text-slate-600 font-bold" id="calc-sub-results"></div>
                 </div>
 
-                <div class="pt-2 text-center">
-                    <button type="button" onclick="openModal()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs py-2.5 px-5 rounded-xl shadow-sm transition cursor-pointer">
-                        <i class="fas fa-plus"></i>
-                        <span>Registrar este cálculo como Gasto</span>
+                <div class="pt-1 text-center">
+                    <button type="button" onclick="useCalcAsExpense()" class="inline-flex items-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs py-3 px-6 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer">
+                        <i class="fas fa-plus-circle"></i>
+                        <span>Anotar este valor como Gasto</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- Pizarra de Cotizaciones en Vivo Bidireccionales -->
+            <div class="space-y-3">
+                <div class="flex items-center justify-between">
+                    <h3 class="font-display font-black text-base text-slate-900">Pizarra de Cotizaciones Directas e Inversas</h3>
+                    <span class="text-[11px] font-bold text-slate-500">Toca cualquier tarjeta para calcular</span>
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5" id="quotes-board-grid">
+                    <!-- Inyectado por JS: USD ↔ PYG, EUR ↔ PYG, BRL ↔ PYG, EUR ↔ USD -->
                 </div>
             </div>
         </div>
@@ -394,32 +443,86 @@
         <!-- View 4: Ajustes -->
         <div id="view-ajustes" class="view-panel hidden p-4 md:p-8 space-y-6 max-w-3xl mx-auto w-full">
             <div>
-                <h2 class="text-2xl font-display font-black text-slate-900">Ajustes de Perfil y Avisos</h2>
-                <p class="text-xs text-slate-500 font-medium">Personaliza tu presupuesto mensual y alertas por correo</p>
+                <h2 class="text-2xl font-display font-black text-slate-900">Ajustes de Perfil y Presupuesto</h2>
+                <p class="text-xs text-slate-500 font-medium">Configura tu nombre, correo, tipo de presupuesto (semanal/mensual) y moneda preferida</p>
             </div>
 
-            <form id="settings-form" class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-5">
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Nombre Completo</label>
-                    <input type="text" id="setting-name" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500">
-                </div>
-
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Presupuesto Máximo Mensual (USD)</label>
-                    <input type="number" step="0.01" id="setting-limit" class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-black text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500">
-                    <p class="text-xs text-slate-500 font-medium mt-1">Si tus compras del mes se acercan o superan este monto, te llegará un aviso por correo para prevenir sobregiros.</p>
-                </div>
-
-                <div class="flex items-center gap-3.5 p-4 bg-emerald-50/60 rounded-2xl border border-emerald-200">
-                    <input type="checkbox" id="setting-email-alerts" checked class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+            <form id="settings-form" class="bg-white border border-slate-200 rounded-3xl p-6 sm:p-8 shadow-sm space-y-6">
+                <!-- Nombre y Correo -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <label for="setting-email-alerts" class="text-sm font-black text-slate-900 cursor-pointer">Avisos automáticos a mi correo</label>
-                        <p class="text-xs text-slate-600 font-medium">Recibir alertas antes de pasarme de presupuesto y resúmenes mensuales.</p>
+                        <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Nombre Completo</label>
+                        <input type="text" id="setting-name" required placeholder="Tu nombre"
+                            class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 shadow-2xs">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Correo Electrónico (Notificaciones)</label>
+                        <input type="email" id="setting-email" required placeholder="tu@correo.com"
+                            class="w-full p-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 shadow-2xs">
                     </div>
                 </div>
 
-                <button type="submit" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black py-3.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer">
-                    Guardar Cambios
+                <!-- Período del Presupuesto (Semanal / Mensual) -->
+                <div>
+                    <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Período del Límite de Gasto</label>
+                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200" id="budget-period-selector">
+                        <button type="button" onclick="setBudgetPeriod('mensual')" id="btn-period-mensual" class="py-2.5 px-3 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300">
+                            <i class="fas fa-calendar-alt mr-1.5"></i> Presupuesto Mensual
+                        </button>
+                        <button type="button" onclick="setBudgetPeriod('semanal')" id="btn-period-semanal" class="py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
+                            <i class="fas fa-calendar-week mr-1.5"></i> Presupuesto Semanal
+                        </button>
+                    </div>
+                    <input type="hidden" id="setting-period" value="mensual">
+                </div>
+
+                <!-- Moneda del Límite -->
+                <div>
+                    <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Moneda del Límite</label>
+                    <div class="grid grid-cols-4 gap-2" id="budget-currency-selector">
+                        <button type="button" onclick="setBudgetCurrency('USD')" class="budget-curr-btn py-2.5 text-xs font-black rounded-xl transition bg-white text-emerald-800 shadow-xs border border-emerald-300" data-curr="USD">USD ($)</button>
+                        <button type="button" onclick="setBudgetCurrency('PYG')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="PYG">PYG (₲)</button>
+                        <button type="button" onclick="setBudgetCurrency('EUR')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="EUR">EUR (€)</button>
+                        <button type="button" onclick="setBudgetCurrency('BRL')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="BRL">BRL (R$)</button>
+                    </div>
+                    <input type="hidden" id="setting-currency" value="USD">
+                </div>
+
+                <!-- Monto del Presupuesto y Equivalencias en Vivo -->
+                <div>
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-black uppercase text-slate-700">Monto Límite</label>
+                        <span id="budget-curr-label" class="text-xs font-black text-emerald-700">En Dólares (USD)</span>
+                    </div>
+                    <div class="relative">
+                        <span id="setting-curr-symbol" class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-emerald-700 font-black text-base">$</span>
+                        <input type="number" step="any" id="setting-limit" required oninput="updateBudgetEquivalences()"
+                            class="w-full pl-9 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-base font-black text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 shadow-2xs">
+                    </div>
+
+                    <!-- Caja Dinámica de Equivalencias Multi-Moneda -->
+                    <div class="mt-3 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">
+                        <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-emerald-900">
+                            <span>Equivalencia al cambio actual</span>
+                            <span id="budget-projection-badge" class="bg-emerald-200/70 text-emerald-900 px-2.5 py-0.5 rounded-full font-extrabold text-[10px]">Base Mensual</span>
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs" id="budget-equivalences-grid">
+                            <!-- Inyectado por JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Avisos por Correo -->
+                <div class="flex items-center gap-3.5 p-4 bg-slate-50 rounded-2xl border border-slate-200">
+                    <input type="checkbox" id="setting-email-alerts" checked class="w-4 h-4 text-emerald-600 rounded focus:ring-emerald-500">
+                    <div>
+                        <label for="setting-email-alerts" class="text-sm font-black text-slate-900 cursor-pointer">Avisos automáticos a mi correo</label>
+                        <p class="text-xs text-slate-600 font-medium">Recibir alertas preventivas antes de sobrepasar el límite fijado y reportes mensuales.</p>
+                    </div>
+                </div>
+
+                <button type="submit" id="btn-save-settings" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black py-3.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer">
+                    Guardar Ajustes
                 </button>
             </form>
         </div>
@@ -476,11 +579,19 @@
                         class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500">
                 </div>
 
-                <!-- Fecha -->
+                <!-- Fecha (Automática e inmodificable) -->
                 <div>
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Fecha</label>
-                    <input type="date" id="modal-fecha" required
-                        class="w-full p-3 bg-slate-50 border border-slate-200 rounded-xl text-sm font-bold text-slate-900 outline-none focus:bg-white focus:border-emerald-500">
+                    <div class="flex items-center justify-between mb-1.5">
+                        <label class="block text-xs font-black uppercase text-slate-700">Fecha de Registro</label>
+                        <span class="text-[10px] font-extrabold text-emerald-800 bg-emerald-50 border border-emerald-200 px-2 py-0.5 rounded-full flex items-center gap-1">
+                            <i class="fas fa-lock text-[9px] text-emerald-600"></i> Automática (Hoy)
+                        </span>
+                    </div>
+                    <input type="hidden" id="modal-fecha">
+                    <div class="w-full p-3 bg-slate-100 border border-slate-200 rounded-xl text-sm font-bold text-slate-800 flex items-center justify-between select-none shadow-2xs">
+                        <span id="modal-fecha-texto">Hoy</span>
+                        <i class="fas fa-calendar-check text-emerald-600 text-base"></i>
+                    </div>
                 </div>
 
                 <button type="submit" id="btn-save-expense" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-600/25 transition mt-2 flex items-center justify-center gap-2 cursor-pointer">

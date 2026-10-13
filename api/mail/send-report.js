@@ -109,16 +109,22 @@ export default async function handler(req, res) {
       </html>
     `;
 
+    if (!userData || !userData.email) {
+      return res.status(400).json({ success: false, message: 'El usuario no tiene un correo electrónico configurado' });
+    }
+
     // 4. Enviar vía Brevo
     const emailResult = await sendEmail({
       toEmail: userData.email,
-      toName: userData.nombre,
+      toName: userData.nombre || 'Usuario',
       subject: `📊 Resumen Financiero GastoSmart - ${mesNombre}`,
       htmlContent
     });
 
     if (!emailResult.success) {
-      return res.status(500).json({ success: false, message: 'No se pudo enviar el correo', error: emailResult.error });
+      console.error('Detalle error envío Brevo:', emailResult.error);
+      const detail = emailResult.error?.message || emailResult.message || 'Error al conectar con el servidor de correo';
+      return res.status(500).json({ success: false, message: `No se pudo enviar el correo: ${detail}`, error: emailResult.error });
     }
 
     return res.status(200).json({

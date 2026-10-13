@@ -1,6 +1,6 @@
 const BREVO_API_KEY = process.env.BREVO_API_KEY;
-const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'notificaciones@gastosmart.com';
-const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'GastoSmart';
+const SENDER_EMAIL = process.env.BREVO_SENDER_EMAIL || 'mckakucorp@gmail.com';
+const SENDER_NAME = process.env.BREVO_SENDER_NAME || 'GastoSmart Finanzas';
 
 export async function sendEmail({ toEmail, toName, subject, htmlContent }) {
   if (!BREVO_API_KEY) {
