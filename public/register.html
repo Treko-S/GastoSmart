@@ -6,81 +6,94 @@
     <title>Crear Cuenta - GastoSmart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#10B981', dark: '#0F172A' }
+                    colors: {
+                        baseBg: "#faf8f5",
+                        surface: "#ffffff",
+                        surfaceSoft: "#f5f0e8",
+                        surfaceBorder: "#ede4d8",
+                        primary: "#f59e0b",
+                        primaryHover: "#d97706",
+                        secondary: "#ea580c",
+                        textMain: "#1c1917",
+                        textMuted: "#665e55",
+                        textLight: "#9a8f82"
+                    },
+                    fontFamily: {
+                        sans: ["'Plus Jakarta Sans'", "sans-serif"],
+                        display: ["'Outfit'", "sans-serif"]
+                    }
                 }
             }
-        }
+        };
     </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex items-center justify-center min-h-screen p-4 transition-colors">
-    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+<body class="bg-baseBg font-sans text-textMain flex items-center justify-center min-h-screen p-4 antialiased selection:bg-primary/30">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-amber-900/5 p-8 border border-surfaceBorder relative overflow-hidden">
         
         <div class="text-center mb-8">
             <a href="/index.html" class="inline-flex items-center justify-center gap-2 mb-3">
-                <img src="/logo.png" alt="GastoSmart" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/10B981/ffffff?text=GS'">
-                <span class="font-extrabold text-2xl tracking-tight text-slate-900 dark:text-white">GastoSmart</span>
+                <img src="/logo.png" alt="GastoSmart" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/f59e0b/ffffff?text=GS'">
+                <span class="font-display font-extrabold text-2xl tracking-tight text-textMain">GastoSmart</span>
             </a>
-            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Crea tu Cuenta</h2>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Comienza a controlar tus finanzas de forma inteligente</p>
+            <h2 class="font-display font-extrabold text-2xl text-textMain">Crea tu Cuenta</h2>
+            <p class="text-textMuted text-sm mt-1">Empieza a controlar tus gastos de forma sencilla</p>
         </div>
 
         <div id="msg-box" class="hidden mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2"></div>
 
         <form id="register-form" class="space-y-4">
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Nombre Completo</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-textLight mb-1.5">Nombre Completo</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-textLight">
                         <i class="fas fa-user"></i>
                     </span>
                     <input type="text" id="nombre" required placeholder="Juan Pérez"
-                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                        class="w-full pl-10 pr-4 py-3 bg-surfaceSoft border border-surfaceBorder rounded-xl focus:ring-2 focus:ring-primary/40 focus:bg-white outline-none transition text-sm font-semibold text-textMain">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Correo Electrónico</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-textLight mb-1.5">Correo Electrónico</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-textLight">
                         <i class="fas fa-envelope"></i>
                     </span>
                     <input type="email" id="email" required placeholder="tu@correo.com"
-                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                        class="w-full pl-10 pr-4 py-3 bg-surfaceSoft border border-surfaceBorder rounded-xl focus:ring-2 focus:ring-primary/40 focus:bg-white outline-none transition text-sm font-semibold text-textMain">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Contraseña</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-textLight mb-1.5">Contraseña</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-textLight">
                         <i class="fas fa-lock"></i>
                     </span>
                     <input type="password" id="password" required minlength="6" placeholder="Mínimo 6 caracteres"
-                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                        class="w-full pl-10 pr-4 py-3 bg-surfaceSoft border border-surfaceBorder rounded-xl focus:ring-2 focus:ring-primary/40 focus:bg-white outline-none transition text-sm font-semibold text-textMain">
                 </div>
             </div>
 
-            <div class="p-3 bg-blue-50 dark:bg-blue-950/40 border border-blue-200 dark:border-blue-800 rounded-xl flex items-center gap-3 text-xs text-blue-700 dark:text-blue-300">
-                <i class="fas fa-paper-plane text-base text-blue-500"></i>
-                <span>Te enviaremos una confirmación de bienvenida oficial a través de la <strong>API de Brevo</strong>.</span>
+            <div class="p-3.5 bg-amber-50/70 border border-amber-200/80 rounded-2xl flex items-center gap-3 text-xs text-textMuted">
+                <i class="fas fa-shield-alt text-base text-secondary"></i>
+                <span>Tus datos son privados y protegidos. Te enviaremos una confirmación de bienvenida a tu correo.</span>
             </div>
 
             <button type="submit" id="btn-submit"
-                class="w-full bg-primary hover:bg-emerald-600 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-500/20 transition-all duration-200 flex items-center justify-center gap-2 mt-4">
+                class="w-full bg-gradient-to-r from-primary via-amber-500 to-secondary hover:from-primaryHover hover:to-orange-600 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg shadow-amber-500/25 transition-all duration-200 flex items-center justify-center gap-2 mt-4">
                 <span>Registrarme Gratis</span>
                 <i class="fas fa-check text-sm"></i>
             </button>
         </form>
 
-        <p class="text-center mt-6 text-sm text-slate-500 dark:text-slate-400">
-            ¿Ya tienes una cuenta? <a href="/login.html" class="text-primary font-semibold hover:underline">Inicia sesión</a>
+        <p class="text-center mt-6 text-sm text-textMuted">
+            ¿Ya tienes una cuenta? <a href="/login.html" class="text-secondary font-extrabold hover:underline">Inicia sesión</a>
         </p>
     </div>
 
@@ -94,7 +107,7 @@
             const msgBox = document.getElementById('msg-box');
 
             btn.disabled = true;
-            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Registrando...';
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Creando cuenta...';
             msgBox.classList.add('hidden');
 
             const nombre = document.getElementById('nombre').value;
@@ -104,21 +117,21 @@
             try {
                 const res = await Auth.register(nombre, email, password);
                 if (res.success) {
-                    msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-emerald-50 dark:bg-emerald-950/40 text-emerald-700 dark:text-emerald-300 border-emerald-200 dark:border-emerald-800';
-                    msgBox.innerHTML = '<i class="fas fa-check-circle"></i> <span>¡Cuenta creada con éxito! Redirigiendo...</span>';
+                    msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-emerald-50 text-emerald-800 border-emerald-200';
+                    msgBox.innerHTML = '<i class="fas fa-check-circle"></i> <span>¡Cuenta creada con éxito! Entrando al panel...</span>';
                     msgBox.classList.remove('hidden');
                     setTimeout(() => {
                         window.location.href = '/dashboard.html';
                     }, 1200);
                 } else {
-                    msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800';
+                    msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-rose-50 text-rose-700 border-rose-200';
                     msgBox.innerHTML = `<i class="fas fa-exclamation-circle"></i> <span>${res.message || 'Error al registrarse'}</span>`;
                     msgBox.classList.remove('hidden');
                     btn.disabled = false;
                     btn.innerHTML = '<span>Registrarme Gratis</span> <i class="fas fa-check text-sm"></i>';
                 }
             } catch (err) {
-                msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 border-red-200 dark:border-red-800';
+                msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-rose-50 text-rose-700 border-rose-200';
                 msgBox.innerHTML = '<i class="fas fa-exclamation-circle"></i> <span>Error de conexión con el servidor</span>';
                 msgBox.classList.remove('hidden');
                 btn.disabled = false;

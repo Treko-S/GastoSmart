@@ -6,89 +6,102 @@
     <title>Iniciar Sesión - GastoSmart</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Inter', 'sans-serif'] },
-                    colors: { primary: '#10B981', dark: '#0F172A' }
+                    colors: {
+                        baseBg: "#faf8f5",
+                        surface: "#ffffff",
+                        surfaceSoft: "#f5f0e8",
+                        surfaceBorder: "#ede4d8",
+                        primary: "#f59e0b",
+                        primaryHover: "#d97706",
+                        secondary: "#ea580c",
+                        textMain: "#1c1917",
+                        textMuted: "#665e55",
+                        textLight: "#9a8f82"
+                    },
+                    fontFamily: {
+                        sans: ["'Plus Jakarta Sans'", "sans-serif"],
+                        display: ["'Outfit'", "sans-serif"]
+                    }
                 }
             }
-        }
+        };
     </script>
 </head>
-<body class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 flex items-center justify-center min-h-screen p-4 transition-colors">
-    <div class="w-full max-w-md bg-white dark:bg-slate-800 rounded-3xl shadow-xl p-8 border border-slate-100 dark:border-slate-700 relative overflow-hidden">
+<body class="bg-baseBg font-sans text-textMain flex items-center justify-center min-h-screen p-4 antialiased selection:bg-primary/30">
+    <div class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-amber-900/5 p-8 border border-surfaceBorder relative overflow-hidden">
         
         <!-- Header -->
         <div class="text-center mb-8">
             <a href="/index.html" class="inline-flex items-center justify-center gap-2 mb-3">
-                <img src="/logo.png" alt="GastoSmart" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/10B981/ffffff?text=GS'">
-                <span class="font-extrabold text-2xl tracking-tight text-slate-900 dark:text-white">GastoSmart</span>
+                <img src="/logo.png" alt="GastoSmart" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/f59e0b/ffffff?text=GS'">
+                <span class="font-display font-extrabold text-2xl tracking-tight text-textMain">GastoSmart</span>
             </a>
-            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Bienvenido de nuevo</h2>
-            <p class="text-slate-500 dark:text-slate-400 text-sm mt-1">Ingresa para administrar tus finanzas personales</p>
+            <h2 class="font-display font-extrabold text-2xl text-textMain">Bienvenido de nuevo</h2>
+            <p class="text-textMuted text-sm mt-1">Ingresa para administrar tus gastos y finanzas</p>
         </div>
 
         <!-- Error Msg -->
-        <div id="error-msg" class="hidden mb-5 p-3.5 bg-red-50 dark:bg-red-950/40 text-red-600 dark:text-red-400 text-sm rounded-xl border border-red-200 dark:border-red-800 flex items-center gap-2">
-            <i class="fas fa-exclamation-circle text-base"></i>
+        <div id="error-msg" class="hidden mb-5 p-3.5 bg-rose-50 text-rose-700 text-sm rounded-xl border border-rose-200 flex items-center gap-2">
+            <i class="fas fa-exclamation-circle text-base text-rose-500"></i>
             <span id="error-text">Credenciales inválidas</span>
         </div>
 
         <!-- Form -->
         <form id="login-form" class="space-y-4">
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Correo Electrónico</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-textLight mb-1.5">Correo Electrónico</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-textLight">
                         <i class="fas fa-envelope"></i>
                     </span>
                     <input type="email" id="email" required placeholder="tu@correo.com"
-                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                        class="w-full pl-10 pr-4 py-3 bg-surfaceSoft border border-surfaceBorder rounded-xl focus:ring-2 focus:ring-primary/40 focus:bg-white outline-none transition text-sm font-semibold text-textMain">
                 </div>
             </div>
 
             <div>
-                <label class="block text-xs font-semibold uppercase tracking-wider text-slate-600 dark:text-slate-300 mb-1.5">Contraseña</label>
+                <label class="block text-xs font-bold uppercase tracking-wider text-textLight mb-1.5">Contraseña</label>
                 <div class="relative">
-                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+                    <span class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-textLight">
                         <i class="fas fa-lock"></i>
                     </span>
                     <input type="password" id="password" required placeholder="••••••••"
-                        class="w-full pl-10 pr-4 py-3 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-700 rounded-xl focus:ring-2 focus:ring-primary/40 focus:border-primary outline-none transition text-sm dark:text-white">
+                        class="w-full pl-10 pr-4 py-3 bg-surfaceSoft border border-surfaceBorder rounded-xl focus:ring-2 focus:ring-primary/40 focus:bg-white outline-none transition text-sm font-semibold text-textMain">
                 </div>
             </div>
 
             <button type="submit" id="btn-submit"
-                class="w-full bg-primary hover:bg-emerald-600 text-white font-semibold py-3.5 px-4 rounded-xl shadow-lg shadow-emerald-500/20 transition-all duration-200 flex items-center justify-center gap-2 mt-6">
+                class="w-full bg-gradient-to-r from-primary via-amber-500 to-secondary hover:from-primaryHover hover:to-orange-600 text-white font-extrabold py-3.5 px-4 rounded-xl shadow-lg shadow-amber-500/25 transition-all duration-200 flex items-center justify-center gap-2 mt-6">
                 <span>Ingresar al Sistema</span>
                 <i class="fas fa-arrow-right text-sm"></i>
             </button>
         </form>
 
-        <p class="text-center mt-6 text-sm text-slate-500 dark:text-slate-400">
-            ¿No tienes cuenta? <a href="/register.html" class="text-primary font-semibold hover:underline">Regístrate gratis</a>
+        <p class="text-center mt-6 text-sm text-textMuted">
+            ¿No tienes cuenta? <a href="/register.html" class="text-secondary font-extrabold hover:underline">Regístrate gratis</a>
         </p>
 
         <!-- Test credentials helper -->
-        <div class="mt-6 p-4 bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-100 dark:border-emerald-800 rounded-2xl">
-            <div class="flex items-center gap-2 text-xs font-bold text-emerald-800 dark:text-emerald-400 mb-2">
+        <div class="mt-6 p-4 bg-amber-50/70 border border-amber-200/80 rounded-2xl">
+            <div class="flex items-center gap-2 text-xs font-black text-secondary mb-2">
                 <i class="fas fa-key"></i>
-                <span>Credenciales de Prueba (Clic para autocompletar):</span>
+                <span>Cuentas de Prueba (Clic para autocompletar):</span>
             </div>
             <div class="grid grid-cols-2 gap-2 text-xs">
                 <button type="button" onclick="fillCreds('demo@gastos.com', 'password123')"
-                    class="p-2 bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-700 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-emerald-100 text-left transition">
-                    <div class="font-bold text-emerald-700 dark:text-emerald-400">Usuario Demo</div>
-                    <div class="text-[10px] opacity-80">demo@gastos.com</div>
+                    class="p-2.5 bg-white border border-amber-200 rounded-xl text-textMain hover:bg-amber-100/60 text-left transition shadow-sm">
+                    <div class="font-extrabold text-secondary">Usuario Demo</div>
+                    <div class="text-[10px] text-textMuted font-medium">demo@gastos.com</div>
                 </button>
                 <button type="button" onclick="fillCreds('admin@gastos.com', 'password123')"
-                    class="p-2 bg-white dark:bg-slate-800 border border-emerald-200 dark:border-emerald-700 rounded-lg text-slate-700 dark:text-slate-200 hover:bg-emerald-100 text-left transition">
-                    <div class="font-bold text-purple-600 dark:text-purple-400">Administrador</div>
-                    <div class="text-[10px] opacity-80">admin@gastos.com</div>
+                    class="p-2.5 bg-white border border-amber-200 rounded-xl text-textMain hover:bg-amber-100/60 text-left transition shadow-sm">
+                    <div class="font-extrabold text-primaryHover">Administrador</div>
+                    <div class="text-[10px] text-textMuted font-medium">admin@gastos.com</div>
                 </button>
             </div>
         </div>
@@ -96,7 +109,6 @@
 
     <script src="/assets/js/auth.js"></script>
     <script>
-        // Check si ya está logueado
         Auth.checkSession(false);
 
         function fillCreds(email, pass) {

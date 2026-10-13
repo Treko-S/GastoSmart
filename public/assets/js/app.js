@@ -496,18 +496,18 @@ function switchView(viewName) {
   // Actualizar botones desktop
   document.querySelectorAll('.nav-btn').forEach(btn => {
     if (btn.dataset.view === viewName) {
-      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 dark:text-emerald-400';
+      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-bold text-sm transition-all bg-amber-50 text-secondary border border-amber-200/80 shadow-sm';
     } else {
-      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-sm transition-all text-slate-600 dark:text-slate-400 hover:bg-slate-100 dark:hover:bg-slate-800';
+      btn.className = 'nav-btn w-full flex items-center gap-3 px-4 py-3 rounded-xl font-semibold text-sm transition-all text-textMuted hover:bg-surfaceSoft hover:text-textMain';
     }
   });
 
   // Actualizar botones móvil
   document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
     if (btn.dataset.view === viewName) {
-      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-primary text-xs font-semibold';
+      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-secondary text-xs font-bold';
     } else {
-      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-slate-400 text-xs font-medium';
+      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-textLight text-xs font-semibold';
     }
   });
 
@@ -515,33 +515,14 @@ function switchView(viewName) {
 }
 
 // ==========================================
-// Tema Claro / Oscuro
+// Tema y Notificaciones
 // ==========================================
 function initTheme() {
-  const isDark = localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
-  if (isDark) {
-    document.documentElement.classList.add('dark');
-    updateThemeUI(true);
-  } else {
-    document.documentElement.classList.remove('dark');
-    updateThemeUI(false);
-  }
+  // Base cálida por defecto
 }
 
 function toggleDarkMode() {
-  const isDark = document.documentElement.classList.toggle('dark');
-  localStorage.setItem('theme', isDark ? 'dark' : 'light');
-  updateThemeUI(isDark);
-  if (currentExpensesData) renderCategoryChart(currentExpensesData.desglose_categorias);
-}
-
-function updateThemeUI(isDark) {
-  const icon = document.getElementById('theme-icon');
-  const text = document.getElementById('theme-text');
-  if (icon && text) {
-    icon.className = isDark ? 'fas fa-sun' : 'fas fa-moon';
-    text.textContent = isDark ? 'Modo Claro' : 'Modo Oscuro';
-  }
+  // Modo unificado cálido
 }
 
 // ==========================================
@@ -549,14 +530,14 @@ function updateThemeUI(isDark) {
 // ==========================================
 function showToast(message, type = 'info') {
   const toast = document.getElementById('toast');
-  let bgClass = 'bg-slate-900 text-white dark:bg-white dark:text-slate-900';
+  let bgClass = 'bg-stone-900 text-white';
   let icon = 'fas fa-info-circle';
 
   if (type === 'success') {
-    bgClass = 'bg-emerald-600 text-white';
+    bgClass = 'bg-gradient-to-r from-emerald-600 to-teal-700 text-white shadow-emerald-600/30';
     icon = 'fas fa-check-circle';
   } else if (type === 'error') {
-    bgClass = 'bg-red-600 text-white';
+    bgClass = 'bg-rose-600 text-white shadow-rose-600/30';
     icon = 'fas fa-exclamation-circle';
   }
 

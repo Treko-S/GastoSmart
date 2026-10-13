@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html class="dark" lang="es">
+<html lang="es">
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
@@ -8,8 +8,7 @@
     <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com" rel="preconnect"/>
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
-    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     
     <!-- AOS (Animate On Scroll) -->
@@ -22,49 +21,46 @@
         }
         ::-webkit-scrollbar { display: none; }
 
-        /* Animaciones suaves personalizadas */
         @keyframes floatSlow {
             0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-8px); }
+            50% { transform: translateY(-7px); }
         }
         .animate-float {
             animation: floatSlow 5s ease-in-out infinite;
         }
 
-        @keyframes pulseGlow {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 0.8; }
+        @keyframes warmPulse {
+            0%, 100% { opacity: 0.6; transform: scale(1); }
+            50% { opacity: 0.9; transform: scale(1.03); }
         }
-        .animate-glow {
-            animation: pulseGlow 4s ease-in-out infinite;
+        .animate-warm-glow {
+            animation: warmPulse 6s ease-in-out infinite;
         }
     </style>
 
     <script src="https://cdn.tailwindcss.com"></script>
     <script id="tailwind-config">
         tailwind.config = {
-            darkMode: "class",
             theme: {
                 extend: {
                     colors: {
-                        // Paleta Cálida Premium (Carbón cálido, ámbar, dorado, terracota suave)
-                        background: "#12100e",          // Fondo oscuro cálido
-                        "surface": "#1a1613",             // Contenedores principales
-                        "surface-low": "#161310",         // Superficie sutil
-                        "surface-high": "#241f1a",        // Tarjetas elevadas
-                        "surface-highest": "#2f2822",     // Hover y bordes destacados
+                        // Paleta Cálida sobre Base Blanca / Marfil
+                        baseBg: "#faf8f5",           // Blanco cálido marfil
+                        surface: "#ffffff",          // Blanco puro para tarjetas
+                        surfaceSoft: "#f5f0e8",      // Tono crema suave
+                        surfaceBorder: "#ede4d8",    // Bordes cálidos sutiles
                         
-                        // Acentos Cálidos Vibrantes
-                        primary: "#f59e0b",               // Ámbar Dorado
-                        "primary-hover": "#d97706",       // Ámbar Intenso
-                        secondary: "#ea580c",             // Terracota / Naranja cálido
-                        tertiary: "#fbbf24",              // Miel brillante
-                        emeraldWarm: "#10b981",           // Verde esmeralda para balances positivos
+                        // Acentos Cálidos Protagonistas
+                        primary: "#f59e0b",          // Ámbar Dorado
+                        primaryHover: "#d97706",     // Ámbar Intenso
+                        secondary: "#ea580c",        // Terracota / Naranja
+                        honey: "#fbbf24",            // Miel brillante
+                        emeraldWarm: "#059669",      // Verde esmeralda para ahorros y balances
                         
-                        // Textos cálidos
-                        "on-background": "#faf5ee",       // Blanco cálido
-                        "on-surface-variant": "#c4b5a5",  // Gris cálido secundario
-                        "outline-warm": "#3d342c"         // Bordes sutiles cálidos
+                        // Tipografía Cálida
+                        textMain: "#1c1917",         // Carbón cálido (Stone 900)
+                        textMuted: "#665e55",        // Marrón grisáceo (Stone 600)
+                        textLight: "#9a8f82"         // Detalles suaves
                     },
                     fontFamily: {
                         sans: ["'Plus Jakarta Sans'", "sans-serif"],
@@ -75,216 +71,215 @@
         };
     </script>
 </head>
-<body class="bg-background font-sans text-on-background selection:bg-primary selection:text-surface min-h-screen relative overflow-x-hidden">
+<body class="bg-baseBg font-sans text-textMain selection:bg-primary/30 selection:text-textMain min-h-screen relative overflow-x-hidden">
 
-    <!-- Luces Ambientales Cálidas (Atmospheric Glow) -->
+    <!-- Luces Cálidas de Fondo (Efecto Amanecer / Luz Solar Suave) -->
     <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div class="absolute -top-[15%] left-1/2 -translate-x-1/2 w-[850px] h-[550px] bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.14)_0%,rgba(18,16,14,0)_70%)] blur-3xl animate-glow"></div>
-        <div class="absolute top-[35%] right-[-5%] w-[600px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(234,88,12,0.10)_0%,rgba(18,16,14,0)_70%)] blur-3xl"></div>
-        <div class="absolute bottom-[10%] left-[-5%] w-[650px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.08)_0%,rgba(18,16,14,0)_70%)] blur-3xl"></div>
+        <div class="absolute -top-[10%] left-1/2 -translate-x-1/2 w-[900px] h-[550px] bg-[radial-gradient(ellipse_at_center,rgba(245,158,11,0.14)_0%,rgba(250,248,245,0)_70%)] blur-3xl animate-warm-glow"></div>
+        <div class="absolute top-[30%] right-[-5%] w-[650px] h-[500px] bg-[radial-gradient(ellipse_at_center,rgba(234,88,12,0.08)_0%,rgba(250,248,245,0)_70%)] blur-3xl"></div>
+        <div class="absolute bottom-[10%] left-[-5%] w-[600px] h-[450px] bg-[radial-gradient(ellipse_at_center,rgba(251,191,36,0.10)_0%,rgba(250,248,245,0)_70%)] blur-3xl"></div>
     </div>
 
-    <!-- Barra de Navegación Fija -->
-    <header class="fixed top-0 w-full z-50 bg-background/85 backdrop-blur-xl border-b border-outline-warm/60">
+    <!-- Barra de Navegación Fija (Blanca Cálida con Glassmorphism) -->
+    <header class="fixed top-0 w-full z-50 bg-white/85 backdrop-blur-xl border-b border-surfaceBorder/70 shadow-sm">
         <div class="h-20 max-w-7xl mx-auto px-5 sm:px-8 flex items-center justify-between gap-6">
             <!-- Logo -->
-            <div class="flex items-center gap-3">
-                <a class="flex items-center gap-2.5 transition-transform hover:scale-105" href="/index.html">
-                    <img alt="GastoSmart Logo" class="h-9 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/36x36/f59e0b/12100e?text=GS'"/>
-                    <span class="font-display font-extrabold text-2xl tracking-tight text-on-background flex items-center gap-1.5">
-                        GastoSmart
-                        <span class="inline-block w-2 h-2 rounded-full bg-primary shadow-[0_0_10px_rgba(245,158,11,0.8)]"></span>
-                    </span>
-                </a>
-            </div>
+            <a class="flex items-center gap-2.5 transition-transform hover:scale-105" href="/index.html">
+                <img alt="GastoSmart Logo" class="h-10 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/40x40/f59e0b/ffffff?text=GS'"/>
+                <span class="font-display font-extrabold text-2xl tracking-tight text-textMain flex items-center gap-1.5">
+                    GastoSmart
+                    <span class="inline-block w-2 h-2 rounded-full bg-primary shadow-[0_0_8px_rgba(245,158,11,0.8)]"></span>
+                </span>
+            </a>
 
-            <!-- Enlaces Simples -->
-            <nav class="hidden lg:flex items-center gap-2 p-1.5 rounded-full bg-surface-low border border-outline-warm/40">
-                <a class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant hover:text-on-background hover:bg-surface-high transition-all" href="#beneficios">¿Por qué usarlo?</a>
-                <a class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant hover:text-on-background hover:bg-surface-high transition-all" href="#mercados-en-vivo">Monedas en Vivo</a>
-                <a class="px-5 py-2 rounded-full text-sm font-semibold text-on-surface-variant hover:text-on-background hover:bg-surface-high transition-all" href="#como-funciona">Cómo Funciona</a>
+            <!-- Enlaces de navegación -->
+            <nav class="hidden lg:flex items-center gap-1.5 p-1.5 rounded-full bg-surfaceSoft/60 border border-surfaceBorder">
+                <a class="px-5 py-2 rounded-full text-sm font-semibold text-textMuted hover:text-textMain hover:bg-white transition-all" href="#beneficios">¿Por qué usarlo?</a>
+                <a class="px-5 py-2 rounded-full text-sm font-semibold text-textMuted hover:text-textMain hover:bg-white transition-all" href="#mercados-en-vivo">Monedas en Vivo</a>
+                <a class="px-5 py-2 rounded-full text-sm font-semibold text-textMuted hover:text-textMain hover:bg-white transition-all" href="#como-funciona">Cómo Funciona</a>
             </nav>
 
             <!-- Acciones -->
             <div class="flex items-center gap-3" id="auth-buttons-container">
-                <a class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-on-background hover:text-primary hover:bg-surface-high transition-all" href="/login.html">Iniciar Sesión</a>
-                <a class="inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-surface bg-gradient-to-r from-primary to-amber-500 hover:from-amber-400 hover:to-orange-500 shadow-[0_4px_18px_rgba(245,158,11,0.35)] transition-all transform hover:-translate-y-0.5" href="/register.html">Empezar Gratis</a>
+                <a class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-textMain hover:text-primaryHover hover:bg-surfaceSoft transition-all" href="/login.html">Iniciar Sesión</a>
+                <a class="inline-flex items-center justify-center px-6 py-2.5 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-primary via-amber-500 to-secondary hover:from-primaryHover hover:to-orange-600 shadow-[0_4px_16px_rgba(245,158,11,0.35)] transition-all transform hover:-translate-y-0.5" href="/register.html">Empezar Gratis</a>
             </div>
         </div>
     </header>
 
     <main class="w-full pt-20">
         
-        <!-- SECTION 1: HERO (Cálido y Amigable) -->
+        <!-- SECTION 1: HERO (Base Blanca Cálida & Enfoque Amigable) -->
         <section class="relative w-full px-5 sm:px-8 pt-12 pb-20 max-w-7xl mx-auto flex flex-col items-center text-center">
             
             <!-- Badge Destacado -->
-            <div data-aos="fade-down" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-surface-high/90 border border-primary/30 shadow-lg mb-6">
-                <span class="w-5 h-5 rounded-full bg-gradient-to-tr from-primary to-orange-500 flex items-center justify-center text-surface text-xs font-bold">
+            <div data-aos="fade-down" class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white border border-amber-200/80 shadow-md shadow-amber-500/5 mb-6">
+                <span class="w-5 h-5 rounded-full bg-gradient-to-tr from-primary to-secondary flex items-center justify-center text-white text-xs font-bold shadow-sm">
                     <i class="fas fa-sparkles"></i>
                 </span>
-                <span class="text-xs font-bold text-on-background tracking-wide">
-                    Nuevo: <span class="text-primary font-bold">Asistente Inteligente</span> que te ayuda a ahorrar mes a mes
+                <span class="text-xs font-bold text-textMain tracking-wide">
+                    Nuevo: <span class="text-secondary font-extrabold">Asistente Inteligente</span> que te ayuda a ahorrar mes a mes
                 </span>
             </div>
 
-            <!-- Título Principal sin tecnicismos -->
-            <h1 data-aos="fade-up" data-aos-delay="100" class="max-w-4xl font-display font-extrabold text-4xl sm:text-6xl text-on-background tracking-tight leading-tight">
-                El control de tus gastos diarios, <span class="text-transparent bg-clip-text bg-gradient-to-r from-primary via-tertiary to-secondary">fácil y sin enredos</span>
+            <!-- Título Principal -->
+            <h1 data-aos="fade-up" data-aos-delay="100" class="max-w-4xl font-display font-black text-4xl sm:text-6xl text-textMain tracking-tight leading-tight">
+                El control de tus gastos diarios, <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-600 via-primary to-secondary">fácil y sin enredos</span>
             </h1>
 
-            <!-- Subtítulo en lenguaje cotidiano -->
-            <p data-aos="fade-up" data-aos-delay="200" class="mt-6 max-w-2xl text-lg sm:text-xl text-on-surface-variant leading-relaxed">
-                Registra tus compras en <strong>Guaraníes, Dólares o Euros</strong> sin hacer cálculos manuales. Recibe avisos en tu correo antes de pasarte de tu presupuesto y consejos prácticos para que te sobre dinero a fin de mes.
+            <!-- Subtítulo Cotidiano -->
+            <p data-aos="fade-up" data-aos-delay="200" class="mt-6 max-w-2xl text-lg sm:text-xl text-textMuted leading-relaxed">
+                Registra tus compras en <strong>Guaraníes, Dólares o Euros</strong> sin hacer cuentas difíciles. Recibe avisos en tu correo antes de pasarte de tu presupuesto y consejos prácticos para que te sobre dinero a fin de mes.
             </p>
 
-            <!-- Botones de Acción -->
+            <!-- Botones Principales -->
             <div data-aos="fade-up" data-aos-delay="300" class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4 w-full sm:w-auto">
-                <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-extrabold text-surface bg-gradient-to-r from-primary via-amber-400 to-orange-500 shadow-[0_6px_25px_rgba(245,158,11,0.4)] hover:shadow-[0_8px_32px_rgba(245,158,11,0.55)] transition-all transform hover:-translate-y-1" href="/register.html">
+                <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-extrabold text-white bg-gradient-to-r from-primary via-amber-500 to-secondary hover:from-primaryHover hover:to-orange-600 shadow-[0_6px_25px_rgba(245,158,11,0.35)] transition-all transform hover:-translate-y-1" href="/register.html">
                     <span>Crear Mi Cuenta Gratis</span>
                     <i class="fas fa-arrow-right text-sm"></i>
                 </a>
-                <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-bold text-on-background bg-surface-high hover:bg-surface-highest border border-outline-warm transition-all" href="/login.html">
+                <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-bold text-textMain bg-white hover:bg-surfaceSoft border border-surfaceBorder shadow-sm transition-all" href="/login.html">
                     <i class="fas fa-play text-xs text-primary"></i>
                     <span>Ya Tengo Cuenta</span>
                 </a>
             </div>
 
-            <!-- Píldora de Moneda en Vivo -->
-            <div data-aos="zoom-in" data-aos-delay="400" class="mt-8 inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-surface-low border border-outline-warm shadow-md">
+            <!-- Ticker de Moneda en Vivo -->
+            <div data-aos="zoom-in" data-aos-delay="400" class="mt-8 inline-flex items-center gap-3 px-5 py-2.5 rounded-full bg-white border border-amber-200/90 shadow-md shadow-amber-500/5">
                 <span class="flex h-2.5 w-2.5 relative">
                     <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
                     <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
                 </span>
-                <span class="text-xs sm:text-sm text-on-surface-variant">
-                    Cotización oficial al instante: <strong class="text-on-background font-bold" id="hero-pyg-rate">1 USD ≈ 7.550 Gs.</strong> • <strong class="text-on-background font-bold" id="hero-eur-rate">1 USD ≈ €0.92</strong>
-                    <span class="text-primary font-bold ml-1">(Actualizado)</span>
+                <span class="text-xs sm:text-sm text-textMuted">
+                    Cotización oficial al instante: <strong class="text-textMain font-extrabold" id="hero-pyg-rate">1 USD ≈ 7.550 Gs.</strong> • <strong class="text-textMain font-extrabold" id="hero-eur-rate">1 USD ≈ €0.92</strong>
+                    <span class="text-secondary font-bold ml-1">(En vivo)</span>
                 </span>
             </div>
 
-            <!-- Simplicidad Garantizada -->
-            <div class="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs font-semibold text-on-surface-variant/80">
+            <!-- Garantías de Simplicidad -->
+            <div class="mt-5 flex flex-wrap items-center justify-center gap-5 text-xs font-semibold text-textLight">
                 <span><i class="fas fa-check text-primary mr-1"></i> 100% Gratis</span>
                 <span><i class="fas fa-check text-primary mr-1"></i> Sin tarjetas de crédito</span>
                 <span><i class="fas fa-check text-primary mr-1"></i> Funciona en celular y compu</span>
             </div>
 
-            <!-- Tarjeta Visual del Panel (Mockup Cálido) -->
+            <!-- Tarjeta Visual del Panel (Mockup Cálido sobre Blanco) -->
             <div data-aos="fade-up" data-aos-delay="500" class="mt-14 w-full max-w-5xl relative animate-float">
-                <div class="absolute -inset-2 bg-gradient-to-r from-primary/20 via-orange-500/15 to-amber-500/20 rounded-3xl blur-2xl opacity-70"></div>
+                <!-- Sombra difusa cálida -->
+                <div class="absolute -inset-2 bg-gradient-to-r from-amber-400/20 via-orange-400/15 to-primary/20 rounded-3xl blur-2xl opacity-70"></div>
                 
-                <div class="relative rounded-3xl bg-surface border border-outline-warm/80 p-6 sm:p-8 text-left shadow-2xl">
+                <div class="relative rounded-3xl bg-white border border-amber-200/90 p-6 sm:p-8 text-left shadow-2xl shadow-amber-900/5">
                     <!-- Cabecera de la Tarjeta -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-outline-warm/60">
+                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-surfaceBorder">
                         <div>
                             <div class="flex items-center gap-2">
                                 <span class="w-2.5 h-2.5 rounded-full bg-emeraldWarm animate-pulse"></span>
-                                <span class="text-xs uppercase font-extrabold tracking-wider text-on-surface-variant">Tu Presupuesto de Este Mes</span>
+                                <span class="text-xs uppercase font-extrabold tracking-wider text-textLight">Tu Presupuesto de Este Mes</span>
                             </div>
                             <div class="flex items-baseline gap-3 mt-1">
-                                <span class="font-display font-extrabold text-3xl sm:text-4xl text-on-background">$1,200.00 <span class="text-sm font-semibold text-on-surface-variant">USD</span></span>
-                                <span class="text-xs font-bold text-primary bg-surface-high px-3 py-1 rounded-lg" id="mockup-pyg-calc">≈ 9.060.000 ₲</span>
+                                <span class="font-display font-black text-3xl sm:text-4xl text-textMain">$1,200.00 <span class="text-sm font-semibold text-textMuted">USD</span></span>
+                                <span class="text-xs font-extrabold text-secondary bg-amber-50 border border-amber-200/70 px-3 py-1 rounded-lg" id="mockup-pyg-calc">≈ 9.060.000 ₲</span>
                             </div>
                         </div>
 
                         <!-- Selector de Moneda de demostración -->
-                        <div class="flex items-center gap-1.5 bg-surface-low p-1.5 rounded-xl border border-outline-warm/50">
-                            <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-primary text-surface shadow-sm">Dólares ($)</span>
-                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant">Guaraníes (₲)</span>
-                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-on-surface-variant">Euros (€)</span>
+                        <div class="flex items-center gap-1.5 bg-surfaceSoft p-1.5 rounded-xl border border-surfaceBorder">
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-secondary shadow-sm">Dólares ($)</span>
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-textMuted">Guaraníes (₲)</span>
+                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-textMuted">Euros (€)</span>
                         </div>
                     </div>
 
                     <!-- Contenido Central Dividido -->
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 items-start">
                         
-                        <!-- Columna Izquierda: Gráfico y Resumen de Gastos -->
-                        <div class="lg:col-span-7 bg-surface-low rounded-2xl p-5 border border-outline-warm/40 flex flex-col gap-5">
+                        <!-- Columna Izquierda: Gráfico y Resumen -->
+                        <div class="lg:col-span-7 bg-surfaceSoft/60 rounded-2xl p-5 border border-surfaceBorder flex flex-col gap-5">
                             <div class="flex items-center justify-between">
-                                <h4 class="font-bold text-base text-on-background">En qué vas gastando</h4>
-                                <span class="text-xs font-bold text-emeraldWarm bg-emeraldWarm/10 px-2.5 py-1 rounded-full border border-emeraldWarm/20">65% de tu meta</span>
+                                <h4 class="font-extrabold text-base text-textMain">En qué vas gastando</h4>
+                                <span class="text-xs font-bold text-emeraldWarm bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">65% consumido</span>
                             </div>
 
-                            <!-- Barra Visual de Progreso -->
+                            <!-- Barra Visual de Progreso Cálida -->
                             <div>
-                                <div class="flex justify-between text-xs text-on-surface-variant mb-1.5">
-                                    <span>Gastado: <strong>$780.00</strong></span>
-                                    <span>Te queda disponible: <strong class="text-emeraldWarm">$420.00</strong></span>
+                                <div class="flex justify-between text-xs text-textMuted mb-1.5">
+                                    <span>Gastado: <strong class="text-textMain">$780.00</strong></span>
+                                    <span>Te queda disponible: <strong class="text-emeraldWarm font-bold">$420.00</strong></span>
                                 </div>
-                                <div class="w-full bg-surface-highest h-3 rounded-full overflow-hidden">
-                                    <div class="bg-gradient-to-r from-primary via-amber-400 to-orange-500 h-full rounded-full" style="width: 65%;"></div>
+                                <div class="w-full bg-white h-3 rounded-full overflow-hidden border border-surfaceBorder">
+                                    <div class="bg-gradient-to-r from-primary via-amber-500 to-secondary h-full rounded-full" style="width: 65%;"></div>
                                 </div>
                             </div>
 
                             <!-- Lista de Movimientos Cotidianos -->
                             <div class="space-y-2.5">
-                                <span class="text-xs font-bold text-on-surface-variant uppercase tracking-wider">Últimos Gastos Anotados</span>
+                                <span class="text-xs font-bold text-textLight uppercase tracking-wider">Últimos Gastos Registrados</span>
                                 
-                                <div class="flex items-center justify-between p-3 rounded-xl bg-surface-high border border-outline-warm/30">
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-surfaceBorder shadow-sm">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-primary/20 text-primary flex items-center justify-center font-bold">
+                                        <div class="w-9 h-9 rounded-xl bg-amber-50 text-primary border border-amber-200/50 flex items-center justify-center font-bold">
                                             <i class="fas fa-utensils"></i>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-bold text-on-background">Supermercado y Almuerzo</p>
-                                            <p class="text-xs text-on-surface-variant">Pagado en Guaraníes</p>
+                                            <p class="text-sm font-bold text-textMain">Supermercado y Almuerzo</p>
+                                            <p class="text-xs text-textLight">Pagado en Guaraníes</p>
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-bold text-rose-400">-250.000 ₲</p>
-                                        <p class="text-xs text-on-surface-variant">≈ $33.10 USD</p>
+                                        <p class="text-sm font-extrabold text-rose-500">-250.000 ₲</p>
+                                        <p class="text-xs text-textLight">≈ $33.10 USD</p>
                                     </div>
                                 </div>
 
-                                <div class="flex items-center justify-between p-3 rounded-xl bg-surface-high border border-outline-warm/30">
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-surfaceBorder shadow-sm">
                                     <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-secondary/20 text-secondary flex items-center justify-center font-bold">
+                                        <div class="w-9 h-9 rounded-xl bg-orange-50 text-secondary border border-orange-200/50 flex items-center justify-center font-bold">
                                             <i class="fas fa-car"></i>
                                         </div>
                                         <div>
-                                            <p class="text-sm font-bold text-on-background">Combustible del auto</p>
-                                            <p class="text-xs text-on-surface-variant">Pagado en Guaraníes</p>
+                                            <p class="text-sm font-bold text-textMain">Combustible del auto</p>
+                                            <p class="text-xs text-textLight">Pagado en Guaraníes</p>
                                         </div>
                                     </div>
                                     <div class="text-right">
-                                        <p class="text-sm font-bold text-rose-400">-180.000 ₲</p>
-                                        <p class="text-xs text-on-surface-variant">≈ $23.80 USD</p>
+                                        <p class="text-sm font-extrabold text-rose-500">-180.000 ₲</p>
+                                        <p class="text-xs text-textLight">≈ $23.80 USD</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
 
-                        <!-- Columna Derecha: El Asistente de Ahorro y Consejos -->
+                        <!-- Columna Derecha: Asistente y Alertas -->
                         <div class="lg:col-span-5 flex flex-col gap-4">
                             <!-- Consejo del Asistente -->
-                            <div class="rounded-2xl bg-gradient-to-br from-surface-high to-surface p-5 border border-primary/30 shadow-lg relative overflow-hidden">
+                            <div class="rounded-2xl bg-gradient-to-br from-amber-50 via-white to-orange-50 p-5 border border-amber-200 shadow-md">
                                 <div class="flex items-center justify-between mb-3">
                                     <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-xl bg-primary/20 text-primary flex items-center justify-center text-sm font-bold">
+                                        <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center text-sm font-bold shadow-sm">
                                             <i class="fas fa-lightbulb"></i>
                                         </div>
-                                        <span class="text-sm font-extrabold text-on-background">Consejo de tu Asistente</span>
+                                        <span class="text-sm font-black text-textMain">Consejo de tu Asistente</span>
                                     </div>
-                                    <span class="text-[10px] font-bold uppercase tracking-wider text-primary bg-primary/10 px-2 py-0.5 rounded-full border border-primary/20">Ahorro Fácil</span>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-secondary bg-orange-100/70 px-2 py-0.5 rounded-full border border-orange-200">Ahorro Fácil</span>
                                 </div>
-                                <p class="text-xs sm:text-sm text-on-background leading-relaxed">
-                                    “Notamos que tus gastos en salidas de fin de semana subieron este mes. Si cocinas en casa este sábado, <strong>te ahorrarás unos 150.000 ₲</strong> para tu meta de vacaciones.”
+                                <p class="text-xs sm:text-sm text-textMuted leading-relaxed">
+                                    “Tus salidas a cenar subieron un 20% este mes. Si cocinas en casa este fin de semana, <strong>te ahorrarás unos 150.000 ₲</strong> para tu meta de vacaciones.”
                                 </p>
                                 <div class="mt-4">
-                                    <a href="/login.html" class="block w-full text-center py-2.5 px-3 rounded-xl bg-gradient-to-r from-primary to-amber-500 text-surface font-extrabold text-xs hover:opacity-95 transition-all">
+                                    <a href="/login.html" class="block w-full text-center py-2.5 px-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-extrabold text-xs shadow-md shadow-amber-500/20 hover:opacity-95 transition-all">
                                         Ver Mis Consejos Personalizados
                                     </a>
                                 </div>
                             </div>
 
-                            <!-- Alerta Preventiva Amigable -->
-                            <div class="rounded-2xl bg-surface-low p-4 border border-outline-warm/40 flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 flex items-center justify-center text-lg shrink-0">
+                            <!-- Alerta Preventiva -->
+                            <div class="rounded-2xl bg-white p-4 border border-surfaceBorder shadow-sm flex items-center gap-3">
+                                <div class="w-10 h-10 rounded-xl bg-orange-50 text-secondary border border-orange-200 flex items-center justify-center text-lg shrink-0">
                                     <i class="fas fa-envelope-open-text"></i>
                                 </div>
                                 <div>
-                                    <h5 class="text-xs font-bold text-on-background">Avisos automáticos a tu correo</h5>
-                                    <p class="text-[11px] text-on-surface-variant mt-0.5">Te llega un mensaje claro antes de que te quedes sin presupuesto.</p>
+                                    <h5 class="text-xs font-bold text-textMain">Avisos automáticos a tu correo</h5>
+                                    <p class="text-[11px] text-textMuted mt-0.5">Te llega un aviso preventivo antes de que te pases de presupuesto.</p>
                                 </div>
                             </div>
                         </div>
@@ -294,45 +289,45 @@
             </div>
         </section>
 
-        <!-- SECTION 2: TICKER EN VIVO (Cálido y Dinámico) -->
-        <section class="w-full bg-surface-low border-y border-outline-warm/60 py-3.5 overflow-hidden" id="mercados-en-vivo">
+        <!-- SECTION 2: TICKER EN VIVO (Cálido sobre Blanco) -->
+        <section class="w-full bg-white border-y border-surfaceBorder py-4 overflow-hidden" id="mercados-en-vivo">
             <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col md:flex-row items-center justify-between gap-4">
                 <div class="flex items-center gap-2 shrink-0">
-                    <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-                    <span class="text-xs uppercase font-extrabold tracking-wider text-primary">Conversor en tiempo real</span>
+                    <span class="w-2.5 h-2.5 rounded-full bg-secondary animate-pulse"></span>
+                    <span class="text-xs uppercase font-extrabold tracking-wider text-secondary">Conversor en tiempo real</span>
                 </div>
 
                 <div class="flex items-center flex-wrap gap-x-6 gap-y-2 justify-center text-xs font-semibold" id="live-marquee-rates">
-                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
-                        <span class="text-on-surface-variant">Dólar a Guaraní:</span>
-                        <span class="text-primary font-bold" id="ticker-pyg">7.550 ₲</span>
+                    <div class="flex items-center gap-1.5 bg-surfaceSoft px-3 py-1 rounded-lg border border-surfaceBorder">
+                        <span class="text-textMuted">Dólar a Guaraní:</span>
+                        <span class="text-secondary font-black" id="ticker-pyg">7.550 ₲</span>
                     </div>
-                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
-                        <span class="text-on-surface-variant">Euro a Dólar:</span>
-                        <span class="text-tertiary font-bold" id="ticker-eur">$1.08</span>
+                    <div class="flex items-center gap-1.5 bg-surfaceSoft px-3 py-1 rounded-lg border border-surfaceBorder">
+                        <span class="text-textMuted">Euro a Dólar:</span>
+                        <span class="text-primary font-black" id="ticker-eur">$1.08</span>
                     </div>
-                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
-                        <span class="text-on-surface-variant">Dólar a Real:</span>
-                        <span class="text-secondary font-bold" id="ticker-brl">R$ 5.20</span>
+                    <div class="flex items-center gap-1.5 bg-surfaceSoft px-3 py-1 rounded-lg border border-surfaceBorder">
+                        <span class="text-textMuted">Dólar a Real:</span>
+                        <span class="text-amber-700 font-black" id="ticker-brl">R$ 5.20</span>
                     </div>
-                    <div class="flex items-center gap-1.5 bg-surface-high px-3 py-1 rounded-lg border border-outline-warm/30">
-                        <span class="text-on-surface-variant">Dólar a Peso:</span>
-                        <span class="text-on-background font-bold" id="ticker-ars">$ 1.200</span>
+                    <div class="flex items-center gap-1.5 bg-surfaceSoft px-3 py-1 rounded-lg border border-surfaceBorder">
+                        <span class="text-textMuted">Dólar a Peso:</span>
+                        <span class="text-textMain font-black" id="ticker-ars">$ 1.200</span>
                     </div>
                 </div>
 
-                <div class="shrink-0 hidden lg:block text-xs text-on-surface-variant font-medium">
+                <div class="shrink-0 hidden lg:block text-xs text-textMuted font-medium">
                     ✓ Sin calcular mentalmente
                 </div>
             </div>
         </section>
 
-        <!-- SECTION 3: LOS 3 BENEFICIOS PRINCIPALES (Explicados para personas normales) -->
+        <!-- SECTION 3: LOS 3 BENEFICIOS PRINCIPALES (Tarjetas Blancas Cálidas) -->
         <section class="w-full px-5 sm:px-8 py-24 max-w-7xl mx-auto" id="beneficios">
             <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
-                <span class="text-xs font-extrabold uppercase tracking-widest text-primary">Diseñado para tu tranquilidad</span>
-                <h2 class="mt-2 font-display font-extrabold text-3xl sm:text-4xl text-on-background">Todo lo que necesitas para cuidar tu bolsillo</h2>
-                <p class="mt-3 text-base text-on-surface-variant">
+                <span class="text-xs font-extrabold uppercase tracking-widest text-secondary">Diseñado para tu tranquilidad</span>
+                <h2 class="mt-2 font-display font-black text-3xl sm:text-4xl text-textMain">Todo lo que necesitas para cuidar tu bolsillo</h2>
+                <p class="mt-3 text-base text-textMuted">
                     Olvídate de las planillas de Excel difíciles y de anotar números en papeles que siempre se pierden.
                 </p>
             </div>
@@ -340,84 +335,81 @@
             <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
                 
                 <!-- Pilar 1: Multidivisa sin enredos -->
-                <div data-aos="fade-up" data-aos-delay="100" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-xl hover:border-primary/50 transition-all duration-300 group">
+                <div data-aos="fade-up" data-aos-delay="100" class="rounded-3xl bg-white border border-surfaceBorder p-8 flex flex-col justify-between shadow-lg shadow-amber-900/5 hover:border-primary transition-all duration-300 group hover:-translate-y-1">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-primary/15 text-primary flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-50 text-primary border border-amber-200/60 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
                             <i class="fas fa-coins"></i>
                         </div>
-                        <h3 class="font-display font-bold text-2xl text-on-background mb-3">Guaraníes, Dólares o Euros</h3>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">
+                        <h3 class="font-display font-bold text-2xl text-textMain mb-3">Guaraníes, Dólares o Euros</h3>
+                        <p class="text-sm text-textMuted leading-relaxed">
                             Si compras en Guaraníes en el súper o pagas servicios en Dólares por internet, la aplicación <strong>convierte todo automáticamente</strong> al valor del día sin que tengas que sacar una calculadora.
                         </p>
                     </div>
 
-                    <!-- Mini Tarjeta de Ejemplo -->
-                    <div class="mt-8 p-4 rounded-2xl bg-surface-high border border-outline-warm/40 text-xs space-y-2">
-                        <div class="flex justify-between text-on-surface-variant">
+                    <div class="mt-8 p-4 rounded-2xl bg-surfaceSoft border border-surfaceBorder text-xs space-y-2">
+                        <div class="flex justify-between text-textMuted">
                             <span>Compraste:</span>
-                            <span class="font-bold text-on-background">50 USD</span>
+                            <span class="font-bold text-textMain">50 USD</span>
                         </div>
-                        <div class="flex justify-between text-on-surface-variant border-t border-outline-warm/30 pt-2">
+                        <div class="flex justify-between text-textMuted border-t border-surfaceBorder pt-2">
                             <span>Equivale en Guaraníes:</span>
-                            <span class="font-extrabold text-primary">≈ 377.500 ₲</span>
+                            <span class="font-black text-secondary">≈ 377.500 ₲</span>
                         </div>
                     </div>
                 </div>
 
                 <!-- Pilar 2: Asistente Inteligente de Ahorro -->
-                <div data-aos="fade-up" data-aos-delay="200" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-xl hover:border-tertiary/50 transition-all duration-300 group">
+                <div data-aos="fade-up" data-aos-delay="200" class="rounded-3xl bg-white border border-surfaceBorder p-8 flex flex-col justify-between shadow-lg shadow-amber-900/5 hover:border-secondary transition-all duration-300 group hover:-translate-y-1">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-tertiary/15 text-tertiary flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <div class="w-14 h-14 rounded-2xl bg-orange-50 text-secondary border border-orange-200/60 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
                             <i class="fas fa-brain"></i>
                         </div>
-                        <h3 class="font-display font-bold text-2xl text-on-background mb-3">Consejos Claros de Ahorro</h3>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">
-                            Con solo tocar un botón, tu asistente analiza en qué estás gastando más este mes y te entrega <strong>3 ideas sencillas y prácticas</strong> para recortar gastos innecesarios sin que afecte tu estilo de vida.
+                        <h3 class="font-display font-bold text-2xl text-textMain mb-3">Consejos Claros de Ahorro</h3>
+                        <p class="text-sm text-textMuted leading-relaxed">
+                            Con solo tocar un botón, tu asistente analiza en qué estás gastando más este mes y te entrega <strong>3 ideas sencillas y prácticas</strong> para recortar gastos innecesarios sin complicaciones.
                         </p>
                     </div>
 
-                    <!-- Mini Tarjeta de Ejemplo -->
-                    <div class="mt-8 p-4 rounded-2xl bg-surface-high border border-outline-warm/40 text-xs">
-                        <div class="flex items-center gap-2 text-tertiary font-bold mb-1">
+                    <div class="mt-8 p-4 rounded-2xl bg-surfaceSoft border border-surfaceBorder text-xs">
+                        <div class="flex items-center gap-2 text-secondary font-bold mb-1">
                             <i class="fas fa-check-circle"></i>
                             <span>Idea recomendada:</span>
                         </div>
-                        <p class="text-on-background italic">"Tienes 3 suscripciones que casi no usas. Cancela una y ahorra 120.000 ₲ este mes."</p>
+                        <p class="text-textMain italic">"Tienes 3 suscripciones que casi no usas. Cancela una y ahorra 120.000 ₲ este mes."</p>
                     </div>
                 </div>
 
                 <!-- Pilar 3: Avisos al Correo -->
-                <div data-aos="fade-up" data-aos-delay="300" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-xl hover:border-secondary/50 transition-all duration-300 group">
+                <div data-aos="fade-up" data-aos-delay="300" class="rounded-3xl bg-white border border-surfaceBorder p-8 flex flex-col justify-between shadow-lg shadow-amber-900/5 hover:border-amber-500 transition-all duration-300 group hover:-translate-y-1">
                     <div>
-                        <div class="w-14 h-14 rounded-2xl bg-secondary/15 text-secondary flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
+                        <div class="w-14 h-14 rounded-2xl bg-amber-50 text-amber-600 border border-amber-200/60 flex items-center justify-center text-2xl mb-6 group-hover:scale-110 transition-transform">
                             <i class="fas fa-bell"></i>
                         </div>
-                        <h3 class="font-display font-bold text-2xl text-on-background mb-3">Alertas Antes de Sobregirarte</h3>
-                        <p class="text-sm text-on-surface-variant leading-relaxed">
+                        <h3 class="font-display font-bold text-2xl text-textMain mb-3">Alertas Antes de Sobregirarte</h3>
+                        <p class="text-sm text-textMuted leading-relaxed">
                             Tú decides cuánto quieres gastar al mes como máximo. Si un día estás cerca de pasarte del límite, <strong>te llega un aviso a tu correo</strong> para que estés al tanto antes de quedarte corto.
                         </p>
                     </div>
 
-                    <!-- Mini Tarjeta de Ejemplo -->
-                    <div class="mt-8 p-4 rounded-2xl bg-surface-high border border-outline-warm/40 text-xs">
-                        <div class="flex justify-between items-center mb-1 text-rose-400 font-bold">
+                    <div class="mt-8 p-4 rounded-2xl bg-surfaceSoft border border-surfaceBorder text-xs">
+                        <div class="flex justify-between items-center mb-1 text-rose-500 font-bold">
                             <span>⚠️ Aviso Preventivo:</span>
                             <span>Alerta 90%</span>
                         </div>
-                        <p class="text-on-surface-variant">"Te quedan 100.000 ₲ para terminar el mes dentro de tu meta."</p>
+                        <p class="text-textMuted">"Te quedan 100.000 ₲ para terminar el mes dentro de tu meta."</p>
                     </div>
                 </div>
 
             </div>
         </section>
 
-        <!-- SECTION 4: CÓMO FUNCIONA EN 3 PASOS (Directo y Comprensible) -->
-        <section class="w-full px-5 sm:px-8 py-20 bg-surface-low border-t border-outline-warm/60" id="como-funciona">
+        <!-- SECTION 4: CÓMO FUNCIONA EN 3 PASOS -->
+        <section class="w-full px-5 sm:px-8 py-20 bg-surfaceSoft/50 border-t border-surfaceBorder" id="como-funciona">
             <div class="max-w-7xl mx-auto">
                 <div class="text-center max-w-2xl mx-auto mb-16" data-aos="fade-up">
                     <span class="text-xs font-extrabold uppercase tracking-widest text-secondary">Simple y rápido</span>
-                    <h2 class="mt-2 font-display font-extrabold text-3xl sm:text-4xl text-on-background">Empieza a usarlo en 3 simples pasos</h2>
-                    <p class="mt-3 text-base text-on-surface-variant">
+                    <h2 class="mt-2 font-display font-black text-3xl sm:text-4xl text-textMain">Empieza a usarlo en 3 simples pasos</h2>
+                    <p class="mt-3 text-base text-textMuted">
                         No necesitas saber de contabilidad ni de finanzas complejas.
                     </p>
                 </div>
@@ -425,47 +417,47 @@
                 <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     
                     <!-- Paso 1 -->
-                    <div data-aos="fade-up" data-aos-delay="100" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-md">
+                    <div data-aos="fade-up" data-aos-delay="100" class="rounded-3xl bg-white border border-surfaceBorder p-8 flex flex-col justify-between shadow-md">
                         <div>
-                            <div class="text-5xl font-extrabold text-primary/30 font-display mb-4">01</div>
-                            <h3 class="font-display font-bold text-xl text-on-background mb-2">Anota tus compras en segundos</h3>
-                            <p class="text-sm text-on-surface-variant leading-relaxed">
-                                Entras desde tu celular o computadora. Escribes lo que compraste, el monto y eliges si fue en Guaraníes o Dólares. ¡Listo!
+                            <div class="text-5xl font-black text-amber-200 font-display mb-4">01</div>
+                            <h3 class="font-display font-bold text-xl text-textMain mb-2">Anota tus compras en segundos</h3>
+                            <p class="text-sm text-textMuted leading-relaxed">
+                                Entras desde tu celular o compu. Escribes lo que compraste, el monto y eliges si fue en Guaraníes o Dólares. ¡Listo!
                             </p>
                         </div>
-                        <div class="mt-6 p-3.5 rounded-xl bg-surface-high border border-outline-warm/40 text-xs font-semibold text-on-background flex items-center justify-between">
+                        <div class="mt-6 p-3.5 rounded-xl bg-surfaceSoft border border-surfaceBorder text-xs font-semibold text-textMain flex items-center justify-between">
                             <span>"Cena con amigos: 120.000 ₲"</span>
-                            <span class="text-emeraldWarm"><i class="fas fa-check"></i> Guardado</span>
+                            <span class="text-emeraldWarm font-bold"><i class="fas fa-check"></i> Guardado</span>
                         </div>
                     </div>
 
                     <!-- Paso 2 -->
-                    <div data-aos="fade-up" data-aos-delay="200" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-md">
+                    <div data-aos="fade-up" data-aos-delay="200" class="rounded-3xl bg-white border border-surfaceBorder p-8 flex flex-col justify-between shadow-md">
                         <div>
-                            <div class="text-5xl font-extrabold text-secondary/30 font-display mb-4">02</div>
-                            <h3 class="font-display font-bold text-xl text-on-background mb-2">Mira tus totales en gráficos claros</h3>
-                            <p class="text-sm text-on-surface-variant leading-relaxed">
+                            <div class="text-5xl font-black text-orange-200 font-display mb-4">02</div>
+                            <h3 class="font-display font-bold text-xl text-textMain mb-2">Mira tus totales en gráficos claros</h3>
+                            <p class="text-sm text-textMuted leading-relaxed">
                                 Tu pantalla te muestra gráficos de colores fáciles de entender para saber en qué categoría se te va más plata cada semana.
                             </p>
                         </div>
-                        <div class="mt-6 p-3.5 rounded-xl bg-surface-high border border-outline-warm/40 text-xs font-semibold text-on-background flex items-center justify-between">
+                        <div class="mt-6 p-3.5 rounded-xl bg-surfaceSoft border border-surfaceBorder text-xs font-semibold text-textMain flex items-center justify-between">
                             <span>Comida: 45% • Auto: 25%</span>
-                            <span class="text-primary"><i class="fas fa-chart-pie"></i> Visual</span>
+                            <span class="text-secondary font-bold"><i class="fas fa-chart-pie"></i> Visual</span>
                         </div>
                     </div>
 
                     <!-- Paso 3 -->
-                    <div data-aos="fade-up" data-aos-delay="300" class="rounded-3xl bg-surface border border-outline-warm p-8 flex flex-col justify-between shadow-md">
+                    <div data-aos="fade-up" data-aos-delay="300" class="rounded-3xl bg-white border border-surfaceBorder p-8 flex flex-col justify-between shadow-md">
                         <div>
-                            <div class="text-5xl font-extrabold text-tertiary/30 font-display mb-4">03</div>
-                            <h3 class="font-display font-bold text-xl text-on-background mb-2">Ahorra con ideas personalizadas</h3>
-                            <p class="text-sm text-on-surface-variant leading-relaxed">
+                            <div class="text-5xl font-black text-amber-300 font-display mb-4">03</div>
+                            <h3 class="font-display font-bold text-xl text-textMain mb-2">Ahorra con ideas personalizadas</h3>
+                            <p class="text-sm text-textMuted leading-relaxed">
                                 Presiona el botón del Asistente y recibe consejos adaptados a tus gastos para que llegues a fin de mes tranquilo y con ahorro.
                             </p>
                         </div>
-                        <div class="mt-6 p-3.5 rounded-xl bg-surface-high border border-outline-warm/40 text-xs font-semibold text-on-background flex items-center justify-between">
+                        <div class="mt-6 p-3.5 rounded-xl bg-surfaceSoft border border-surfaceBorder text-xs font-semibold text-textMain flex items-center justify-between">
                             <span>"Meta de ahorro alcanzable"</span>
-                            <span class="text-tertiary"><i class="fas fa-star"></i> Listo</span>
+                            <span class="text-primary font-bold"><i class="fas fa-star"></i> Listo</span>
                         </div>
                     </div>
 
@@ -473,36 +465,33 @@
             </div>
         </section>
 
-        <!-- SECTION 5: BANNER FINAL DE ACCIÓN (Invitación Cálida y Confiable) -->
+        <!-- SECTION 5: BANNER FINAL CÁLIDO DE ACCIÓN -->
         <section class="w-full px-5 sm:px-8 py-20 max-w-7xl mx-auto">
-            <div data-aos="zoom-in" class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-surface-high via-surface to-surface-high p-8 sm:p-14 text-center shadow-2xl border border-primary/30">
-                <div class="pointer-events-none absolute -top-24 -left-24 w-80 h-80 bg-primary/20 blur-3xl rounded-full"></div>
-                <div class="pointer-events-none absolute -bottom-24 -right-24 w-80 h-80 bg-orange-500/15 blur-3xl rounded-full"></div>
-
+            <div data-aos="zoom-in" class="relative rounded-3xl overflow-hidden bg-gradient-to-br from-amber-500 via-primary to-secondary p-8 sm:p-14 text-center text-white shadow-2xl shadow-amber-500/25">
                 <div class="relative z-10 max-w-2xl mx-auto">
-                    <span class="inline-block px-4 py-1.5 rounded-full bg-primary/15 text-primary text-xs font-extrabold mb-4 uppercase tracking-wider border border-primary/25">
+                    <span class="inline-block px-4 py-1.5 rounded-full bg-white/20 text-white text-xs font-extrabold mb-4 uppercase tracking-wider backdrop-blur-sm">
                         Tu tranquilidad financiera empieza hoy
                     </span>
                     
-                    <h2 class="font-display font-black text-3xl sm:text-5xl text-on-background tracking-tight">
+                    <h2 class="font-display font-black text-3xl sm:text-5xl tracking-tight">
                         ¿Listo para tener el control real de tu dinero?
                     </h2>
 
-                    <p class="mt-4 text-base sm:text-lg text-on-surface-variant">
+                    <p class="mt-4 text-base sm:text-lg text-white/90">
                         Crea tu cuenta en menos de un minuto y empieza a organizar tus gastos de forma sencilla, rápida y gratuita.
                     </p>
 
                     <div class="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
-                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-extrabold text-surface bg-gradient-to-r from-primary to-amber-500 hover:from-amber-400 hover:to-orange-500 shadow-[0_6px_25px_rgba(245,158,11,0.4)] transition-all transform hover:-translate-y-1" href="/register.html">
+                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-black text-textMain bg-white hover:bg-amber-50 shadow-xl transition-all transform hover:-translate-y-1" href="/register.html">
                             <span>Comenzar Ahora — Es Gratis</span>
                             <i class="fas fa-arrow-right text-sm"></i>
                         </a>
-                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-bold text-on-background bg-surface-high hover:bg-surface-highest border border-outline-warm transition-all" href="/login.html">
+                        <a class="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-4 rounded-2xl text-base font-bold text-white bg-white/15 hover:bg-white/25 border border-white/30 backdrop-blur-sm transition-all" href="/login.html">
                             <span>Iniciar Sesión</span>
                         </a>
                     </div>
 
-                    <p class="mt-6 text-xs text-on-surface-variant flex flex-wrap items-center justify-center gap-3">
+                    <p class="mt-6 text-xs text-white/80 flex flex-wrap items-center justify-center gap-3 font-medium">
                         <span>✓ Sin costos ocultos</span>
                         <span>•</span>
                         <span>✓ Tus datos están 100% protegidos</span>
@@ -515,22 +504,22 @@
 
     </main>
 
-    <!-- Footer Amigable -->
-    <footer class="w-full bg-surface-low border-t border-outline-warm/60 py-12">
+    <!-- Footer Cálido -->
+    <footer class="w-full bg-white border-t border-surfaceBorder py-12">
         <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
             <div class="flex items-center gap-3">
-                <img alt="GastoSmart Logo" class="h-8 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/32x32/f59e0b/12100e?text=GS'"/>
-                <span class="font-display font-bold text-xl text-on-background">GastoSmart</span>
-                <span class="text-xs text-on-surface-variant ml-2">Control de Gastos Personales</span>
+                <img alt="GastoSmart Logo" class="h-8 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/32x32/f59e0b/ffffff?text=GS'"/>
+                <span class="font-display font-extrabold text-xl text-textMain">GastoSmart</span>
+                <span class="text-xs text-textMuted ml-2">Control de Gastos Personales</span>
             </div>
 
-            <div class="flex items-center gap-6 text-sm font-semibold text-on-surface-variant">
+            <div class="flex items-center gap-6 text-sm font-semibold text-textMuted">
                 <a href="/login.html" class="hover:text-primary transition-colors">Iniciar Sesión</a>
                 <a href="/register.html" class="hover:text-primary transition-colors">Crear Cuenta</a>
                 <a href="/dashboard.html" class="hover:text-primary transition-colors">Mi Panel</a>
             </div>
 
-            <p class="text-xs text-on-surface-variant">
+            <p class="text-xs text-textLight">
                 © 2026 GastoSmart • Todos los derechos reservados.
             </p>
         </div>
@@ -540,7 +529,6 @@
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="/assets/js/auth.js"></script>
     <script>
-        // 1. Inicializar animaciones de scroll (AOS)
         AOS.init({
             duration: 750,
             once: true,
@@ -548,7 +536,6 @@
             easing: 'ease-out-cubic'
         });
 
-        // 2. Cargar cotizaciones reales en vivo para los tickers
         async function fetchLiveRates() {
             try {
                 const res = await fetch('/api/currency/rates');
@@ -580,13 +567,12 @@
 
         fetchLiveRates();
 
-        // 3. Detectar si el usuario ya está autenticado
         Auth.checkSession(false).then(user => {
             if (user) {
                 const container = document.getElementById('auth-buttons-container');
                 if (container) {
                     container.innerHTML = `
-                        <a href="/dashboard.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold text-surface bg-gradient-to-r from-primary to-amber-500 hover:from-amber-400 hover:to-orange-500 shadow-md transition-all transform hover:-translate-y-0.5">
+                        <a href="/dashboard.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-primary to-secondary shadow-md transition-all transform hover:-translate-y-0.5">
                             <span>Ir a mi Dashboard</span>
                             <i class="fas fa-arrow-right text-xs"></i>
                         </a>
