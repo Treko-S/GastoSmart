@@ -77,11 +77,11 @@ function renderDashboard(data) {
   progressBar.style.width = `${Math.min(porcentaje, 100)}%`;
 
   if (porcentaje >= 95) {
-    progressBar.className = 'bg-red-500 h-2 rounded-full transition-all duration-500';
+    progressBar.className = 'bg-rose-500 h-2.5 rounded-full transition-all duration-500';
   } else if (porcentaje >= 75) {
-    progressBar.className = 'bg-amber-500 h-2 rounded-full transition-all duration-500';
+    progressBar.className = 'bg-amber-500 h-2.5 rounded-full transition-all duration-500';
   } else {
-    progressBar.className = 'bg-primary h-2 rounded-full transition-all duration-500';
+    progressBar.className = 'bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full transition-all duration-500';
   }
 
   // Banner Alerta Presupuesto
