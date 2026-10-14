@@ -78,7 +78,7 @@
                 <span>Términos y Privacidad</span>
             </a>
             
-            <button onclick="Auth.logout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer mt-2">
+            <button onclick="confirmLogout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer mt-2">
                 <i class="fas fa-sign-out-alt w-4"></i>
                 <span>Cerrar Sesión</span>
             </button>
@@ -98,9 +98,9 @@
                 <div id="currency-ticker" class="hidden sm:block"></div>
             </div>
 
-            <!-- Perfil de Usuario -->
-            <div class="flex items-center gap-3">
-                <div class="flex items-center gap-2.5">
+            <!-- Perfil de Usuario + Botón Cerrar Sesión Móvil -->
+            <div class="flex items-center gap-2.5">
+                <div class="flex items-center gap-2">
                     <div class="w-9 h-9 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center border border-emerald-300 shadow-2xs" id="user-avatar">
                         U
                     </div>
@@ -109,6 +109,12 @@
                         <div class="text-[10px] text-slate-500 font-bold" id="user-role">Usuario</div>
                     </div>
                 </div>
+
+                <!-- Botón Cerrar Sesión Móvil Directo en Header Superior -->
+                <button onclick="confirmLogout()" class="md:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-600 border border-rose-200/90 font-extrabold transition active:scale-95 cursor-pointer shadow-2xs" title="Cerrar Sesión">
+                    <i class="fas fa-sign-out-alt text-xs"></i>
+                    <span class="text-[11px] font-black">Salir</span>
+                </button>
             </div>
         </header>
 
@@ -515,6 +521,23 @@
                 <button type="submit" id="btn-save-settings" class="w-full bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black py-3.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer">
                     Guardar Ajustes
                 </button>
+
+                <!-- Zona de Cerrar Sesión en Ajustes (Móvil & Desktop) -->
+                <div class="pt-4 border-t border-slate-100 flex flex-col gap-3">
+                    <button type="button" onclick="confirmLogout()" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-xs transition cursor-pointer shadow-2xs">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Cerrar Sesión de la Cuenta</span>
+                    </button>
+                    
+                    <!-- Enlaces Institucionales Móviles -->
+                    <div class="md:hidden flex items-center justify-center gap-3 text-[11px] text-slate-400 font-semibold pt-1">
+                        <a href="/soporte.html" class="hover:text-emerald-700 transition">Soporte Técnico</a>
+                        <span>•</span>
+                        <a href="/sobre-nosotros.html" class="hover:text-emerald-700 transition">Sobre Nosotros</a>
+                        <span>•</span>
+                        <a href="/terminos.html" class="hover:text-emerald-700 transition">Términos</a>
+                    </div>
+                </div>
             </form>
         </div>
     </main>

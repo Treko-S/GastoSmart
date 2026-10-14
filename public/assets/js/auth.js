@@ -45,8 +45,22 @@ const Auth = {
   },
 
   async logout() {
-    await fetch('/api/auth/logout', { method: 'POST' });
+    try {
+      await fetch('/api/auth/logout', { method: 'POST' });
+    } catch (e) {
+      console.warn('Error al comunicarse con logout endpoint:', e);
+    }
+    try {
+      localStorage.removeItem('gastosmart_user');
+      sessionStorage.clear();
+    } catch (e) {}
     window.location.href = '/login.html';
+  }
+};
+
+window.confirmLogout = function() {
+  if (confirm('¿Deseas cerrar sesión en GastoSmart?')) {
+    Auth.logout();
   }
 };
 
