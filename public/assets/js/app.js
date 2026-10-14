@@ -68,7 +68,7 @@ function renderDashboard(data) {
   const totalUSD = Number(resumen.total_usd) || 0;
   const storedPeriod = localStorage.getItem('gastosmart_budget_period') || 'mensual';
   const storedCurr = localStorage.getItem('gastosmart_budget_curr') || 'USD';
-  const defaultAmount = Number(resumen.limite_usd) || 1000;
+  const defaultAmount = Number(resumen.limite_usd) || 100;
   const storedAmount = parseFloat(localStorage.getItem('gastosmart_budget_amount')) || 
     (storedCurr === 'USD' ? defaultAmount : CurrencyManager.convert(defaultAmount, 'USD', storedCurr));
 
@@ -719,7 +719,7 @@ function initUserSettings(user) {
 
   const storedPeriod = localStorage.getItem('gastosmart_budget_period') || 'mensual';
   const storedCurr = localStorage.getItem('gastosmart_budget_curr') || user.moneda_principal || 'USD';
-  const storedAmount = localStorage.getItem('gastosmart_budget_amount') || user.limite_mensual_usd || 1000;
+  const storedAmount = localStorage.getItem('gastosmart_budget_amount') || user.limite_mensual_usd || 100;
 
   setBudgetPeriod(storedPeriod, false);
   setBudgetCurrency(storedCurr, false);

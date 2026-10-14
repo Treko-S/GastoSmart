@@ -22,7 +22,7 @@ export default async function handler(req, res) {
         .eq('id', user.id)
         .single();
 
-      const limiteUSD = userData?.limite_mensual_usd || 1000.00;
+      const limiteUSD = userData?.limite_mensual_usd || 100.00;
 
       // Construir filtro de fecha
       let query = supabase

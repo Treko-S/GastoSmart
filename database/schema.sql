@@ -13,7 +13,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
     email VARCHAR(150) UNIQUE NOT NULL,
     password_hash VARCHAR(255) NOT NULL,
     rol VARCHAR(20) DEFAULT 'usuario' CHECK (rol IN ('usuario', 'admin')),
-    limite_mensual_usd NUMERIC(12, 2) DEFAULT 1000.00,
+    limite_mensual_usd NUMERIC(12, 2) DEFAULT 100.00,
     moneda_principal VARCHAR(5) DEFAULT 'USD' CHECK (moneda_principal IN ('USD', 'PYG', 'EUR', 'BRL', 'ARS')),
     notificaciones_email BOOLEAN DEFAULT TRUE,
     creado_en TIMESTAMPTZ DEFAULT NOW(),

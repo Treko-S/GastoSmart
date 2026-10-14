@@ -142,7 +142,7 @@
                     <p class="text-xs sm:text-sm text-slate-600 font-medium mt-1">Controla tus gastos, tu presupuesto mensual y cotizaciones al instante.</p>
                 </div>
                 <div>
-                    <button onclick="openModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-sm py-3 px-6 rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition active:scale-95 cursor-pointer">
+                    <button id="tour-btn-add-desktop" onclick="openModal()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-sm py-3 px-6 rounded-2xl shadow-lg shadow-emerald-600/25 hover:shadow-emerald-600/40 transition active:scale-95 cursor-pointer">
                         <i class="fas fa-plus text-xs"></i>
                         <span>Registrar Gasto</span>
                     </button>
@@ -176,21 +176,21 @@
                 </div>
 
                 <!-- Presupuesto y Progreso (Dinámico) -->
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-teal-300 hover:shadow-md transition">
+                <div id="tour-card-budget" class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-teal-300 hover:shadow-md transition">
                     <div class="flex items-center justify-between text-slate-500 mb-2">
                         <span class="text-xs font-black uppercase tracking-wider" id="stat-limite-label">Presupuesto Mensual</span>
                         <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60 flex items-center justify-center text-sm">
                             <i class="fas fa-wallet"></i>
                         </div>
                     </div>
-                    <div class="text-3xl font-black text-slate-900" id="stat-limite-usd">$1,000.00</div>
+                    <div class="text-3xl font-black text-slate-900" id="stat-limite-usd">$100.00</div>
                     <div class="text-xs font-bold text-slate-500 mt-1" id="stat-limite-sub">≈ Gs. 0</div>
                     <div class="w-full bg-slate-100 h-2.5 rounded-full mt-3 overflow-hidden border border-slate-200">
                         <div id="stat-progress-bar" class="bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full transition-all duration-500" style="width: 0%"></div>
                     </div>
                     <div class="flex justify-between items-center text-[11px] text-slate-600 mt-2 font-bold">
                         <span id="stat-porcentaje">0% consumido</span>
-                        <span id="stat-restante" class="text-emerald-700 font-extrabold">Restante: $1,000.00</span>
+                        <span id="stat-restante" class="text-emerald-700 font-extrabold">Restante: $100.00</span>
                     </div>
                 </div>
 
@@ -326,7 +326,7 @@
             </div>
 
             <!-- Contenedor Responsivo: Cards en Móvil + Tabla en Desktop -->
-            <div class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+            <div id="tour-card-history" class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
                 <!-- Vista Móvil: Lista de Tarjetas (Cards) para Pantallas Pequeñas -->
                 <div id="history-mobile-cards" class="md:hidden divide-y divide-slate-100">
                     <!-- Inyectado por JS para móvil -->
@@ -367,7 +367,7 @@
             </div>
 
             <!-- Calculadora Conversora Interactiva Bidireccional -->
-            <div class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 shadow-sm space-y-5">
+            <div id="tour-card-converter" class="bg-white border border-slate-200 rounded-3xl p-5 sm:p-8 shadow-sm space-y-5">
                 <!-- Selectores de Monedas y Monto Móvil-First -->
                 <div class="space-y-3">
                     <!-- Monto -->
@@ -471,6 +471,7 @@
                 </div>
 
                 <!-- Período del Presupuesto (Semanal / Mensual) -->
+                <div id="tour-card-budget-settings" class="space-y-4">
                 <div>
                     <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Período del Límite de Gasto</label>
                     <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200" id="budget-period-selector">
@@ -518,6 +519,7 @@
                             <!-- Inyectado por JS -->
                         </div>
                     </div>
+                </div>
                 </div>
 
                 <!-- Avisos por Correo -->
@@ -651,7 +653,7 @@
 
             <!-- 3. Botón Central + Elevado (Registrar Gasto) -->
             <div class="flex items-center justify-center h-full">
-                <button onclick="openModal()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-600 text-white flex items-center justify-center text-xl shadow-lg shadow-emerald-600/40 border-2 border-white -translate-y-3.5 active:scale-90 transition-transform cursor-pointer" title="Registrar Gasto">
+                <button id="tour-btn-add-mobile" onclick="openModal()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-600 text-white flex items-center justify-center text-xl shadow-lg shadow-emerald-600/40 border-2 border-white -translate-y-3.5 active:scale-90 transition-transform cursor-pointer" title="Registrar Gasto">
                     <i class="fas fa-plus"></i>
                 </button>
             </div>

@@ -1,261 +1,365 @@
 /**
- * GastoSmart - Recorrido Guiado Interactivo (Onboarding Tour)
- * Funciona perfectamente tanto en PC como en móviles.
- * Permite avanzar, retroceder, saltar u omitir en cualquier momento.
+ * GastoSmart - Recorrido Guiado Interactivo Profesional (Spotlight Guided Tour)
+ * - Oscurece el fondo con overlay oscuro semi-transparente.
+ * - Enfoca y resalta con foco luminoso el botón o sección exacto de cada paso.
+ * - Desplaza la pantalla suavemente hacia el elemento enfocado.
+ * - Muestra un tooltip popover adyacente profesional (no tapa la pantalla).
+ * - Totalmente adaptado para PC y Celulares.
+ * - Permite avanzar, retroceder u omitir en cualquier momento.
  */
 
 const GastoSmartTour = (() => {
   let currentStep = 0;
   let currentUserId = null;
-  let isOpen = false;
+  let isActive = false;
+  let resizeHandlerAttached = false;
 
   const STEPS = [
     {
       step: 1,
-      badge: 'Paso 1 de 5',
-      progress: 20,
+      badge: '1 de 5',
       view: 'resumen',
-      icon: 'fas fa-chart-pie',
-      iconBg: 'bg-emerald-100 text-emerald-700',
-      title: '¡Bienvenido a GastoSmart! 🚀',
-      subtitle: 'Tu centro de control financiero',
-      description: 'Aquí tienes un resumen en tiempo real de tu balance, tu gasto total y el margen de presupuesto disponible. Además, el gráfico de dona clasifica visualmente todas tus compras por categoría.',
-      tip: 'Tip: Los valores se actualizan al instante con cada movimiento.'
+      getTarget: () => document.getElementById('tour-card-budget'),
+      icon: 'fas fa-wallet',
+      title: 'Presupuesto y Control de Gastos',
+      description: 'Aquí visualizas tu límite mensual (fijado en <b>$100.00 USD</b> por defecto), el dinero consumido y el porcentaje disponible en tiempo real con barra de progreso.'
     },
     {
       step: 2,
-      badge: 'Paso 2 de 5',
-      progress: 40,
+      badge: '2 de 5',
       view: 'resumen',
+      getTarget: () => {
+        const isMobile = window.innerWidth < 768;
+        return isMobile 
+          ? (document.getElementById('tour-btn-add-mobile') || document.getElementById('tour-btn-add-desktop'))
+          : (document.getElementById('tour-btn-add-desktop') || document.getElementById('tour-btn-add-mobile'));
+      },
       icon: 'fas fa-plus-circle',
-      iconBg: 'bg-teal-100 text-teal-700',
-      title: 'Registra Gastos en Segundos ➕',
-      subtitle: 'Multi-moneda y fecha automática',
-      description: 'Anota compras en Dólares ($), Guaraníes (₲), Euros (€) o Reales (R$). La app convierte los montos de forma automática a tu moneda base y bloquea la fecha para mantener un registro histórico fiable.',
-      tip: 'En móvil: Toca el botón verde "+" al centro de la barra inferior.<br>En PC: Usa el botón "Registrar Gasto" superior.'
+      title: 'Anotar un Gasto en Segundos',
+      description: 'Pulsa este botón para registrar compras en <b>Dólares ($)</b>, <b>Guaraníes (₲)</b>, <b>Euros (€)</b> o <b>Reales (R$)</b>. La cotización se calcula al instante con fecha exacta.'
     },
     {
       step: 3,
-      badge: 'Paso 3 de 5',
-      progress: 60,
+      badge: '3 de 5',
       view: 'historial',
+      getTarget: () => document.getElementById('tour-card-history'),
       icon: 'fas fa-list-ul',
-      iconBg: 'bg-blue-100 text-blue-700',
-      title: 'Historial y Filtros 📜',
-      subtitle: 'Audita y administra cada movimiento',
-      description: 'Revisa todas tus compras organizadas cronológicamente. En computadora dispones de una tabla completa y en celular de tarjetas táctiles compactas con categoría, monto y fecha.',
-      tip: 'Puedes filtrar por mes, semana o año, además de editar o eliminar cualquier registro.'
+      title: 'Historial de Movimientos',
+      description: 'Revisa todas tus compras organizadas cronológicamente con filtros por período. Puedes auditar, editar o eliminar cualquier gasto fácilmente.'
     },
     {
       step: 4,
-      badge: 'Paso 4 de 5',
-      progress: 80,
+      badge: '4 de 5',
       view: 'conversor',
+      getTarget: () => document.getElementById('tour-card-converter'),
       icon: 'fas fa-coins',
-      iconBg: 'bg-amber-100 text-amber-700',
-      title: 'Conversor y Cotizaciones en Vivo 💱',
-      subtitle: 'Tasas cambiarias en tiempo real',
-      description: 'Consulta cotizaciones oficiales del mercado (USD, PYG, EUR, BRL) actualizadas automáticamente. Convierte cualquier monto de ida y vuelta y pásalo directo a gasto con un toque.',
-      tip: 'Toca cualquier tarjeta de la pizarra para cargarla instantáneamente en el conversor.'
+      title: 'Conversor y Cotizaciones en Vivo',
+      description: 'Consulta cotizaciones oficiales del mercado actualizadas al minuto. Convierte valores de ida y vuelta entre USD, PYG, EUR y BRL con un solo toque.'
     },
     {
       step: 5,
-      badge: 'Paso 5 de 5',
-      progress: 100,
+      badge: '5 de 5',
       view: 'ajustes',
+      getTarget: () => document.getElementById('tour-card-budget-settings'),
       icon: 'fas fa-sliders-h',
-      iconBg: 'bg-purple-100 text-purple-700',
-      title: 'Ajustes y Alertas Preventivas ⚙️',
-      subtitle: 'Límites personalizados a tu medida',
-      description: 'Fija un presupuesto límite (semanal o mensual) en la moneda que elijas. Si te acercas o sobrepasas tu límite, GastoSmart te alertará en pantalla y te enviará un correo preventivo.',
-      tip: 'Aquí también puedes cambiar tu nombre, correo y cerrar sesión de forma segura.'
+      title: 'Personaliza tu Límite y Alertas',
+      description: 'Establece tu presupuesto semanal o mensual en tu moneda favorita y activa avisos preventivos a tu correo antes de sobrepasar el límite fijado.'
     }
   ];
 
   function getStorageKey(userId) {
-    return 'gastosmart_tour_v1_' + (userId || 'guest');
+    return 'gastosmart_tour_v2_' + (userId || 'guest');
   }
 
-  function createTourElements() {
-    if (document.getElementById('gs-tour-overlay')) return;
+  function injectDOMElements() {
+    if (document.getElementById('gs-tour-root')) return;
 
-    const overlay = document.createElement('div');
-    overlay.id = 'gs-tour-overlay';
-    overlay.className = 'fixed inset-0 z-50 bg-slate-950/70 backdrop-blur-xs flex items-center justify-center p-4 transition-opacity duration-300 opacity-0 pointer-events-none';
-    overlay.setAttribute('role', 'dialog');
-    overlay.setAttribute('aria-modal', 'true');
-    overlay.setAttribute('aria-labelledby', 'gs-tour-title');
+    const root = document.createElement('div');
+    root.id = 'gs-tour-root';
+    root.className = 'fixed inset-0 pointer-events-none transition-opacity duration-300 opacity-0';
+    root.style.zIndex = '99990';
 
-    overlay.innerHTML = `
-      <div id="gs-tour-card" class="bg-white rounded-3xl max-w-md w-full max-h-[92vh] overflow-y-auto p-6 sm:p-7 shadow-2xl border border-slate-200/80 transform transition-all duration-300 scale-95 flex flex-col relative">
-        
-        <!-- Barra de Progreso Superior -->
-        <div class="absolute top-0 left-0 right-0 h-1.5 bg-slate-100">
-          <div id="gs-tour-progress" class="h-full bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 transition-all duration-300" style="width: 20%"></div>
-        </div>
+    root.innerHTML = `
+      <!-- Telón de Fondo Interactivo (Click en fondo oscuro también puede omitir o permanecer) -->
+      <div id="gs-tour-backdrop" class="fixed inset-0 pointer-events-auto transition-opacity duration-300" style="background: rgba(15, 23, 42, 0.78);"></div>
 
-        <!-- Cabecera del Tour -->
-        <div class="flex items-center justify-between pt-1 mb-4">
-          <span id="gs-tour-badge" class="text-[11px] font-black uppercase tracking-wider px-2.5 py-1 rounded-full bg-emerald-100 text-emerald-800">
-            Paso 1 de 5
-          </span>
-          <button type="button" onclick="GastoSmartTour.skip()" class="inline-flex items-center gap-1 text-xs font-bold text-slate-400 hover:text-slate-700 hover:bg-slate-100 px-2 py-1 rounded-lg transition cursor-pointer" title="Omitir recorrido guiado">
+      <!-- Recuadro Foco Luminoso (Spotlight Box) -->
+      <div id="gs-tour-spotlight" class="fixed pointer-events-none transition-all duration-300" style="
+        border-radius: 18px;
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.78), 0 0 30px rgba(16, 185, 129, 0.65);
+        border: 2.5px solid #10b981;
+        z-index: 99995;
+      "></div>
+
+      <!-- Popover / Tooltip Contextual Inteligente -->
+      <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 transition-all duration-300 flex flex-col" style="
+        width: calc(100vw - 32px);
+        max-width: 380px;
+        z-index: 100000;
+      ">
+        <!-- Cabecera Popover -->
+        <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
+          <div class="flex items-center gap-2">
+            <span id="gs-popover-badge" class="px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
+              Paso 1 de 5
+            </span>
+            <span class="text-[11px] font-bold text-slate-400">Guía Interactiva</span>
+          </div>
+          <button type="button" onclick="GastoSmartTour.skip()" class="text-xs font-bold text-slate-400 hover:text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-lg transition cursor-pointer flex items-center gap-1" title="Omitir recorrido">
             <span>Omitir</span>
             <i class="fas fa-times text-xs"></i>
           </button>
         </div>
 
         <!-- Cuerpo del Paso -->
-        <div class="space-y-3">
-          <div class="flex items-center gap-3">
-            <div id="gs-tour-icon-box" class="w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0 bg-emerald-100 text-emerald-700 shadow-2xs">
-              <i id="gs-tour-icon" class="fas fa-chart-pie"></i>
+        <div class="py-1">
+          <div class="flex items-start gap-2.5 mb-1.5">
+            <div id="gs-popover-icon-box" class="w-8 h-8 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center shrink-0 mt-0.5 text-sm font-black">
+              <i id="gs-popover-icon" class="fas fa-wallet"></i>
             </div>
             <div>
-              <h3 id="gs-tour-title" class="font-display font-black text-lg text-slate-900 leading-tight">Título del Paso</h3>
-              <p id="gs-tour-subtitle" class="text-xs text-slate-500 font-bold mt-0.5">Subtítulo explicativo</p>
+              <h4 id="gs-popover-title" class="font-display font-black text-sm sm:text-base text-slate-900 leading-snug">Título del apartado</h4>
             </div>
           </div>
-
-          <p id="gs-tour-desc" class="text-xs sm:text-sm text-slate-600 leading-relaxed font-medium pt-1">
-            Descripción detallada del paso...
+          <p id="gs-popover-desc" class="text-xs sm:text-[13px] text-slate-600 leading-relaxed font-medium mt-1">
+            Descripción breve y concisa de la funcionalidad.
           </p>
-
-          <div id="gs-tour-tip-box" class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 text-[11px] text-slate-600 font-semibold flex items-start gap-2">
-            <i class="fas fa-lightbulb text-amber-500 mt-0.5 shrink-0"></i>
-            <span id="gs-tour-tip">Consejo útil</span>
-          </div>
         </div>
 
-        <!-- Indicador de Puntos (Dots) -->
-        <div class="flex items-center justify-center gap-1.5 my-5" id="gs-tour-dots">
-          ${STEPS.map((_, i) => `
-            <button type="button" onclick="GastoSmartTour.goTo(${i})" class="gs-tour-dot w-2 h-2 rounded-full transition-all duration-200 ${i === 0 ? 'bg-emerald-600 w-6' : 'bg-slate-200 hover:bg-slate-300'}" aria-label="Ir al paso ${i + 1}"></button>
-          `).join('')}
-        </div>
-
-        <!-- Botones de Acción Inferiores -->
-        <div class="flex items-center justify-between gap-3 pt-2 border-t border-slate-100">
-          <button type="button" id="gs-tour-btn-prev" onclick="GastoSmartTour.prev()" class="px-4 py-2.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-bold text-xs transition cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed">
-            <i class="fas fa-arrow-left mr-1"></i>
-            <span>Anterior</span>
+        <!-- Indicador de Puntos y Navegación -->
+        <div class="flex items-center justify-between pt-3 mt-3 border-t border-slate-100">
+          <!-- Botón Anterior -->
+          <button type="button" id="gs-popover-prev" onclick="GastoSmartTour.prev()" class="px-3 py-1.5 rounded-xl border border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-50 font-bold text-xs transition cursor-pointer disabled:opacity-30 disabled:cursor-not-allowed">
+            <i class="fas fa-arrow-left text-[10px] mr-1"></i> Anterior
           </button>
 
-          <div class="flex items-center gap-2">
-            <button type="button" id="gs-tour-btn-next" onclick="GastoSmartTour.next()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs shadow-md shadow-emerald-600/20 transition active:scale-95 cursor-pointer flex items-center gap-1.5">
-              <span id="gs-tour-btn-next-text">Siguiente</span>
-              <i id="gs-tour-btn-next-icon" class="fas fa-arrow-right text-[11px]"></i>
-            </button>
+          <!-- Puntos (Dots) -->
+          <div class="flex items-center gap-1.5" id="gs-popover-dots">
+            ${STEPS.map((_, i) => `
+              <button type="button" onclick="GastoSmartTour.goTo(${i})" class="gs-tour-dot w-2 h-2 rounded-full transition-all duration-200 ${i === 0 ? 'bg-emerald-600 w-5' : 'bg-slate-200'}" aria-label="Paso ${i + 1}"></button>
+            `).join('')}
           </div>
-        </div>
 
+          <!-- Botón Siguiente / Finalizar -->
+          <button type="button" id="gs-popover-next" onclick="GastoSmartTour.next()" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs shadow-md shadow-emerald-600/20 transition active:scale-95 cursor-pointer flex items-center gap-1.5">
+            <span id="gs-popover-next-text">Siguiente</span>
+            <i id="gs-popover-next-icon" class="fas fa-arrow-right text-[10px]"></i>
+          </button>
+        </div>
       </div>
     `;
 
-    document.body.appendChild(overlay);
+    document.body.appendChild(root);
+
+    // Si el usuario hace clic en el fondo oscuro, no se cierra accidentalmente, pero se le da feedback
+    const backdrop = document.getElementById('gs-tour-backdrop');
+    if (backdrop) {
+      backdrop.addEventListener('click', (e) => {
+        if (e.target === backdrop) {
+          // Si hace clic fuera del popover, se avanza al siguiente paso para una experiencia fluida
+          GastoSmartTour.next();
+        }
+      });
+    }
+
+    if (!resizeHandlerAttached) {
+      window.addEventListener('resize', handleViewportChange);
+      window.addEventListener('scroll', handleViewportChange, true);
+      resizeHandlerAttached = true;
+    }
   }
 
-  function renderStep(index) {
-    if (index < 0 || index >= STEPS.length) return;
-    currentStep = index;
-    const s = STEPS[index];
+  function handleViewportChange() {
+    if (!isActive) return;
+    updateSpotlightAndPopover(currentStep, false);
+  }
 
-    // Cambiar la vista de la SPA si corresponde para que el usuario vea la sección real
-    if (typeof switchView === 'function') {
+  function updateSpotlightAndPopover(index, doScroll = true) {
+    if (index < 0 || index >= STEPS.length) return;
+    const step = STEPS[index];
+    const spotlight = document.getElementById('gs-tour-spotlight');
+    const popover = document.getElementById('gs-tour-popover');
+    if (!spotlight || !popover) return;
+
+    let target = step.getTarget();
+    if (!target) {
+      // Reintentar tras un breve momento si el DOM está terminando de renderizar la vista
+      setTimeout(() => {
+        target = step.getTarget();
+        if (target) positionElements(target, step, index, doScroll);
+      }, 100);
+      return;
+    }
+
+    positionElements(target, step, index, doScroll);
+  }
+
+  function positionElements(target, step, index, doScroll) {
+    const spotlight = document.getElementById('gs-tour-spotlight');
+    const popover = document.getElementById('gs-tour-popover');
+    if (!spotlight || !popover) return;
+
+    if (doScroll) {
       try {
-        switchView(s.view);
-      } catch (e) {
-        console.warn('Error al cambiar vista en tour:', e);
+        target.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'center' });
+      } catch (e) {}
+    }
+
+    // Tras scroll suave, calcular rect exacto
+    const delay = doScroll ? 180 : 0;
+    setTimeout(() => {
+      const rect = target.getBoundingClientRect();
+      const padding = 8;
+
+      const top = Math.max(0, rect.top - padding);
+      const left = Math.max(0, rect.left - padding);
+      const width = rect.width + (padding * 2);
+      const height = rect.height + (padding * 2);
+
+      // Posicionar Recuadro Foco
+      spotlight.style.top = `${top}px`;
+      spotlight.style.left = `${left}px`;
+      spotlight.style.width = `${width}px`;
+      spotlight.style.height = `${height}px`;
+
+      // Posicionar Popover de manera inteligente
+      positionPopover(rect);
+
+      // Actualizar Contenido del Popover
+      updatePopoverContent(step, index);
+    }, delay);
+  }
+
+  function positionPopover(targetRect) {
+    const popover = document.getElementById('gs-tour-popover');
+    if (!popover) return;
+
+    const isMobile = window.innerWidth < 640;
+    const popRect = popover.getBoundingClientRect();
+    const popHeight = popRect.height || 180;
+    const popWidth = Math.min(380, window.innerWidth - 32);
+
+    let popTop = 0;
+    let popLeft = 16;
+
+    if (isMobile) {
+      // En móvil: centrado horizontalmente
+      popLeft = Math.max(16, (window.innerWidth - popWidth) / 2);
+
+      // Si el elemento está en la mitad inferior de la pantalla, posicionar el tooltip ARRIBA del elemento
+      if (targetRect.top > window.innerHeight / 2) {
+        popTop = Math.max(16, targetRect.top - popHeight - 16);
+      } else {
+        // Si está en la mitad superior, colocarlo DEBAJO del elemento
+        popTop = Math.min(window.innerHeight - popHeight - 16, targetRect.bottom + 16);
+      }
+    } else {
+      // En PC / Desktop:
+      // Alinear horizontalmente centrado con respecto al elemento objetivo
+      popLeft = targetRect.left + (targetRect.width / 2) - (popWidth / 2);
+      popLeft = Math.max(20, Math.min(window.innerWidth - popWidth - 20, popLeft));
+
+      // Verificar si cabe abajo
+      if (targetRect.bottom + popHeight + 20 < window.innerHeight) {
+        popTop = targetRect.bottom + 14;
+      } else if (targetRect.top - popHeight - 20 > 0) {
+        popTop = targetRect.top - popHeight - 14;
+      } else {
+        // En caso extremo, ubicar a un costado o centrado vertical
+        popTop = Math.max(20, (window.innerHeight - popHeight) / 2);
       }
     }
 
-    // Actualizar elementos visuales del modal
-    const badge = document.getElementById('gs-tour-badge');
-    const title = document.getElementById('gs-tour-title');
-    const subtitle = document.getElementById('gs-tour-subtitle');
-    const desc = document.getElementById('gs-tour-desc');
-    const tip = document.getElementById('gs-tour-tip');
-    const iconBox = document.getElementById('gs-tour-icon-box');
-    const icon = document.getElementById('gs-tour-icon');
-    const progress = document.getElementById('gs-tour-progress');
-    const btnPrev = document.getElementById('gs-tour-btn-prev');
-    const btnNextText = document.getElementById('gs-tour-btn-next-text');
-    const btnNextIcon = document.getElementById('gs-tour-btn-next-icon');
+    popover.style.top = `${popTop}px`;
+    popover.style.left = `${popLeft}px`;
+    popover.style.width = `${popWidth}px`;
+  }
 
-    if (badge) badge.textContent = s.badge;
-    if (title) title.textContent = s.title;
-    if (subtitle) subtitle.textContent = s.subtitle;
-    if (desc) desc.innerHTML = s.description;
-    if (tip) tip.innerHTML = s.tip;
-    if (progress) progress.style.width = `${s.progress}%`;
+  function updatePopoverContent(step, index) {
+    const badge = document.getElementById('gs-popover-badge');
+    const icon = document.getElementById('gs-popover-icon');
+    const title = document.getElementById('gs-popover-title');
+    const desc = document.getElementById('gs-popover-desc');
+    const btnPrev = document.getElementById('gs-popover-prev');
+    const btnNextText = document.getElementById('gs-popover-next-text');
+    const btnNextIcon = document.getElementById('gs-popover-next-icon');
 
-    if (iconBox) {
-      iconBox.className = `w-12 h-12 rounded-2xl flex items-center justify-center text-xl shrink-0 shadow-2xs ${s.iconBg}`;
-    }
-    if (icon) {
-      icon.className = s.icon;
-    }
+    if (badge) badge.textContent = `Paso ${step.badge}`;
+    if (icon) icon.className = step.icon;
+    if (title) title.textContent = step.title;
+    if (desc) desc.innerHTML = step.description;
 
-    // Manejar estado de botón Anterior
     if (btnPrev) {
       btnPrev.disabled = (index === 0);
     }
 
-    // Manejar estado de botón Siguiente / Finalizar
     const isLast = (index === STEPS.length - 1);
     if (btnNextText) {
-      btnNextText.textContent = isLast ? '¡Comenzar ahora!' : 'Siguiente';
+      btnNextText.textContent = isLast ? '¡Entendido!' : 'Siguiente';
     }
     if (btnNextIcon) {
-      btnNextIcon.className = isLast ? 'fas fa-check text-[11px]' : 'fas fa-arrow-right text-[11px]';
+      btnNextIcon.className = isLast ? 'fas fa-check text-[10px]' : 'fas fa-arrow-right text-[10px]';
     }
 
-    // Actualizar Puntos (Dots)
+    // Actualizar dots
     const dots = document.querySelectorAll('.gs-tour-dot');
     dots.forEach((dot, i) => {
       if (i === index) {
-        dot.className = 'gs-tour-dot w-6 h-2 rounded-full transition-all duration-200 bg-emerald-600';
+        dot.className = 'gs-tour-dot w-5 h-2 rounded-full transition-all duration-200 bg-emerald-600';
       } else {
         dot.className = 'gs-tour-dot w-2 h-2 rounded-full transition-all duration-200 bg-slate-200 hover:bg-slate-300';
       }
     });
   }
 
+  function goTo(index) {
+    if (index < 0 || index >= STEPS.length) return;
+    currentStep = index;
+    const step = STEPS[index];
+
+    // Cambiar la vista de la aplicación si corresponde
+    if (typeof switchView === 'function') {
+      try {
+        switchView(step.view);
+      } catch (e) {
+        console.warn('Error cambiando vista en tour:', e);
+      }
+    }
+
+    // Esperar a que la vista se active y renderice
+    setTimeout(() => {
+      updateSpotlightAndPopover(index, true);
+    }, 60);
+  }
+
   function start(force = false, userId = null) {
     if (userId) currentUserId = userId;
-    createTourElements();
+    injectDOMElements();
 
-    const overlay = document.getElementById('gs-tour-overlay');
-    const card = document.getElementById('gs-tour-card');
-    if (!overlay || !card) return;
+    const root = document.getElementById('gs-tour-root');
+    if (!root) return;
 
-    isOpen = true;
+    isActive = true;
     currentStep = 0;
-    renderStep(0);
 
-    // Animación de entrada
-    overlay.classList.remove('pointer-events-none');
-    overlay.classList.remove('opacity-0');
-    overlay.classList.add('opacity-100');
+    // Mostrar root overlay
+    root.classList.remove('pointer-events-none');
+    root.classList.remove('opacity-0');
+    root.classList.add('opacity-100');
 
-    card.classList.remove('scale-95');
-    card.classList.add('scale-100');
+    goTo(0);
   }
 
   function close() {
-    const overlay = document.getElementById('gs-tour-overlay');
-    const card = document.getElementById('gs-tour-card');
-    if (!overlay || !card) return;
+    const root = document.getElementById('gs-tour-root');
+    if (!root) return;
 
-    isOpen = false;
-    overlay.classList.remove('opacity-100');
-    overlay.classList.add('opacity-0');
-    overlay.classList.add('pointer-events-none');
+    isActive = false;
+    root.classList.remove('opacity-100');
+    root.classList.add('opacity-0');
+    root.classList.add('pointer-events-none');
 
-    card.classList.remove('scale-100');
-    card.classList.add('scale-95');
-
-    // Volver a la vista de resumen por orden
+    // Regresar ordenadamente a la vista principal de resumen
     if (typeof switchView === 'function') {
       try {
         switchView('resumen');
@@ -265,7 +369,7 @@ const GastoSmartTour = (() => {
 
   function next() {
     if (currentStep < STEPS.length - 1) {
-      renderStep(currentStep + 1);
+      goTo(currentStep + 1);
     } else {
       finish();
     }
@@ -273,20 +377,15 @@ const GastoSmartTour = (() => {
 
   function prev() {
     if (currentStep > 0) {
-      renderStep(currentStep - 1);
+      goTo(currentStep - 1);
     }
-  }
-
-  function goTo(index) {
-    renderStep(index);
   }
 
   function finish() {
     markAsCompleted();
     close();
-    // Feedback amigable
     if (typeof showToast === 'function') {
-      showToast('¡Recorrido completado! Ya puedes usar GastoSmart.', 'success');
+      showToast('¡Recorrido interactivo completado!', 'success');
     }
   }
 
@@ -294,7 +393,7 @@ const GastoSmartTour = (() => {
     markAsCompleted();
     close();
     if (typeof showToast === 'function') {
-      showToast('Recorrido omitido. Puedes repetirlo cuando quieras en Ajustes.', 'info');
+      showToast('Recorrido omitido. Puedes repetirlo desde Ajustes o con el botón (?) de ayuda.', 'info');
     }
   }
 
@@ -302,9 +401,9 @@ const GastoSmartTour = (() => {
     try {
       const key = getStorageKey(currentUserId);
       localStorage.setItem(key, 'true');
-      localStorage.setItem('gastosmart_tour_v1_generic', 'true');
+      localStorage.setItem('gastosmart_tour_v2_generic', 'true');
     } catch (e) {
-      console.warn('No se pudo guardar estado del tour en localStorage:', e);
+      console.warn('Error guardando estado tour:', e);
     }
   }
 
@@ -312,15 +411,14 @@ const GastoSmartTour = (() => {
     currentUserId = userId;
     try {
       const key = getStorageKey(userId);
-      const done = localStorage.getItem(key) || localStorage.getItem('gastosmart_tour_v1_generic');
+      const done = localStorage.getItem(key) || localStorage.getItem('gastosmart_tour_v2_generic');
       if (!done) {
-        // Breve retraso para que los datos financieros iniciales se rendericen primero
         setTimeout(() => {
           start(false, userId);
-        }, 850);
+        }, 900);
       }
     } catch (e) {
-      console.warn('Error verificando tour de nuevo usuario:', e);
+      console.warn('Error en auto-start tour:', e);
     }
   }
 

@@ -44,7 +44,7 @@ export default async function handler(req, res) {
           email: cleanEmail,
           password_hash: passwordHash,
           rol: 'usuario',
-          limite_mensual_usd: 1000.00,
+          limite_mensual_usd: 100.00,
           moneda_principal: 'USD'
         }
       ])

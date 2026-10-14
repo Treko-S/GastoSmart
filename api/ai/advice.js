@@ -37,7 +37,7 @@ export default async function handler(req, res) {
       .eq('usuario_id', user.id)
       .gte('fecha', firstDay);
 
-    const limiteUSD = Number(userData?.limite_mensual_usd) || 1000;
+    const limiteUSD = Number(userData?.limite_mensual_usd) || 100;
     let totalMesUSD = 0;
     const catMap = {};
 
