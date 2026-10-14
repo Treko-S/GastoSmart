@@ -164,20 +164,20 @@
                 <button onclick="switchView('ajustes')" class="text-xs font-extrabold underline shrink-0 ml-2 text-rose-700">Ajustar Límite</button>
             </div>
 
-            <!-- Grilla de Métricas Principales (Tarjetas Blancas de Alto Contraste) -->
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                <!-- Total USD -->
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition">
+            <!-- Grilla de Métricas Principales (2 Tarjetas de Alto Impacto: Gasto Total y Presupuesto) -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
+                <!-- Tarjeta 1: Gasto Total (Sincronizado con la moneda configurada) -->
+                <div id="tour-card-total" class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition">
                     <div class="flex items-center justify-between text-slate-500 mb-2">
-                        <span class="text-xs font-black uppercase tracking-wider">Gasto Total (USD)</span>
-                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center justify-center text-sm font-black">$</div>
+                        <span class="text-xs font-black uppercase tracking-wider" id="stat-total-label">Gasto Total (USD)</span>
+                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center justify-center text-sm font-black" id="stat-total-symbol">$</div>
                     </div>
                     <div class="text-3xl font-black text-slate-900" id="stat-total-usd">$0.00</div>
                     <div class="text-xs font-bold text-emerald-700 mt-1 flex items-center gap-1" id="stat-total-pyg">≈ Gs. 0</div>
                 </div>
 
-                <!-- Presupuesto y Progreso (Dinámico) -->
-                <div id="tour-card-budget" class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-teal-300 hover:shadow-md transition">
+                <!-- Tarjeta 2: Presupuesto y Progreso (Dinámico) -->
+                <div id="tour-card-budget" class="p-5 sm:p-6 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-teal-300 hover:shadow-md transition">
                     <div class="flex items-center justify-between text-slate-500 mb-2">
                         <span class="text-xs font-black uppercase tracking-wider" id="stat-limite-label">Presupuesto Mensual</span>
                         <div class="w-9 h-9 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60 flex items-center justify-center text-sm">
@@ -192,43 +192,6 @@
                     <div class="flex justify-between items-center text-[11px] text-slate-600 mt-2 font-bold">
                         <span id="stat-porcentaje">0% consumido</span>
                         <span id="stat-restante" class="text-emerald-700 font-extrabold">Restante: $100.00</span>
-                    </div>
-                </div>
-
-                <!-- Cotización en Vivo -->
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition">
-                    <div class="flex items-center justify-between text-slate-500 mb-2">
-                        <span class="text-xs font-black uppercase tracking-wider">Cotización Oficial</span>
-                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200/60 flex items-center justify-center text-sm font-black">₲</div>
-                    </div>
-                    <div class="text-3xl font-black text-slate-900" id="stat-rate-pyg">7.550 Gs.</div>
-                    <div class="text-xs text-emerald-700 font-bold mt-1 flex items-center gap-1.5">
-                        <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                        <span>Tasa en vivo al minuto</span>
-                    </div>
-                </div>
-
-                <!-- Tarjeta 4: Reportes y Exportación (Sin botón redundante) -->
-                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-sm hover:border-emerald-300 hover:shadow-md transition flex flex-col justify-between">
-                    <div>
-                        <div class="flex items-center justify-between text-slate-500 mb-1.5">
-                            <span class="text-xs font-black uppercase tracking-wider">Exportación</span>
-                            <div class="w-8 h-8 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60 flex items-center justify-center text-xs">
-                                <i class="fas fa-file-invoice-dollar"></i>
-                            </div>
-                        </div>
-                        <div class="text-base font-black text-slate-900">Centro de Reportes</div>
-                        <p class="text-[11px] text-slate-500 font-medium mt-0.5">Genera resúmenes o descarga tus movimientos.</p>
-                    </div>
-                    <div class="flex gap-2 mt-3">
-                        <button onclick="sendMonthlyReport()" id="btn-brevo-report" class="flex-1 py-2 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5 cursor-pointer">
-                            <i class="fas fa-envelope text-emerald-600"></i>
-                            <span>Email</span>
-                        </button>
-                        <a href="/api/expenses/export" download class="py-2 px-3 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-black transition flex items-center justify-center gap-1.5">
-                            <i class="fas fa-file-csv text-teal-600"></i>
-                            <span>CSV</span>
-                        </a>
                     </div>
                 </div>
             </div>
@@ -305,7 +268,7 @@
             <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div>
                     <h2 class="text-xl sm:text-2xl font-display font-black text-slate-900">Historial de Transacciones</h2>
-                    <p class="text-xs text-slate-500 font-medium">Filtra y revisa todos tus gastos anotados</p>
+                    <p class="text-xs text-slate-500 font-medium">Filtra, audita y descarga o envía tus reportes financieros</p>
                 </div>
                 <div class="flex items-center gap-2">
                     <select id="filter-period" onchange="loadExpenses(this.value)" class="flex-1 sm:flex-initial text-xs bg-white border border-slate-200 rounded-xl px-3 py-2.5 text-slate-800 font-bold outline-none shadow-xs">
@@ -314,15 +277,36 @@
                         <option value="año">Este Año</option>
                         <option value="todos">Todos los registros</option>
                     </select>
-                    <a href="/api/expenses/export" download class="text-xs bg-white hover:bg-slate-50 text-slate-700 border border-slate-200 font-bold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5 shadow-xs whitespace-nowrap">
-                        <i class="fas fa-download text-emerald-600"></i>
-                        <span class="hidden sm:inline">Exportar CSV</span>
-                        <span class="sm:hidden">CSV</span>
-                    </a>
-                    <button onclick="openModal()" class="hidden sm:inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-4 py-2.5 rounded-xl shadow-sm transition cursor-pointer">
+                    <button onclick="openModal()" class="inline-flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs px-4 py-2.5 rounded-xl shadow-sm transition cursor-pointer">
                         <i class="fas fa-plus text-xs"></i>
                         <span>Registrar Gasto</span>
                     </button>
+                </div>
+            </div>
+
+            <!-- Centro de Exportación y Reportes Bien Estructurado -->
+            <div id="tour-card-export" class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60 flex items-center justify-center text-sm shrink-0">
+                        <i class="fas fa-file-invoice-dollar text-base"></i>
+                    </div>
+                    <div>
+                        <div class="flex items-center gap-2">
+                            <h4 class="font-display font-black text-sm text-slate-900">Centro de Exportación y Reportes</h4>
+                            <span class="text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md">Datos Oficiales</span>
+                        </div>
+                        <p class="text-xs text-slate-500 font-medium mt-0.5">Genera resúmenes periódicos a tu correo o descarga la planilla CSV para auditar tus movimientos.</p>
+                    </div>
+                </div>
+                <div class="flex items-center gap-2.5 shrink-0">
+                    <button onclick="sendMonthlyReport()" id="btn-brevo-report" class="flex-1 sm:flex-initial py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                        <i class="fas fa-envelope text-emerald-600"></i>
+                        <span>Enviar al Correo</span>
+                    </button>
+                    <a href="/api/expenses/export" download class="flex-1 sm:flex-initial py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 shadow-2xs">
+                        <i class="fas fa-file-csv text-teal-600"></i>
+                        <span>Descargar CSV</span>
+                    </a>
                 </div>
             </div>
 
@@ -471,47 +455,45 @@
                     </div>
                 </div>
 
-                <!-- Período del Presupuesto (Semanal / Mensual) -->
+                <!-- Período del Presupuesto (Semanal / Mensual) y Moneda -->
                 <div id="tour-card-budget-settings" class="space-y-4">
-                <div id="tour-card-budget-config" class="space-y-4">
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Período del Límite de Gasto</label>
-                    <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200" id="budget-period-selector">
-                        <button type="button" onclick="setBudgetPeriod('mensual')" id="btn-period-mensual" class="py-2.5 px-3 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300">
-                            <i class="fas fa-calendar-alt mr-1.5"></i> Presupuesto Mensual
-                        </button>
-                        <button type="button" onclick="setBudgetPeriod('semanal')" id="btn-period-semanal" class="py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
-                            <i class="fas fa-calendar-week mr-1.5"></i> Presupuesto Semanal
-                        </button>
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Período del Límite de Gasto</label>
+                        <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200" id="budget-period-selector">
+                            <button type="button" onclick="setBudgetPeriod('mensual')" id="btn-period-mensual" class="py-2.5 px-3 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300">
+                                <i class="fas fa-calendar-alt mr-1.5"></i> Presupuesto Mensual
+                            </button>
+                            <button type="button" onclick="setBudgetPeriod('semanal')" id="btn-period-semanal" class="py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900">
+                                <i class="fas fa-calendar-week mr-1.5"></i> Presupuesto Semanal
+                            </button>
+                        </div>
+                        <input type="hidden" id="setting-period" value="mensual">
                     </div>
-                    <input type="hidden" id="setting-period" value="mensual">
-                </div>
 
-                <!-- Moneda del Límite -->
-                <div>
-                    <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Moneda del Límite</label>
-                    <div class="grid grid-cols-4 gap-2" id="budget-currency-selector">
-                        <button type="button" onclick="setBudgetCurrency('USD')" class="budget-curr-btn py-2.5 text-xs font-black rounded-xl transition bg-white text-emerald-800 shadow-xs border border-emerald-300" data-curr="USD">USD ($)</button>
-                        <button type="button" onclick="setBudgetCurrency('PYG')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="PYG">PYG (₲)</button>
-                        <button type="button" onclick="setBudgetCurrency('EUR')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="EUR">EUR (€)</button>
-                        <button type="button" onclick="setBudgetCurrency('BRL')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="BRL">BRL (R$)</button>
+                    <!-- Moneda del Límite -->
+                    <div>
+                        <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Moneda del Límite</label>
+                        <div class="grid grid-cols-4 gap-2" id="budget-currency-selector">
+                            <button type="button" onclick="setBudgetCurrency('USD')" class="budget-curr-btn py-2.5 text-xs font-black rounded-xl transition bg-white text-emerald-800 shadow-xs border border-emerald-300" data-curr="USD">USD ($)</button>
+                            <button type="button" onclick="setBudgetCurrency('PYG')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="PYG">PYG (₲)</button>
+                            <button type="button" onclick="setBudgetCurrency('EUR')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="EUR">EUR (€)</button>
+                            <button type="button" onclick="setBudgetCurrency('BRL')" class="budget-curr-btn py-2.5 text-xs font-bold rounded-xl transition text-slate-600 hover:text-slate-900 bg-slate-50 border border-slate-200" data-curr="BRL">BRL (R$)</button>
+                        </div>
+                        <input type="hidden" id="setting-currency" value="USD">
                     </div>
-                    <input type="hidden" id="setting-currency" value="USD">
-                </div>
 
-                <!-- Monto del Presupuesto y Equivalencias en Vivo -->
-                <div>
-                    <div class="flex items-center justify-between mb-1.5">
-                        <label class="block text-xs font-black uppercase text-slate-700">Monto Límite</label>
-                        <span id="budget-curr-label" class="text-xs font-black text-emerald-700">En Dólares (USD)</span>
+                    <!-- Monto del Presupuesto y Equivalencias en Vivo -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="block text-xs font-black uppercase text-slate-700">Monto Límite</label>
+                            <span id="budget-curr-label" class="text-xs font-black text-emerald-700">En Dólares (USD)</span>
+                        </div>
+                        <div class="relative">
+                            <span id="setting-curr-symbol" class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-emerald-700 font-black text-base">$</span>
+                            <input type="number" step="any" id="setting-limit" required oninput="updateBudgetEquivalences()"
+                                class="w-full pl-9 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-base font-black text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 shadow-2xs">
+                        </div>
                     </div>
-                    <div class="relative">
-                        <span id="setting-curr-symbol" class="absolute inset-y-0 left-0 pl-3.5 flex items-center text-emerald-700 font-black text-base">$</span>
-                        <input type="number" step="any" id="setting-limit" required oninput="updateBudgetEquivalences()"
-                            class="w-full pl-9 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-base font-black text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 shadow-2xs">
-                    </div>
-                </div>
-                </div>
 
                     <!-- Caja Dinámica de Equivalencias Multi-Moneda -->
                     <div class="mt-3 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">
@@ -523,7 +505,6 @@
                             <!-- Inyectado por JS -->
                         </div>
                     </div>
-                </div>
                 </div>
 
                 <!-- Avisos por Correo -->
@@ -539,27 +520,13 @@
                     Guardar Ajustes
                 </button>
 
-                <!-- Zona de Opciones Finales en Ajustes (Móvil & Desktop) -->
-                <div class="pt-4 border-t border-slate-100 flex flex-col gap-3">
-                    <!-- Botón para Repetir Recorrido Guiado -->
-                    <button type="button" onclick="GastoSmartTour.start(true)" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-xs transition cursor-pointer shadow-2xs">
-                        <i class="fas fa-route text-emerald-600"></i>
-                        <span>Ver Recorrido Guiado / Tutorial de la App</span>
-                    </button>
-
-                    <button type="button" onclick="confirmLogout()" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-xs transition cursor-pointer shadow-2xs">
-                        <i class="fas fa-sign-out-alt"></i>
-                        <span>Cerrar Sesión de la Cuenta</span>
-                    </button>
-                    
-                    <!-- Enlaces Institucionales Móviles -->
-                    <div class="md:hidden flex items-center justify-center gap-3 text-[11px] text-slate-400 font-semibold pt-1">
-                        <a href="/soporte.html" class="hover:text-emerald-700 transition">Soporte Técnico</a>
-                        <span>•</span>
-                        <a href="/sobre-nosotros.html" class="hover:text-emerald-700 transition">Sobre Nosotros</a>
-                        <span>•</span>
-                        <a href="/terminos.html" class="hover:text-emerald-700 transition">Términos</a>
-                    </div>
+                <!-- Zona de Enlaces Institucionales Móviles -->
+                <div class="md:hidden flex items-center justify-center gap-3 text-[11px] text-slate-400 font-semibold pt-2">
+                    <a href="/soporte.html" class="hover:text-emerald-700 transition">Soporte Técnico</a>
+                    <span>•</span>
+                    <a href="/sobre-nosotros.html" class="hover:text-emerald-700 transition">Sobre Nosotros</a>
+                    <span>•</span>
+                    <a href="/terminos.html" class="hover:text-emerald-700 transition">Términos</a>
                 </div>
             </form>
         </div>

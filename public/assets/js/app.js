@@ -72,9 +72,27 @@ function renderDashboard(data) {
   const storedAmount = parseFloat(localStorage.getItem('gastosmart_budget_amount')) || 
     (storedCurr === 'USD' ? defaultAmount : CurrencyManager.convert(defaultAmount, 'USD', storedCurr));
 
-  // Gasto Total (USD y PYG)
-  document.getElementById('stat-total-usd').textContent = CurrencyManager.format(totalUSD, 'USD');
-  document.getElementById('stat-total-pyg').textContent = '≈ ' + CurrencyManager.format(CurrencyManager.convert(totalUSD, 'USD', 'PYG'), 'PYG');
+  // Gasto Total sincronizado con la moneda preferida del usuario
+  const symbols = { USD: '$', PYG: '₲', EUR: '€', BRL: 'R$' };
+  const totalEnMoneda = CurrencyManager.convert(totalUSD, 'USD', storedCurr);
+
+  const totalLabelEl = document.getElementById('stat-total-label');
+  if (totalLabelEl) totalLabelEl.textContent = `Gasto Total (${storedCurr})`;
+
+  const totalSymEl = document.getElementById('stat-total-symbol');
+  if (totalSymEl) totalSymEl.textContent = symbols[storedCurr] || '$';
+
+  const totalUsdEl = document.getElementById('stat-total-usd');
+  if (totalUsdEl) totalUsdEl.textContent = CurrencyManager.format(totalEnMoneda, storedCurr);
+
+  const totalPygEl = document.getElementById('stat-total-pyg');
+  if (totalPygEl) {
+    if (storedCurr === 'USD') {
+      totalPygEl.textContent = '≈ ' + CurrencyManager.format(CurrencyManager.convert(totalUSD, 'USD', 'PYG'), 'PYG');
+    } else {
+      totalPygEl.textContent = '≈ ' + CurrencyManager.format(totalUSD, 'USD');
+    }
+  }
 
   // Calcular gasto del período fijado (semanal o mensual)
   let gastoPeriodoUSD = totalUSD;
@@ -129,9 +147,12 @@ function renderDashboard(data) {
     alertBanner.classList.add('hidden');
   }
 
-  // Tasa de cambio en métricas
-  const ratePYG = Math.round(CurrencyManager.rates.PYG || 7500);
-  document.getElementById('stat-rate-pyg').textContent = ratePYG.toLocaleString('es-PY') + ' Gs.';
+  // Tasa de cambio en métricas (si existe)
+  const ratePYGEl = document.getElementById('stat-rate-pyg');
+  if (ratePYGEl) {
+    const ratePYG = Math.round(CurrencyManager.rates.PYG || 7500);
+    ratePYGEl.textContent = ratePYG.toLocaleString('es-PY') + ' Gs.';
+  }
 
   // Renderizar Categorías en Select del Modal
   const catSelect = document.getElementById('modal-categoria');
@@ -751,6 +772,7 @@ function setBudgetPeriod(period, triggerEquivalences = true) {
 
 function setBudgetCurrency(curr, triggerEquivalences = true) {
   document.getElementById('setting-currency').value = curr;
+  localStorage.setItem('gastosmart_budget_curr', curr);
   const symbols = { USD: '$', PYG: '₲', EUR: '€', BRL: 'R$' };
   const names = { USD: 'Dólares (USD)', PYG: 'Guaraníes (PYG)', EUR: 'Euros (EUR)', BRL: 'Reales (BRL)' };
 
@@ -768,7 +790,12 @@ function setBudgetCurrency(curr, triggerEquivalences = true) {
   const currLabel = document.getElementById('budget-curr-label');
   if (currLabel) currLabel.textContent = `En ${names[curr] || curr}`;
 
-  if (triggerEquivalences) updateBudgetEquivalences();
+  if (triggerEquivalences) {
+    updateBudgetEquivalences();
+    if (typeof currentExpensesData !== 'undefined' && currentExpensesData) {
+      renderDashboard(currentExpensesData);
+    }
+  }
 }
 
 function updateBudgetEquivalences() {
