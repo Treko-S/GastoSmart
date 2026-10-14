@@ -52,7 +52,7 @@ const GastoSmartTour = (() => {
       getTarget: () => document.getElementById('tour-card-history'),
       icon: 'fas fa-list-ul',
       title: 'Historial y Reportes CSV',
-      description: '💡 <b>¡Pruébalo!</b> Revisa todas tus transacciones por fecha. Puedes cambiar el filtro de períodos o tocar <b>Exportar CSV</b> para auditar tus finanzas.'
+      description: '💡 <b>¡Pruébalo!</b> Revisa todas tus compras organizadas por fecha. Puedes cambiar el filtro de períodos o tocar <b>Exportar CSV</b> para auditar tus finanzas.'
     },
     {
       step: 4,
@@ -94,7 +94,7 @@ const GastoSmartTour = (() => {
     root.style.display = 'none';
     root.style.position = 'fixed';
     root.style.inset = '0';
-    root.style.zIndex = '999990';
+    root.style.zIndex = '1000030';
     root.style.pointerEvents = 'none';
 
     root.innerHTML = `
@@ -104,25 +104,30 @@ const GastoSmartTour = (() => {
           background: rgba(15, 23, 42, 0.72);
           pointer-events: auto;
           transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
-          z-index: 999991;
+          z-index: 1000031;
         }
         .gs-tour-active-element {
           /* Centro al descubierto para permitir clics e interacción nativa */
         }
+        #expense-modal.gs-tour-modal-open {
+          background-color: transparent !important;
+          backdrop-filter: none !important;
+          -webkit-backdrop-filter: none !important;
+        }
       </style>
 
       <!-- 4 Paneles que rodean el elemento dejando el centro 100% interactivo y transparente -->
-      <div id="gs-panel-top" class="gs-tour-panel"></div>
-      <div id="gs-panel-bottom" class="gs-tour-panel"></div>
-      <div id="gs-panel-left" class="gs-tour-panel"></div>
-      <div id="gs-panel-right" class="gs-tour-panel"></div>
+      <div id="gs-panel-top" class="gs-tour-panel" onclick="GastoSmartTour.handlePanelClick()"></div>
+      <div id="gs-panel-bottom" class="gs-tour-panel" onclick="GastoSmartTour.handlePanelClick()"></div>
+      <div id="gs-panel-left" class="gs-tour-panel" onclick="GastoSmartTour.handlePanelClick()"></div>
+      <div id="gs-panel-right" class="gs-tour-panel" onclick="GastoSmartTour.handlePanelClick()"></div>
 
       <!-- Borde Foco Esmeralda Luminoso -->
       <div id="gs-tour-spotlight" class="fixed pointer-events-none" style="
         border-radius: 18px;
         box-shadow: 0 0 25px rgba(16, 185, 129, 0.65), inset 0 0 8px rgba(16, 185, 129, 0.20);
         border: 2.5px solid #10b981;
-        z-index: 999995;
+        z-index: 1000035;
         transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       "></div>
 
@@ -130,7 +135,7 @@ const GastoSmartTour = (() => {
       <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-4 sm:p-6 shadow-2xl border border-slate-200 flex flex-col" style="
         width: calc(100vw - 24px);
         max-width: 370px;
-        z-index: 1000000;
+        z-index: 1000050 !important;
         transition: top 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
       ">
         <!-- Cabecera Popover -->
@@ -208,23 +213,27 @@ const GastoSmartTour = (() => {
     if (!modal) return;
 
     modalObserver = new MutationObserver(() => {
-      if (!isActive || currentStep !== 1) return;
+      if (!isActive) return;
       const isOpen = !modal.classList.contains('hidden');
       if (isOpen) {
-        setTimeout(() => {
-          const container = document.getElementById('modal-container');
-          if (container && isActive && currentStep === 1) {
-            positionElements(container, {
-              step: 2,
-              badge: '2 de 5 • ¡En Acción!',
-              view: 'resumen',
-              icon: 'fas fa-edit',
-              title: 'Formulario Multidivisa en Acción',
-              description: '💡 <b>¡Pruébalo!</b> Toca las monedas (USD, PYG, EUR, BRL) o escribe un monto. La fecha está asegurada. Pulsa la <b>X</b> para cerrar o <b>Siguiente</b> para continuar.'
-            }, 1, false);
-          }
-        }, 80);
+        modal.classList.add('gs-tour-modal-open');
+        if (currentStep === 1) {
+          setTimeout(() => {
+            const container = document.getElementById('modal-container');
+            if (container && isActive && currentStep === 1) {
+              positionElements(container, {
+                step: 2,
+                badge: '2 de 5 • En Acción',
+                view: 'resumen',
+                icon: 'fas fa-edit',
+                title: 'Formulario Multidivisa en Acción',
+                description: '💡 <b>¡Pruébalo!</b> Toca las monedas (USD, PYG, EUR, BRL) o escribe un monto. La fecha está asegurada. Pulsa la <b>X</b> para cerrar o <b>Siguiente</b> para continuar.'
+              }, 1, false);
+            }
+          }, 180);
+        }
       } else {
+        modal.classList.remove('gs-tour-modal-open');
         setTimeout(() => {
           if (isActive && currentStep === 1) {
             updateSpotlightAndPopover(1, false);
@@ -234,6 +243,14 @@ const GastoSmartTour = (() => {
     });
 
     modalObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
+  }
+
+  function handlePanelClick() {
+    // Si el modal de gastos está abierto, hacer clic afuera lo cierra
+    const modal = document.getElementById('expense-modal');
+    if (modal && !modal.classList.contains('hidden') && typeof closeModal === 'function') {
+      closeModal();
+    }
   }
 
   function handleViewportChange() {
@@ -345,10 +362,30 @@ const GastoSmartTour = (() => {
     let popTop = 0;
     let popLeft = 12;
 
-    if (isMobile) {
+    const isModalTarget = currentTargetEl && (
+      currentTargetEl.id === 'modal-container' || 
+      (currentTargetEl.closest && currentTargetEl.closest('#expense-modal'))
+    );
+
+    if (isModalTarget) {
+      // Si el modal está abierto en pantalla:
+      if (vw >= 880 && (vw - targetRect.right >= popWidth + 20)) {
+        // En PC: a la derecha del modal con espacio cómodo
+        popLeft = targetRect.right + 18;
+        popTop = Math.max(74, Math.min(vh - popHeight - 24, targetRect.top + 16));
+      } else if (vw >= 880 && (targetRect.left >= popWidth + 20)) {
+        // En PC: a la izquierda del modal si cabe
+        popLeft = targetRect.left - popWidth - 18;
+        popTop = Math.max(74, Math.min(vh - popHeight - 24, targetRect.top + 16));
+      } else {
+        // En móviles o pantallas estrechas: anclar limpiamente en la parte inferior
+        popLeft = Math.max(12, (vw - popWidth) / 2);
+        popTop = vh - popHeight - 12;
+      }
+    } else if (isMobile) {
       popLeft = Math.max(12, (vw - popWidth) / 2);
 
-      // En móvil:
+      // En móvil estándar:
       // Zona segura vertical: bajo el header (65px) y sobre el bottom navigation (vh - 74px)
       const spaceBelow = (vh - 74) - targetRect.bottom;
       const spaceAbove = targetRect.top - 65;
@@ -366,7 +403,7 @@ const GastoSmartTour = (() => {
       popTop = Math.max(68, Math.min(vh - popHeight - 74, popTop));
       popLeft = Math.max(12, Math.min(vw - popWidth - 12, popLeft));
     } else {
-      // En PC / Escritorio
+      // En PC / Escritorio estándar
       popLeft = targetRect.left + (targetRect.width / 2) - (popWidth / 2);
       popLeft = Math.max(24, Math.min(vw - popWidth - 24, popLeft));
 
@@ -444,8 +481,11 @@ const GastoSmartTour = (() => {
 
     // Si el modal de gastos estaba abierto, cerrarlo limpiamente al cambiar de paso
     const modal = document.getElementById('expense-modal');
-    if (modal && !modal.classList.contains('hidden') && typeof closeModal === 'function') {
-      try { closeModal(); } catch (e) {}
+    if (modal) {
+      modal.classList.remove('gs-tour-modal-open');
+      if (!modal.classList.contains('hidden') && typeof closeModal === 'function') {
+        try { closeModal(); } catch (e) {}
+      }
     }
 
     currentStep = index;
@@ -497,10 +537,13 @@ const GastoSmartTour = (() => {
     const root = document.getElementById('gs-tour-root');
     isActive = false;
 
-    // Si el modal de gastos estaba abierto, cerrarlo
+    // Si el modal de gastos estaba abierto, limpiarlo y cerrarlo
     const modal = document.getElementById('expense-modal');
-    if (modal && !modal.classList.contains('hidden') && typeof closeModal === 'function') {
-      try { closeModal(); } catch (e) {}
+    if (modal) {
+      modal.classList.remove('gs-tour-modal-open');
+      if (!modal.classList.contains('hidden') && typeof closeModal === 'function') {
+        try { closeModal(); } catch (e) {}
+      }
     }
 
     if (root) {
@@ -580,6 +623,7 @@ const GastoSmartTour = (() => {
     finish,
     checkAndAutoStart,
     syncWithView,
+    handlePanelClick,
     isActive: () => isActive
   };
 })();
