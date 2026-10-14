@@ -77,6 +77,12 @@
                 <i class="fas fa-balance-scale w-4 text-slate-400"></i>
                 <span>Términos y Privacidad</span>
             </a>
+
+            <!-- Botón Tour Guiado Sidebar -->
+            <button onclick="GastoSmartTour.start(true)" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition cursor-pointer">
+                <i class="fas fa-route w-4 text-emerald-600"></i>
+                <span>Recorrido Guiado</span>
+            </button>
             
             <button onclick="confirmLogout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer mt-2">
                 <i class="fas fa-sign-out-alt w-4"></i>
@@ -109,6 +115,11 @@
                         <div class="text-[10px] text-slate-500 font-bold" id="user-role">Usuario</div>
                     </div>
                 </div>
+
+                <!-- Botón Tour Guiado / Ayuda en Header -->
+                <button onclick="GastoSmartTour.start(true)" class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition active:scale-95 cursor-pointer shadow-2xs" title="Ver Recorrido Guiado">
+                    <i class="fas fa-question text-xs"></i>
+                </button>
 
                 <!-- Botón Cerrar Sesión Móvil Directo en Header Superior -->
                 <button onclick="confirmLogout()" class="md:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-600 border border-rose-200/90 font-extrabold transition active:scale-95 cursor-pointer shadow-2xs" title="Cerrar Sesión">
@@ -522,8 +533,14 @@
                     Guardar Ajustes
                 </button>
 
-                <!-- Zona de Cerrar Sesión en Ajustes (Móvil & Desktop) -->
+                <!-- Zona de Opciones Finales en Ajustes (Móvil & Desktop) -->
                 <div class="pt-4 border-t border-slate-100 flex flex-col gap-3">
+                    <!-- Botón para Repetir Recorrido Guiado -->
+                    <button type="button" onclick="GastoSmartTour.start(true)" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 font-extrabold text-xs transition cursor-pointer shadow-2xs">
+                        <i class="fas fa-route text-emerald-600"></i>
+                        <span>Ver Recorrido Guiado / Tutorial de la App</span>
+                    </button>
+
                     <button type="button" onclick="confirmLogout()" class="w-full flex items-center justify-center gap-2 py-3 px-4 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 font-extrabold text-xs transition cursor-pointer shadow-2xs">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Cerrar Sesión de la Cuenta</span>
@@ -657,6 +674,7 @@
     <!-- Scripts -->
     <script src="/assets/js/currency.js"></script>
     <script src="/assets/js/auth.js"></script>
+    <script src="/assets/js/tour.js"></script>
     <script src="/assets/js/app.js"></script>
 </body>
 </html>

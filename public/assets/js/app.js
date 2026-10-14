@@ -34,6 +34,11 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Inicializar tema guardado
   initTheme();
+
+  // 4. Iniciar recorrido guiado si es usuario nuevo o si aún no lo completó
+  if (window.GastoSmartTour && user && user.id) {
+    window.GastoSmartTour.checkAndAutoStart(user.id);
+  }
 });
 
 // ==========================================
