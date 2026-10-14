@@ -1,11 +1,10 @@
 /**
  * GastoSmart - Recorrido Guiado Interactivo Profesional (Spotlight Guided Tour)
- * - Oscurece el fondo con overlay oscuro semi-transparente.
- * - Enfoca y resalta con foco luminoso el botón o sección exacto de cada paso.
- * - Desplaza la pantalla suavemente hacia el elemento enfocado.
- * - Muestra un tooltip popover adyacente profesional (no tapa la pantalla).
+ * - Recorte real SVG transparente (Hole Cutout) para que el elemento enfocado esté 100% brillante y nítido.
+ * - Fondo oscuro circundante sin tapar ni oscurecer la tarjeta o botón enfocado.
+ * - Borde foco esmeralda luminoso con animación fluida entre pasos.
+ * - Popover tooltip flotante adyacente (arriba o abajo) sin tapar la pantalla.
  * - Totalmente adaptado para PC y Celulares.
- * - Permite avanzar, retroceder u omitir en cualquier momento.
  */
 
 const GastoSmartTour = (() => {
@@ -13,6 +12,7 @@ const GastoSmartTour = (() => {
   let currentUserId = null;
   let isActive = false;
   let resizeHandlerAttached = false;
+  let currentTargetEl = null;
 
   const STEPS = [
     {
@@ -22,7 +22,7 @@ const GastoSmartTour = (() => {
       getTarget: () => document.getElementById('tour-card-budget'),
       icon: 'fas fa-wallet',
       title: 'Presupuesto y Control de Gastos',
-      description: 'Aquí visualizas tu límite mensual (fijado en <b>$100.00 USD</b> por defecto), el dinero consumido y el porcentaje disponible en tiempo real con barra de progreso.'
+      description: 'Aquí visualizas tu presupuesto (fijado en <b>$100.00 USD</b> de base), el total consumido y el saldo restante en tiempo real con barra de progreso.'
     },
     {
       step: 2,
@@ -36,7 +36,7 @@ const GastoSmartTour = (() => {
       },
       icon: 'fas fa-plus-circle',
       title: 'Anotar un Gasto en Segundos',
-      description: 'Pulsa este botón para registrar compras en <b>Dólares ($)</b>, <b>Guaraníes (₲)</b>, <b>Euros (€)</b> o <b>Reales (R$)</b>. La cotización se calcula al instante con fecha exacta.'
+      description: 'Pulsa este botón para registrar compras en <b>Dólares ($)</b>, <b>Guaraníes (₲)</b>, <b>Euros (€)</b> o <b>Reales (R$)</b> con cálculo automático y fecha protegida.'
     },
     {
       step: 3,
@@ -71,6 +71,13 @@ const GastoSmartTour = (() => {
     return 'gastosmart_tour_v2_' + (userId || 'guest');
   }
 
+  function clearTargetHighlight() {
+    if (currentTargetEl) {
+      currentTargetEl.classList.remove('gs-tour-active-element');
+      currentTargetEl = null;
+    }
+  }
+
   function injectDOMElements() {
     if (document.getElementById('gs-tour-root')) return;
 
@@ -80,15 +87,35 @@ const GastoSmartTour = (() => {
     root.style.zIndex = '99990';
 
     root.innerHTML = `
-      <!-- Telón de Fondo Interactivo (Click en fondo oscuro también puede omitir o permanecer) -->
-      <div id="gs-tour-backdrop" class="fixed inset-0 pointer-events-auto transition-opacity duration-300" style="background: rgba(15, 23, 42, 0.78);"></div>
+      <style>
+        .gs-tour-active-element {
+          position: relative !important;
+          z-index: 99994 !important;
+          background-color: #ffffff !important;
+          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+        }
+      </style>
 
-      <!-- Recuadro Foco Luminoso (Spotlight Box) -->
+      <!-- Máscara SVG con recorte transparente (El elemento enfocado queda 100% brillante y sin oscuridad) -->
+      <svg id="gs-tour-svg-backdrop" class="fixed inset-0 pointer-events-auto w-full h-full" style="z-index: 99991; width: 100vw; height: 100vh;">
+        <defs>
+          <mask id="gs-spotlight-mask">
+            <!-- 1. Capa blanca: deja visible el telón oscuro general -->
+            <rect x="0" y="0" width="100%" height="100%" fill="white" />
+            <!-- 2. Recorte negro: perfora el telón oscuro para que el foco quede 100% transparente y brillante -->
+            <rect id="gs-mask-cutout" x="0" y="0" width="0" height="0" rx="18" ry="18" fill="black" style="transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);" />
+          </mask>
+        </defs>
+        <!-- Telón oscuro que se recorta sobre la tarjeta -->
+        <rect x="0" y="0" width="100%" height="100%" fill="rgba(15, 23, 42, 0.80)" mask="url(#gs-spotlight-mask)" style="cursor: pointer;" onclick="GastoSmartTour.next()" />
+      </svg>
+
+      <!-- Borde Foco Luminoso Esmeralda en torno al orificio recortado -->
       <div id="gs-tour-spotlight" class="fixed pointer-events-none transition-all duration-300" style="
         border-radius: 18px;
-        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.78), 0 0 30px rgba(16, 185, 129, 0.65);
+        box-shadow: 0 0 30px rgba(16, 185, 129, 0.70), inset 0 0 10px rgba(16, 185, 129, 0.20);
         border: 2.5px solid #10b981;
-        z-index: 99995;
+        z-index: 99996;
       "></div>
 
       <!-- Popover / Tooltip Contextual Inteligente -->
@@ -151,17 +178,6 @@ const GastoSmartTour = (() => {
 
     document.body.appendChild(root);
 
-    // Si el usuario hace clic en el fondo oscuro, no se cierra accidentalmente, pero se le da feedback
-    const backdrop = document.getElementById('gs-tour-backdrop');
-    if (backdrop) {
-      backdrop.addEventListener('click', (e) => {
-        if (e.target === backdrop) {
-          // Si hace clic fuera del popover, se avanza al siguiente paso para una experiencia fluida
-          GastoSmartTour.next();
-        }
-      });
-    }
-
     if (!resizeHandlerAttached) {
       window.addEventListener('resize', handleViewportChange);
       window.addEventListener('scroll', handleViewportChange, true);
@@ -178,12 +194,12 @@ const GastoSmartTour = (() => {
     if (index < 0 || index >= STEPS.length) return;
     const step = STEPS[index];
     const spotlight = document.getElementById('gs-tour-spotlight');
+    const cutout = document.getElementById('gs-mask-cutout');
     const popover = document.getElementById('gs-tour-popover');
-    if (!spotlight || !popover) return;
+    if (!spotlight || !cutout || !popover) return;
 
     let target = step.getTarget();
     if (!target) {
-      // Reintentar tras un breve momento si el DOM está terminando de renderizar la vista
       setTimeout(() => {
         target = step.getTarget();
         if (target) positionElements(target, step, index, doScroll);
@@ -195,9 +211,14 @@ const GastoSmartTour = (() => {
   }
 
   function positionElements(target, step, index, doScroll) {
+    clearTargetHighlight();
+    currentTargetEl = target;
+    target.classList.add('gs-tour-active-element');
+
     const spotlight = document.getElementById('gs-tour-spotlight');
+    const cutout = document.getElementById('gs-mask-cutout');
     const popover = document.getElementById('gs-tour-popover');
-    if (!spotlight || !popover) return;
+    if (!spotlight || !cutout || !popover) return;
 
     if (doScroll) {
       try {
@@ -205,7 +226,6 @@ const GastoSmartTour = (() => {
       } catch (e) {}
     }
 
-    // Tras scroll suave, calcular rect exacto
     const delay = doScroll ? 180 : 0;
     setTimeout(() => {
       const rect = target.getBoundingClientRect();
@@ -216,13 +236,21 @@ const GastoSmartTour = (() => {
       const width = rect.width + (padding * 2);
       const height = rect.height + (padding * 2);
 
-      // Posicionar Recuadro Foco
+      // Perforar el telón oscuro exactamente sobre la tarjeta con el SVG mask
+      cutout.setAttribute('x', left);
+      cutout.setAttribute('y', top);
+      cutout.setAttribute('width', width);
+      cutout.setAttribute('height', height);
+      cutout.setAttribute('rx', '18');
+      cutout.setAttribute('ry', '18');
+
+      // Posicionar Borde Foco Esmeralda
       spotlight.style.top = `${top}px`;
       spotlight.style.left = `${left}px`;
       spotlight.style.width = `${width}px`;
       spotlight.style.height = `${height}px`;
 
-      // Posicionar Popover de manera inteligente
+      // Posicionar Popover
       positionPopover(rect);
 
       // Actualizar Contenido del Popover
@@ -243,29 +271,25 @@ const GastoSmartTour = (() => {
     let popLeft = 16;
 
     if (isMobile) {
-      // En móvil: centrado horizontalmente
       popLeft = Math.max(16, (window.innerWidth - popWidth) / 2);
 
       // Si el elemento está en la mitad inferior de la pantalla, posicionar el tooltip ARRIBA del elemento
       if (targetRect.top > window.innerHeight / 2) {
         popTop = Math.max(16, targetRect.top - popHeight - 16);
       } else {
-        // Si está en la mitad superior, colocarlo DEBAJO del elemento
         popTop = Math.min(window.innerHeight - popHeight - 16, targetRect.bottom + 16);
       }
     } else {
-      // En PC / Desktop:
-      // Alinear horizontalmente centrado con respecto al elemento objetivo
+      // En PC: centrado con respecto al elemento objetivo
       popLeft = targetRect.left + (targetRect.width / 2) - (popWidth / 2);
       popLeft = Math.max(20, Math.min(window.innerWidth - popWidth - 20, popLeft));
 
-      // Verificar si cabe abajo
+      // Verificar si cabe abajo o arriba
       if (targetRect.bottom + popHeight + 20 < window.innerHeight) {
         popTop = targetRect.bottom + 14;
       } else if (targetRect.top - popHeight - 20 > 0) {
         popTop = targetRect.top - popHeight - 14;
       } else {
-        // En caso extremo, ubicar a un costado o centrado vertical
         popTop = Math.max(20, (window.innerHeight - popHeight) / 2);
       }
     }
@@ -326,7 +350,6 @@ const GastoSmartTour = (() => {
       }
     }
 
-    // Esperar a que la vista se active y renderice
     setTimeout(() => {
       updateSpotlightAndPopover(index, true);
     }, 60);
@@ -342,7 +365,6 @@ const GastoSmartTour = (() => {
     isActive = true;
     currentStep = 0;
 
-    // Mostrar root overlay
     root.classList.remove('pointer-events-none');
     root.classList.remove('opacity-0');
     root.classList.add('opacity-100');
@@ -351,6 +373,7 @@ const GastoSmartTour = (() => {
   }
 
   function close() {
+    clearTargetHighlight();
     const root = document.getElementById('gs-tour-root');
     if (!root) return;
 
@@ -359,7 +382,6 @@ const GastoSmartTour = (() => {
     root.classList.add('opacity-0');
     root.classList.add('pointer-events-none');
 
-    // Regresar ordenadamente a la vista principal de resumen
     if (typeof switchView === 'function') {
       try {
         switchView('resumen');
