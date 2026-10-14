@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Términos y Condiciones - GastoSmart</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect"/>
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
+    <script src="/assets/vendor/tailwind.min.js"></script>
+    <script src="/assets/js/tailwind-config.js"></script>
+</head>
+<body class="bg-baseBg font-sans text-textMain min-h-screen flex flex-col selection:bg-primary/25 selection:text-forest">
+
+    <!-- Navbar -->
+    <header class="w-full bg-white/90 backdrop-blur-md border-b border-surfaceBorder sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 h-20 flex items-center justify-between">
+            <a href="/" class="flex items-center gap-3 group">
+                <img src="/logo.png" alt="GastoSmart Logo" class="h-10 w-auto object-contain transition-transform group-hover:scale-105"/>
+                <div>
+                    <span class="font-display font-black text-2xl tracking-tight text-textMain">Gasto<span class="text-primary">Smart</span></span>
+                    <span class="block text-[10px] uppercase tracking-wider font-extrabold text-secondary">Finanzas Personales</span>
+                </div>
+            </a>
+            <div class="flex items-center gap-4">
+                <a href="/" class="text-sm font-bold text-textMuted hover:text-primary transition-colors flex items-center gap-1.5">
+                    <i class="fas fa-arrow-left text-xs"></i>
+                    <span>Volver al Inicio</span>
+                </a>
+                <a href="/dashboard.html" class="hidden sm:inline-flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-black text-white bg-gradient-to-r from-primary to-secondary shadow-sm hover:shadow-md transition">
+                    <span>Mi Panel</span>
+                    <i class="fas fa-chevron-right text-[10px]"></i>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Contenido Principal -->
+    <main class="flex-1 max-w-4xl mx-auto px-5 py-12 w-full">
+        <div class="bg-white rounded-3xl border border-surfaceBorder p-8 sm:p-12 shadow-sm">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-surfaceSoft text-forest border border-surfaceBorder mb-4">
+                <i class="fas fa-balance-scale text-primary"></i>
+                <span>Términos Legales y Académicos</span>
+            </div>
+
+            <h1 class="font-display font-extrabold text-3xl sm:text-4xl text-textMain mb-2">
+                Términos y Condiciones de Uso
+            </h1>
+            <p class="text-xs text-textMuted mb-8 pb-6 border-b border-surfaceBorder">
+                Última actualización: 13 de Octubre de 2026 • Versión 2.0 (Cátedra de Programación IV)
+            </p>
+
+            <div class="space-y-8 text-sm sm:text-base text-textMuted leading-relaxed">
+                <!-- Sección 1 -->
+                <div>
+                    <h2 class="text-lg font-bold text-textMain flex items-center gap-2.5 mb-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-100 text-primary flex items-center justify-center text-xs font-black">1</span>
+                        Naturaleza del Proyecto y Finalidad Académica
+                    </h2>
+                    <p>
+                        <strong>GastoSmart</strong> es una plataforma de software desarrollada exclusivamente como proyecto final integrador para la asignatura de <strong>Programación IV</strong>. Su propósito es demostrar la aplicación práctica de arquitecturas web modernas, integración de APIs REST, servicios en la nube (Vercel, Supabase), transaccionalidad de correo (Brevo) e inteligencia artificial aplicada (Google Gemini). No constituye una institución financiera ni un servicio comercial sujeto a licencias bancarias.
+                    </p>
+                </div>
+
+                <!-- Sección 2 -->
+                <div>
+                    <h2 class="text-lg font-bold text-textMain flex items-center gap-2.5 mb-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-100 text-primary flex items-center justify-center text-xs font-black">2</span>
+                        Cuentas de Usuario y Privacidad de Datos
+                    </h2>
+                    <p>
+                        Para acceder al panel interactivo, el usuario registra credenciales (correo y contraseña). Las contraseñas son procesadas con cifrado seguro a través de la infraestructura de Supabase. Los datos de gastos, ingresos, presupuestos y conversiones son de uso personal y simulado, con el único propósito de validar la lógica y persistencia del sistema.
+                    </p>
+                </div>
+
+                <!-- Sección 3 -->
+                <div>
+                    <h2 class="text-lg font-bold text-textMain flex items-center gap-2.5 mb-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-100 text-primary flex items-center justify-center text-xs font-black">3</span>
+                        Cotizaciones y Conversión de Divisas
+                    </h2>
+                    <p>
+                        La plataforma incluye un conversor en vivo de monedas (Guaraní Paraguayo - PYG, Dólar Estadounidense - USD, Euro - EUR, Real Brasileño - BRL, Peso Argentino - ARS). Las tasas de cambio se obtienen mediante APIs públicas externas de referencia bursátil y están sujetas a variabilidad o disponibilidad de los proveedores de datos sin garantía de precisión comercial.
+                    </p>
+                </div>
+
+                <!-- Sección 4 -->
+                <div>
+                    <h2 class="text-lg font-bold text-textMain flex items-center gap-2.5 mb-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-100 text-primary flex items-center justify-center text-xs font-black">4</span>
+                        Notificaciones y Alertas por Correo Electrónico
+                    </h2>
+                    <p>
+                        GastoSmart incluye funcionalidad de alerta automática de presupuesto enviada a través de la API transaccional de Brevo. Dichos envíos se realizan con fines de notificación personal sobre los límites configurados en el panel y no contienen promociones comerciales ni publicidad de terceros.
+                    </p>
+                </div>
+
+                <!-- Sección 5 -->
+                <div>
+                    <h2 class="text-lg font-bold text-textMain flex items-center gap-2.5 mb-2">
+                        <span class="w-7 h-7 rounded-lg bg-emerald-100 text-primary flex items-center justify-center text-xs font-black">5</span>
+                        Propiedad Intelectual y Licencia de Código
+                    </h2>
+                    <p>
+                        El código fuente de GastoSmart ha sido estructurado por el estudiante para la evaluación académica. Se autoriza su revisión y ejecución por parte del cuerpo docente evaluador de Programación IV con fines de auditoría, verificación de requerimientos y calificación curricular.
+                    </p>
+                </div>
+            </div>
+
+            <div class="mt-10 pt-6 border-t border-surfaceBorder flex flex-col sm:flex-row items-center justify-between gap-4">
+                <a href="/soporte.html" class="text-xs font-bold text-primary hover:text-primaryHover transition flex items-center gap-1.5">
+                    <i class="fas fa-headset"></i>
+                    <span>¿Tienes alguna consulta? Centro de Soporte</span>
+                </a>
+                <a href="/dashboard.html" class="w-full sm:w-auto text-center px-6 py-2.5 rounded-xl bg-gradient-to-r from-primary to-secondary text-white text-xs font-black shadow-md hover:shadow-lg transition">
+                    Entendido, Ir al Dashboard
+                </a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="w-full bg-white border-t border-surfaceBorder py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8 text-center text-xs text-textMuted">
+            © 2026 GastoSmart • Proyecto Académico de Programación IV • Todos los derechos reservados.
+        </div>
+    </footer>
+</body>
+</html>

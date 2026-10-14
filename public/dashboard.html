@@ -4,47 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - GastoSmart</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Tailwind CSS & Chart.js Locales -->
+    <script src="/assets/vendor/tailwind.min.js"></script>
+    <script src="/assets/vendor/chart.min.js"></script>
+    <script src="/assets/js/tailwind-config.js"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com" rel="preconnect">
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
-    
-    <script>
-        tailwind.config = {
-            darkMode: 'class', // Previene que el modo oscuro del sistema operativo rompa los colores claros
-            theme: {
-                extend: {
-                    colors: {
-                        baseBg: "#f8faf8",           // Blanco menta muy limpio
-                        surface: "#ffffff",          // Blanco puro para tarjetas
-                        surfaceSoft: "#f0fdf4",      // Verde menta pastel muy sutil
-                        surfaceBorder: "#e2e8f0",    // Borde slate nítido y visible
-                        
-                        // Tonos Verdes Protagonistas
-                        primary: "#10b981",          // Verde Esmeralda
-                        primaryHover: "#059669",     // Verde Esmeralda Intenso
-                        secondary: "#0d9488",        // Verde Azulado / Teal
-                        mint: "#34d399",             // Menta brillante
-                        forest: "#064e3b",           // Verde pino para textos
-                        emeraldWarm: "#059669",      // Verde esmeralda
-                        
-                        // Tipografía
-                        textMain: "#0f172a",         // Carbón pizarra elegante
-                        textMuted: "#475569",        // Gris pizarra
-                        textLight: "#64748b"         // Gris suave
-                    },
-                    fontFamily: {
-                        sans: ["'Plus Jakarta Sans'", "sans-serif"],
-                        display: ["'Outfit'", "sans-serif"]
-                    }
-                }
-            }
-        };
-    </script>
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #f8faf8; }
         ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -91,14 +60,26 @@
         </div>
 
         <!-- Footer Sidebar -->
-        <div class="pt-6 border-t border-slate-200 space-y-2">
-            <a href="/index.html" class="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
-                <i class="fas fa-home text-slate-500"></i>
+        <div class="pt-6 border-t border-slate-200 space-y-1.5">
+            <a href="/index.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                <i class="fas fa-home w-4 text-slate-400"></i>
                 <span>Volver al Inicio</span>
             </a>
+            <a href="/soporte.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition">
+                <i class="fas fa-headset w-4 text-emerald-600"></i>
+                <span>Soporte Técnico</span>
+            </a>
+            <a href="/sobre-nosotros.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                <i class="fas fa-info-circle w-4 text-slate-400"></i>
+                <span>Sobre Nosotros</span>
+            </a>
+            <a href="/terminos.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+                <i class="fas fa-balance-scale w-4 text-slate-400"></i>
+                <span>Términos y Privacidad</span>
+            </a>
             
-            <button onclick="Auth.logout()" class="w-full flex items-center gap-2.5 px-4 py-2.5 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer">
-                <i class="fas fa-sign-out-alt"></i>
+            <button onclick="Auth.logout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer mt-2">
+                <i class="fas fa-sign-out-alt w-4"></i>
                 <span>Cerrar Sesión</span>
             </button>
         </div>

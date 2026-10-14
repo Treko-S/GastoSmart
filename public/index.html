@@ -12,7 +12,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet"/>
     
     <!-- AOS (Animate On Scroll) -->
-    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet"/>
+    <link href="/assets/vendor/aos.css" rel="stylesheet"/>
 
     <style>
         @layer base {
@@ -38,39 +38,8 @@
         }
     </style>
 
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script id="tailwind-config">
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    colors: {
-                        // Base Blanca Fresca y Acentos Verdosos Fintech
-                        baseBg: "#f8faf8",           // Blanco menta muy limpio
-                        surface: "#ffffff",          // Blanco puro para tarjetas
-                        surfaceSoft: "#f0fdf4",      // Verde menta pastel muy sutil
-                        surfaceBorder: "#d1fae5",    // Borde verde suave
-                        
-                        // Tonos Verdes Protagonistas
-                        primary: "#10b981",          // Verde Esmeralda
-                        primaryHover: "#059669",     // Verde Esmeralda Intenso
-                        secondary: "#0d9488",        // Verde Azulado / Teal
-                        mint: "#34d399",             // Menta brillante
-                        forest: "#064e3b",           // Verde pino para textos
-                        
-                        // Tipografía
-                        textMain: "#0f172a",         // Carbón pizarra elegante
-                        textMuted: "#475569",        // Gris pizarra
-                        textLight: "#64748b"         // Gris suave
-                    },
-                    fontFamily: {
-                        sans: ["'Plus Jakarta Sans'", "sans-serif"],
-                        display: ["'Outfit'", "sans-serif"]
-                    }
-                }
-            }
-        };
-    </script>
+    <script src="/assets/vendor/tailwind.min.js"></script>
+    <script src="/assets/js/tailwind-config.js"></script>
 </head>
 <body class="bg-baseBg font-sans text-textMain selection:bg-primary/25 selection:text-forest min-h-screen relative overflow-x-hidden">
 
@@ -504,82 +473,79 @@
 
     </main>
 
-    <!-- Footer Verdoso Suave -->
-    <footer class="w-full bg-white border-t border-surfaceBorder py-12">
-        <div class="max-w-7xl mx-auto px-5 sm:px-8 flex flex-col sm:flex-row items-center justify-between gap-6 text-center sm:text-left">
-            <div class="flex items-center gap-3">
-                <img alt="GastoSmart Logo" class="h-8 w-auto object-contain" src="/logo.png" onerror="this.src='https://placehold.co/32x32/10b981/ffffff?text=GS'"/>
-                <span class="font-display font-extrabold text-xl text-textMain">GastoSmart</span>
-                <span class="text-xs text-textMuted ml-2">Control de Gastos Personales</span>
+    <!-- Footer Completo & Profesional (Programación IV) -->
+    <footer class="w-full bg-white border-t border-surfaceBorder pt-14 pb-8">
+        <div class="max-w-7xl mx-auto px-5 sm:px-8">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
+                <!-- Columna 1: Marca y Propósito Académico -->
+                <div class="md:col-span-1 space-y-4">
+                    <div class="flex items-center gap-3">
+                        <img alt="GastoSmart Logo" class="h-9 w-auto object-contain" src="/logo.png"/>
+                        <div>
+                            <span class="font-display font-black text-xl text-textMain tracking-tight">Gasto<span class="text-primary">Smart</span></span>
+                            <span class="block text-[10px] uppercase font-bold text-secondary">Control Inteligente</span>
+                        </div>
+                    </div>
+                    <p class="text-xs text-textMuted leading-relaxed">
+                        Plataforma inteligente de gestión de gastos personales y cotizaciones multimoneda en tiempo real.
+                    </p>
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-[11px] font-bold bg-surfaceSoft text-forest border border-surfaceBorder">
+                        <i class="fas fa-graduation-cap text-primary"></i>
+                        <span>Cátedra de Programación IV</span>
+                    </div>
+                </div>
+
+                <!-- Columna 2: Plataforma -->
+                <div>
+                    <h4 class="font-display font-extrabold text-sm text-textMain mb-4 uppercase tracking-wider">Plataforma</h4>
+                    <ul class="space-y-2.5 text-xs text-textMuted font-semibold">
+                        <li><a href="/dashboard.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-chart-pie text-[10px] text-primary"></i> Panel de Gastos</a></li>
+                        <li><a href="/login.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-sign-in-alt text-[10px] text-primary"></i> Iniciar Sesión</a></li>
+                        <li><a href="/register.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-user-plus text-[10px] text-primary"></i> Registrar Cuenta</a></li>
+                        <li><a href="/dashboard.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-coins text-[10px] text-primary"></i> Conversor de Divisas</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 3: Institucional & Ayuda -->
+                <div>
+                    <h4 class="font-display font-extrabold text-sm text-textMain mb-4 uppercase tracking-wider">Institucional</h4>
+                    <ul class="space-y-2.5 text-xs text-textMuted font-semibold">
+                        <li><a href="/sobre-nosotros.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-info-circle text-[10px] text-primary"></i> Sobre Nosotros</a></li>
+                        <li><a href="/soporte.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-headset text-[10px] text-primary"></i> Soporte Técnico</a></li>
+                        <li><a href="/soporte.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-question-circle text-[10px] text-primary"></i> Preguntas Frecuentes</a></li>
+                        <li><a href="/sobre-nosotros.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-code text-[10px] text-primary"></i> Tecnologías & Stack</a></li>
+                    </ul>
+                </div>
+
+                <!-- Columna 4: Legal & Académico -->
+                <div>
+                    <h4 class="font-display font-extrabold text-sm text-textMain mb-4 uppercase tracking-wider">Legal & Proyecto</h4>
+                    <ul class="space-y-2.5 text-xs text-textMuted font-semibold">
+                        <li><a href="/terminos.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-balance-scale text-[10px] text-primary"></i> Términos y Condiciones</a></li>
+                        <li><a href="/terminos.html" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fas fa-user-shield text-[10px] text-primary"></i> Política de Privacidad</a></li>
+                        <li><a href="https://github.com/Treko-S/GastoSmart" target="_blank" rel="noopener noreferrer" class="hover:text-primary transition-colors flex items-center gap-1.5"><i class="fab fa-github text-[10px] text-primary"></i> Repositorio GitHub</a></li>
+                        <li><span class="text-slate-400 flex items-center gap-1.5"><i class="fas fa-check-circle text-[10px] text-emerald-500"></i> Evaluación de Software</span></li>
+                    </ul>
+                </div>
             </div>
 
-            <div class="flex items-center gap-6 text-sm font-semibold text-textMuted">
-                <a href="/login.html" class="hover:text-primary transition-colors">Iniciar Sesión</a>
-                <a href="/register.html" class="hover:text-primary transition-colors">Crear Cuenta</a>
-                <a href="/dashboard.html" class="hover:text-primary transition-colors">Mi Panel</a>
+            <!-- Barra Inferior -->
+            <div class="pt-6 border-t border-surfaceBorder flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-textLight text-center sm:text-left">
+                <p>© 2026 GastoSmart • Diseñado para la evaluación de Programación IV • Todos los derechos reservados.</p>
+                <div class="flex items-center gap-4">
+                    <a href="/terminos.html" class="hover:text-primary transition-colors">Términos</a>
+                    <span>•</span>
+                    <a href="/sobre-nosotros.html" class="hover:text-primary transition-colors">Sobre Nosotros</a>
+                    <span>•</span>
+                    <a href="/soporte.html" class="hover:text-primary transition-colors">Soporte</a>
+                </div>
             </div>
-
-            <p class="text-xs text-textLight">
-                © 2026 GastoSmart • Todos los derechos reservados.
-            </p>
         </div>
     </footer>
 
-    <!-- Scripts de Animación AOS & Cotizaciones en Vivo -->
-    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <!-- Scripts de Animación AOS & Cotizaciones en Vivo (Sin Inline Script para CSP Estricto) -->
+    <script src="/assets/vendor/aos.js"></script>
     <script src="/assets/js/auth.js"></script>
-    <script>
-        AOS.init({
-            duration: 750,
-            once: true,
-            offset: 60,
-            easing: 'ease-out-cubic'
-        });
-
-        async function fetchLiveRates() {
-            try {
-                const res = await fetch('/api/currency/rates');
-                const data = await res.json();
-                if (data.success && data.rates) {
-                    const r = data.rates;
-                    const pyg = Math.round(r.PYG || 7550).toLocaleString('es-PY');
-                    const eur = Number(r.EUR || 0.92).toFixed(2);
-                    const brl = Number(r.BRL || 5.20).toFixed(2);
-                    const ars = Math.round(r.ARS || 1200).toLocaleString('es-AR');
-
-                    const pygText = `${pyg} ₲`;
-                    const eurText = `€${eur}`;
-
-                    if (document.getElementById('ticker-pyg')) document.getElementById('ticker-pyg').textContent = pygText;
-                    if (document.getElementById('hero-pyg-rate')) document.getElementById('hero-pyg-rate').textContent = `1 USD ≈ ${pygText}`;
-                    if (document.getElementById('ticker-eur')) document.getElementById('ticker-eur').textContent = eurText;
-                    if (document.getElementById('hero-eur-rate')) document.getElementById('hero-eur-rate').textContent = `1 USD ≈ ${eurText}`;
-                    if (document.getElementById('ticker-brl')) document.getElementById('ticker-brl').textContent = `R$ ${brl}`;
-                    if (document.getElementById('ticker-ars')) document.getElementById('ticker-ars').textContent = `$ ${ars}`;
-                    
-                    const mockupCalc = Math.round(1200 * (r.PYG || 7550)).toLocaleString('es-PY');
-                    if (document.getElementById('mockup-pyg-calc')) document.getElementById('mockup-pyg-calc').textContent = `≈ ${mockupCalc} ₲`;
-                }
-            } catch (e) {
-                console.warn('Usando valores de referencia:', e);
-            }
-        }
-
-        fetchLiveRates();
-
-        Auth.checkSession(false).then(user => {
-            if (user) {
-                const container = document.getElementById('auth-buttons-container');
-                if (container) {
-                    container.innerHTML = `
-                        <a href="/dashboard.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-primary to-secondary shadow-md transition-all transform hover:-translate-y-0.5">
-                            <span>Ir a mi Dashboard</span>
-                            <i class="fas fa-arrow-right text-xs"></i>
-                        </a>
-                    `;
-                }
-            }
-        });
-    </script>
+    <script src="/assets/js/landing.js"></script>
 </body>
 </html>
