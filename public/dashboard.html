@@ -19,11 +19,6 @@
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: transparent; }
         ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 9999px; }
-        #expense-modal.gs-tour-modal-open {
-            background-color: transparent !important;
-            backdrop-filter: none !important;
-            -webkit-backdrop-filter: none !important;
-        }
     </style>
 </head>
 <body class="bg-baseBg text-textMain min-h-screen flex flex-col md:flex-row antialiased selection:bg-primary/25 selection:text-forest">
@@ -83,12 +78,6 @@
                 <span>Términos y Privacidad</span>
             </a>
 
-            <!-- Botón Tour Guiado Sidebar -->
-            <button onclick="GastoSmartTour.start(true)" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-emerald-700 hover:text-emerald-800 hover:bg-emerald-50 transition cursor-pointer">
-                <i class="fas fa-route w-4 text-emerald-600"></i>
-                <span>Recorrido Guiado</span>
-            </button>
-            
             <button onclick="confirmLogout()" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-rose-600 hover:bg-rose-50 transition cursor-pointer mt-2">
                 <i class="fas fa-sign-out-alt w-4"></i>
                 <span>Cerrar Sesión</span>
@@ -284,7 +273,7 @@
                 </div>
             </div>
 
-            <!-- Contenedor Unificado de Historial y Reportes (Para Recorrido Guiado Paso 3) -->
+            <!-- Contenedor Unificado de Historial y Reportes -->
             <div id="tour-card-history-all" class="space-y-6">
                 <!-- Centro de Exportación y Reportes Bien Estructurado -->
                 <div id="tour-card-export" class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
@@ -731,7 +720,6 @@
     <!-- Scripts -->
     <script src="/assets/js/currency.js"></script>
     <script src="/assets/js/auth.js"></script>
-    <script src="/assets/js/tour.js"></script>
     <script src="/assets/js/app.js"></script>
 </body>
 </html>

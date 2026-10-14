@@ -34,11 +34,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   // Inicializar tema guardado
   initTheme();
-
-  // 4. Iniciar recorrido guiado si es usuario nuevo o si aún no lo completó
-  if (window.GastoSmartTour && user && user.id) {
-    window.GastoSmartTour.checkAndAutoStart(user.id);
-  }
 });
 
 // ==========================================
@@ -525,7 +520,7 @@ function updateModalLockedDate() {
   }
 }
 
-function openModal(prefillAmount, prefillCurr, forceDemo = false) {
+function openModal(prefillAmount, prefillCurr) {
   updateModalLockedDate();
   if (prefillAmount !== undefined && prefillAmount !== null) {
     document.getElementById('modal-monto').value = prefillAmount;
@@ -537,61 +532,17 @@ function openModal(prefillAmount, prefillCurr, forceDemo = false) {
   const modal = document.getElementById('expense-modal');
   const container = document.getElementById('modal-container');
 
-  // Verificar si se abre durante el paso 2 del Recorrido Guiado (Modo Demostración)
-  const isTourStep2 = window.GastoSmartTour && typeof window.GastoSmartTour.isActive === 'function' && window.GastoSmartTour.isActive() && window.GastoSmartTour.getCurrentStep() === 1;
-  const isDemo = forceDemo || isTourStep2;
-
-  const existingBanner = document.getElementById('tour-demo-banner');
-  if (existingBanner) existingBanner.remove();
-
-  if (isDemo) {
-    if (window.GastoSmartTour && typeof window.GastoSmartTour.setDemoMode === 'function') {
-      window.GastoSmartTour.setDemoMode(true);
-    }
-    const banner = document.createElement('div');
-    banner.id = 'tour-demo-banner';
-    banner.className = 'mb-4 p-3 bg-gradient-to-r from-emerald-50 via-teal-50 to-emerald-50 border border-emerald-300 rounded-2xl flex items-center gap-3 text-xs text-emerald-950 font-bold shadow-xs';
-    banner.innerHTML = `
-      <div class="w-8 h-8 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 text-xs shadow-xs animate-pulse">
-        <i class="fas fa-magic"></i>
-      </div>
-      <div>
-        <div class="font-black text-emerald-900 text-xs">Modo Demostración Interactivo</div>
-        <div class="text-[11px] text-emerald-700 font-medium">Este formulario es un ejemplo didáctico. No se guardará ningún gasto real en tu cuenta.</div>
-      </div>
-    `;
-    const form = document.getElementById('new-expense-form');
-    if (form) form.insertBefore(banner, form.firstChild);
-
-    // Precargar datos de ejemplo realistas
-    const descEl = document.getElementById('modal-descripcion');
-    if (descEl && !descEl.value) descEl.value = 'Ejemplo: Almuerzo con amigos';
-    const montoEl = document.getElementById('modal-monto');
-    if (montoEl && (!montoEl.value || montoEl.value === '0')) montoEl.value = '150';
-    const catEl = document.getElementById('modal-categoria');
-    if (catEl && catEl.options.length > 1 && !catEl.value) {
-      catEl.selectedIndex = 1;
-    }
-    updateModalPreview();
-  }
-
   modal.classList.remove('hidden');
   setTimeout(() => {
     container.classList.remove('scale-95', 'opacity-0');
     container.classList.add('scale-100', 'opacity-100');
   }, 10);
   document.getElementById('modal-monto').focus();
-
-  if (isDemo && window.GastoSmartTour && typeof window.GastoSmartTour.onModalOpened === 'function') {
-    window.GastoSmartTour.onModalOpened();
-  }
 }
 
 function closeModal() {
   const modal = document.getElementById('expense-modal');
   const container = document.getElementById('modal-container');
-  const demoBanner = document.getElementById('tour-demo-banner');
-  if (demoBanner) demoBanner.remove();
 
   container.classList.remove('scale-100', 'opacity-100');
   container.classList.add('scale-95', 'opacity-0');
@@ -601,10 +552,6 @@ function closeModal() {
     updateModalLockedDate();
     setExpenseCurrency('USD');
   }, 200);
-
-  if (window.GastoSmartTour && typeof window.GastoSmartTour.onModalClosed === 'function') {
-    window.GastoSmartTour.onModalClosed();
-  }
 }
 
 function setExpenseCurrency(curr) {
@@ -637,16 +584,6 @@ function updateModalPreview() {
 
 document.getElementById('new-expense-form').addEventListener('submit', async (e) => {
   e.preventDefault();
-
-  // Si estamos en el modo demostración del recorrido guiado, no guardar en BD real:
-  if (window.GastoSmartTour && typeof window.GastoSmartTour.isDemoMode === 'function' && window.GastoSmartTour.isDemoMode()) {
-    closeModal();
-    showToast('✨ ¡Gasto de demostración completado! Tu historial real se mantiene intacto.', 'success');
-    if (typeof window.GastoSmartTour.onDemoExpenseSaved === 'function') {
-      window.GastoSmartTour.onDemoExpenseSaved();
-    }
-    return;
-  }
 
   const btn = document.getElementById('btn-save-expense');
   btn.disabled = true;
@@ -1119,11 +1056,6 @@ function switchView(viewName) {
   });
 
   if (viewName === 'conversor') calculateConversion();
-
-  // Sincronizar automáticamente con el recorrido guiado interactivo si está activo
-  if (window.GastoSmartTour && typeof window.GastoSmartTour.syncWithView === 'function') {
-    window.GastoSmartTour.syncWithView(viewName);
-  }
 }
 
 // ==========================================
