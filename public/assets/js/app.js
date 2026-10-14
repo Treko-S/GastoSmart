@@ -890,6 +890,11 @@ function switchView(viewName) {
   });
 
   if (viewName === 'conversor') calculateConversion();
+
+  // Sincronizar automáticamente con el recorrido guiado interactivo si está activo
+  if (window.GastoSmartTour && typeof window.GastoSmartTour.syncWithView === 'function') {
+    window.GastoSmartTour.syncWithView(viewName);
+  }
 }
 
 // ==========================================

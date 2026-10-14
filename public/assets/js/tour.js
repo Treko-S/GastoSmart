@@ -3,8 +3,9 @@
  * Arquitectura de 4 Paneles de Apertura (Aperture Spotlight):
  * - El elemento enfocado NUNCA queda oscurecido porque no hay ninguna capa sobre él.
  * - Brillo y colores 100% naturales en la tarjeta o botón enfocado.
- * - Animación fluida mediante transiciones de hardware.
- * - Al cerrarse, se oculta completamente (display: none) para garantizar interacción 100% normal en PC y Móvil.
+ * - Interacción 100% real: el usuario puede tocar botones, cambiar monedas y probar conversiones.
+ * - Sincronización inteligente con modales y vistas en PC y Móvil.
+ * - Al cerrarse, se oculta completamente (display: none) para garantizar rendimiento nativo.
  */
 
 const GastoSmartTour = (() => {
@@ -13,22 +14,28 @@ const GastoSmartTour = (() => {
   let isActive = false;
   let resizeHandlerAttached = false;
   let currentTargetEl = null;
+  let modalObserver = null;
+  let rafId = null;
 
   const STEPS = [
     {
       step: 1,
-      badge: '1 de 5',
+      badge: '1 de 5 • Presupuesto',
       view: 'resumen',
       getTarget: () => document.getElementById('tour-card-budget'),
       icon: 'fas fa-wallet',
-      title: 'Presupuesto y Control de Gastos',
+      title: 'Control de Presupuesto en Vivo',
       description: 'Aquí visualizas tu presupuesto (fijado en <b>$100.00 USD</b> de base), el total consumido y el saldo restante en tiempo real con barra de progreso.'
     },
     {
       step: 2,
-      badge: '2 de 5',
+      badge: '2 de 5 • Registro Rápido',
       view: 'resumen',
       getTarget: () => {
+        const modal = document.getElementById('expense-modal');
+        if (modal && !modal.classList.contains('hidden')) {
+          return document.getElementById('modal-container') || modal;
+        }
         const isMobile = window.innerWidth < 768;
         return isMobile 
           ? (document.getElementById('tour-btn-add-mobile') || document.getElementById('tour-btn-add-desktop'))
@@ -36,34 +43,34 @@ const GastoSmartTour = (() => {
       },
       icon: 'fas fa-plus-circle',
       title: 'Anotar un Gasto en Segundos',
-      description: 'Pulsa este botón para registrar compras en <b>Dólares ($)</b>, <b>Guaraníes (₲)</b>, <b>Euros (€)</b> o <b>Reales (R$)</b> con cálculo automático y fecha protegida.'
+      description: '💡 <b>¡Pruébalo ahora!</b> Toca en <b>+ Registrar Gasto</b> para abrir el formulario interactivo multidivisa con fecha asegurada.'
     },
     {
       step: 3,
-      badge: '3 de 5',
+      badge: '3 de 5 • Movimientos',
       view: 'historial',
       getTarget: () => document.getElementById('tour-card-history'),
       icon: 'fas fa-list-ul',
-      title: 'Historial de Movimientos',
-      description: 'Revisa todas tus compras organizadas cronológicamente con filtros por período. Puedes auditar, editar o eliminar cualquier gasto fácilmente.'
+      title: 'Historial y Reportes CSV',
+      description: '💡 <b>¡Pruébalo!</b> Revisa todas tus transacciones por fecha. Puedes cambiar el filtro de períodos o tocar <b>Exportar CSV</b> para auditar tus finanzas.'
     },
     {
       step: 4,
-      badge: '4 de 5',
+      badge: '4 de 5 • Divisas en Vivo',
       view: 'conversor',
-      getTarget: () => document.getElementById('tour-card-converter-result') || document.getElementById('tour-card-converter'),
+      getTarget: () => document.getElementById('tour-card-converter') || document.getElementById('tour-card-converter-result'),
       icon: 'fas fa-coins',
       title: 'Conversor y Cotizaciones en Vivo',
-      description: 'Consulta cotizaciones oficiales del mercado actualizadas al minuto. Convierte valores de ida y vuelta entre USD, PYG, EUR y BRL con un solo toque.'
+      description: '💡 <b>¡Pruébalo ahora!</b> Escribe un monto, cambia las monedas o pulsa <b>(⇄)</b> para invertir las cotizaciones oficiales en tiempo real.'
     },
     {
       step: 5,
-      badge: '5 de 5',
+      badge: '5 de 5 • Configuración',
       view: 'ajustes',
-      getTarget: () => document.getElementById('tour-card-budget-config') || document.getElementById('tour-card-budget-settings'),
+      getTarget: () => document.getElementById('tour-card-budget-settings') || document.getElementById('tour-card-budget-config'),
       icon: 'fas fa-sliders-h',
       title: 'Personaliza tu Límite y Alertas',
-      description: 'Establece tu presupuesto semanal o mensual en tu moneda favorita (fijado en <b>$100.00 USD</b> de base) y activa alertas para cuidar tu dinero.'
+      description: '💡 <b>¡Pruébalo ahora!</b> Alterna entre <b>Presupuesto Mensual</b> y <b>Semanal</b>, o toca las monedas (USD, PYG, EUR, BRL) para proyectar tus finanzas.'
     }
   ];
 
@@ -96,20 +103,19 @@ const GastoSmartTour = (() => {
           position: fixed;
           background: rgba(15, 23, 42, 0.72);
           pointer-events: auto;
-          cursor: pointer;
           transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
           z-index: 999991;
         }
         .gs-tour-active-element {
-          /* No aplicar z-index aquí para no alterar el contexto de apilamiento */
+          /* Centro al descubierto para permitir clics e interacción nativa */
         }
       </style>
 
-      <!-- 4 Paneles que rodean el elemento dejando el centro 100% transparente y brillante -->
-      <div id="gs-panel-top" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
-      <div id="gs-panel-bottom" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
-      <div id="gs-panel-left" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
-      <div id="gs-panel-right" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
+      <!-- 4 Paneles que rodean el elemento dejando el centro 100% interactivo y transparente -->
+      <div id="gs-panel-top" class="gs-tour-panel"></div>
+      <div id="gs-panel-bottom" class="gs-tour-panel"></div>
+      <div id="gs-panel-left" class="gs-tour-panel"></div>
+      <div id="gs-panel-right" class="gs-tour-panel"></div>
 
       <!-- Borde Foco Esmeralda Luminoso -->
       <div id="gs-tour-spotlight" class="fixed pointer-events-none" style="
@@ -121,9 +127,9 @@ const GastoSmartTour = (() => {
       "></div>
 
       <!-- Popover / Tooltip Contextual Inteligente -->
-      <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 flex flex-col" style="
-        width: calc(100vw - 32px);
-        max-width: 380px;
+      <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-4 sm:p-6 shadow-2xl border border-slate-200 flex flex-col" style="
+        width: calc(100vw - 24px);
+        max-width: 370px;
         z-index: 1000000;
         transition: top 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
       ">
@@ -184,15 +190,58 @@ const GastoSmartTour = (() => {
     if (!resizeHandlerAttached) {
       window.addEventListener('resize', handleViewportChange);
       window.addEventListener('scroll', handleViewportChange, true);
+      window.addEventListener('orientationchange', handleViewportChange);
+      if (window.visualViewport) {
+        window.visualViewport.addEventListener('resize', handleViewportChange);
+      }
       resizeHandlerAttached = true;
     }
+
+    setupModalObserver();
 
     return root;
   }
 
+  function setupModalObserver() {
+    if (modalObserver) return;
+    const modal = document.getElementById('expense-modal');
+    if (!modal) return;
+
+    modalObserver = new MutationObserver(() => {
+      if (!isActive || currentStep !== 1) return;
+      const isOpen = !modal.classList.contains('hidden');
+      if (isOpen) {
+        setTimeout(() => {
+          const container = document.getElementById('modal-container');
+          if (container && isActive && currentStep === 1) {
+            positionElements(container, {
+              step: 2,
+              badge: '2 de 5 • ¡En Acción!',
+              view: 'resumen',
+              icon: 'fas fa-edit',
+              title: 'Formulario Multidivisa en Acción',
+              description: '💡 <b>¡Pruébalo!</b> Toca las monedas (USD, PYG, EUR, BRL) o escribe un monto. La fecha está asegurada. Pulsa la <b>X</b> para cerrar o <b>Siguiente</b> para continuar.'
+            }, 1, false);
+          }
+        }, 80);
+      } else {
+        setTimeout(() => {
+          if (isActive && currentStep === 1) {
+            updateSpotlightAndPopover(1, false);
+          }
+        }, 120);
+      }
+    });
+
+    modalObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
+  }
+
   function handleViewportChange() {
     if (!isActive) return;
-    updateSpotlightAndPopover(currentStep, false);
+    if (rafId) cancelAnimationFrame(rafId);
+    rafId = requestAnimationFrame(() => {
+      updateSpotlightAndPopover(currentStep, false);
+    });
   }
 
   function updateSpotlightAndPopover(index, doScroll = true) {
@@ -277,7 +326,7 @@ const GastoSmartTour = (() => {
       // 6. Actualizar Contenido PRIMERO para que el alto del popover sea real
       updatePopoverContent(step, index);
 
-      // 7. Posicionar Popover con clamping y docking inteligente
+      // 7. Posicionar Popover con clamping y docking inteligente para PC y Móvil
       positionPopover(rect);
     }, delay);
   }
@@ -288,60 +337,65 @@ const GastoSmartTour = (() => {
 
     const vw = window.innerWidth;
     const vh = window.innerHeight;
-    const isMobile = vw < 640;
+    const isMobile = vw < 768;
     const popRect = popover.getBoundingClientRect();
-    const popHeight = Math.max(180, popRect.height || 210);
-    const popWidth = Math.min(380, vw - 32);
+    const popHeight = Math.max(170, popRect.height || 200);
+    const popWidth = Math.min(370, vw - 24);
 
     let popTop = 0;
-    let popLeft = 16;
+    let popLeft = 12;
 
     if (isMobile) {
-      popLeft = Math.max(16, (vw - popWidth) / 2);
+      popLeft = Math.max(12, (vw - popWidth) / 2);
 
-      const spaceBelow = vh - targetRect.bottom;
-      const spaceAbove = targetRect.top;
+      // En móvil:
+      // Zona segura vertical: bajo el header (65px) y sobre el bottom navigation (vh - 74px)
+      const spaceBelow = (vh - 74) - targetRect.bottom;
+      const spaceAbove = targetRect.top - 65;
 
-      if (spaceBelow >= popHeight + 16) {
+      if (spaceBelow >= popHeight + 14) {
         popTop = targetRect.bottom + 12;
-      } else if (spaceAbove >= popHeight + 16) {
+      } else if (spaceAbove >= popHeight + 14) {
         popTop = targetRect.top - popHeight - 12;
       } else {
-        popTop = vh - popHeight - 16;
+        // Elementos amplios (como conversor o ajustes): anclar limpiamente sobre la barra inferior
+        popTop = vh - popHeight - 74;
       }
+
+      // Clamping estricto en móvil
+      popTop = Math.max(68, Math.min(vh - popHeight - 74, popTop));
+      popLeft = Math.max(12, Math.min(vw - popWidth - 12, popLeft));
     } else {
-      // En PC: centrado con respecto al elemento objetivo
+      // En PC / Escritorio
       popLeft = targetRect.left + (targetRect.width / 2) - (popWidth / 2);
-      popLeft = Math.max(20, Math.min(vw - popWidth - 20, popLeft));
+      popLeft = Math.max(24, Math.min(vw - popWidth - 24, popLeft));
 
-      const spaceBelow = vh - targetRect.bottom;
-      const spaceAbove = targetRect.top;
+      const spaceBelow = (vh - 24) - targetRect.bottom;
+      const spaceAbove = targetRect.top - 74;
 
-      // Verificar si cabe abajo o arriba con suficiente margen
       if (spaceBelow >= popHeight + 18) {
         popTop = targetRect.bottom + 14;
       } else if (spaceAbove >= popHeight + 18) {
         popTop = targetRect.top - popHeight - 14;
       } else {
-        // Si no cabe verticalmente:
-        // Intentar posicionar en el lateral si hay espacio suficiente
-        if (targetRect.left > popWidth + 30) {
-          popLeft = targetRect.left - popWidth - 16;
-          popTop = Math.max(70, Math.min(vh - popHeight - 20, targetRect.top));
-        } else if (vw - targetRect.right > popWidth + 30) {
-          popLeft = targetRect.right + 16;
-          popTop = Math.max(70, Math.min(vh - popHeight - 20, targetRect.top));
+        // En elementos grandes: intentar lateral o dock en esquina inferior derecha
+        if (vw - targetRect.right >= popWidth + 30) {
+          popLeft = targetRect.right + 20;
+          popTop = Math.max(74, Math.min(vh - popHeight - 24, targetRect.top));
+        } else if (targetRect.left >= popWidth + 30) {
+          popLeft = targetRect.left - popWidth - 20;
+          popTop = Math.max(74, Math.min(vh - popHeight - 24, targetRect.top));
         } else {
-          // Si el elemento es muy amplio/alto, anclar elegantemente abajo a la derecha
+          // Dock limpio en esquina inferior derecha
           popLeft = vw - popWidth - 24;
           popTop = vh - popHeight - 24;
         }
       }
-    }
 
-    // Clamping estricto de seguridad: el popover NUNCA se desborda ni se corta
-    popTop = Math.max(16, Math.min(vh - popHeight - 16, popTop));
-    popLeft = Math.max(16, Math.min(vw - popWidth - 16, popLeft));
+      // Clamping estricto en PC
+      popTop = Math.max(74, Math.min(vh - popHeight - 24, popTop));
+      popLeft = Math.max(20, Math.min(vw - popWidth - 20, popLeft));
+    }
 
     popover.style.top = `${Math.round(popTop)}px`;
     popover.style.left = `${Math.round(popLeft)}px`;
@@ -368,7 +422,7 @@ const GastoSmartTour = (() => {
 
     const isLast = (index === STEPS.length - 1);
     if (btnNextText) {
-      btnNextText.textContent = isLast ? '¡Entendido!' : 'Siguiente';
+      btnNextText.textContent = isLast ? '¡Entendido, Empezar!' : 'Siguiente';
     }
     if (btnNextIcon) {
       btnNextIcon.className = isLast ? 'fas fa-check text-[10px]' : 'fas fa-arrow-right text-[10px]';
@@ -385,12 +439,19 @@ const GastoSmartTour = (() => {
     });
   }
 
-  function goTo(index) {
+  function goTo(index, triggerSwitchView = true) {
     if (index < 0 || index >= STEPS.length) return;
+
+    // Si el modal de gastos estaba abierto, cerrarlo limpiamente al cambiar de paso
+    const modal = document.getElementById('expense-modal');
+    if (modal && !modal.classList.contains('hidden') && typeof closeModal === 'function') {
+      try { closeModal(); } catch (e) {}
+    }
+
     currentStep = index;
     const step = STEPS[index];
 
-    if (typeof switchView === 'function') {
+    if (triggerSwitchView && typeof switchView === 'function') {
       try {
         switchView(step.view);
       } catch (e) {
@@ -401,6 +462,20 @@ const GastoSmartTour = (() => {
     setTimeout(() => {
       updateSpotlightAndPopover(index, true);
     }, 60);
+  }
+
+  function syncWithView(viewName) {
+    if (!isActive) return;
+    const viewToStep = {
+      'resumen': (currentStep === 1 ? 1 : 0),
+      'historial': 2,
+      'conversor': 3,
+      'ajustes': 4
+    };
+    const targetIndex = viewToStep[viewName];
+    if (targetIndex !== undefined && targetIndex !== currentStep) {
+      goTo(targetIndex, false);
+    }
   }
 
   function start(force = false, userId = null) {
@@ -421,6 +496,12 @@ const GastoSmartTour = (() => {
     clearTargetHighlight();
     const root = document.getElementById('gs-tour-root');
     isActive = false;
+
+    // Si el modal de gastos estaba abierto, cerrarlo
+    const modal = document.getElementById('expense-modal');
+    if (modal && !modal.classList.contains('hidden') && typeof closeModal === 'function') {
+      try { closeModal(); } catch (e) {}
+    }
 
     if (root) {
       // Ocultar por completo del árbol de renderizado para no bloquear ningún clic
@@ -452,7 +533,7 @@ const GastoSmartTour = (() => {
     markAsCompleted();
     close();
     if (typeof showToast === 'function') {
-      showToast('¡Recorrido completado!', 'success');
+      showToast('¡Recorrido completado! Ya puedes usar GastoSmart al máximo.', 'success');
     }
   }
 
@@ -497,7 +578,9 @@ const GastoSmartTour = (() => {
     skip,
     close,
     finish,
-    checkAndAutoStart
+    checkAndAutoStart,
+    syncWithView,
+    isActive: () => isActive
   };
 })();
 
