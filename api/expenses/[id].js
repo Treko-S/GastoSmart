@@ -1,10 +1,9 @@
 import { getUserFromRequest } from '../_lib/auth.js';
 import { supabase } from '../_lib/supabase.js';
+import { applyCors } from '../_lib/cors.js';
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (applyCors(req, res)) return;
 
   const user = getUserFromRequest(req);
   if (!user) {

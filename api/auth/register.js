@@ -2,11 +2,10 @@ import bcrypt from 'bcryptjs';
 import { supabase } from '../_lib/supabase.js';
 import { signToken, createAuthCookie } from '../_lib/auth.js';
 import { sendWelcomeEmail } from '../_lib/brevo.js';
+import { applyCors } from '../_lib/cors.js';
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (applyCors(req, res)) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Método no permitido' });

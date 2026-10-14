@@ -23,10 +23,11 @@ window.getAuthHeaders = getAuthHeaders;
 function apiFetch(url, options = {}) {
   const fullUrl = url.startsWith('http') ? url : (API_BASE + (url.startsWith('/') ? url : '/' + url));
   const headers = getAuthHeaders(options.headers || {});
+  const credentialsMode = options.credentials || (API_BASE ? 'omit' : 'same-origin');
   return fetch(fullUrl, {
     ...options,
     headers,
-    credentials: 'include'
+    credentials: credentialsMode
   });
 }
 window.apiFetch = apiFetch;
@@ -60,10 +61,9 @@ const Auth = {
   },
 
   async login(email, password) {
-    const res = await fetch(API_BASE + '/api/auth/login', {
+    const res = await apiFetch('/api/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ email, password })
     });
     const data = await res.json();
@@ -77,10 +77,9 @@ const Auth = {
   },
 
   async register(nombre, email, password) {
-    const res = await fetch(API_BASE + '/api/auth/register', {
+    const res = await apiFetch('/api/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      credentials: 'include',
       body: JSON.stringify({ nombre, email, password })
     });
     const data = await res.json();

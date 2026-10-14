@@ -1,5 +1,6 @@
 import { getUserFromRequest } from '../_lib/auth.js';
 import { supabase } from '../_lib/supabase.js';
+import { applyCors } from '../_lib/cors.js';
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
 
@@ -11,9 +12,7 @@ const GEMINI_MODELS = [
 ];
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (applyCors(req, res)) return;
 
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Método no permitido' });

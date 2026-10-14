@@ -1,3 +1,5 @@
+import { applyCors } from '../_lib/cors.js';
+
 const EXCHANGERATE_API_KEY = process.env.EXCHANGERATE_API_KEY;
 
 // Caché en memoria para optimizar rendimiento y cuota de peticiones
@@ -6,9 +8,7 @@ let lastFetchTime = 0;
 const CACHE_TTL = 1000 * 60 * 60; // 1 hora de caché
 
 export default async function handler(req, res) {
-  if (req.method === 'OPTIONS') {
-    return res.status(200).end();
-  }
+  if (applyCors(req, res)) return;
 
   if (req.method !== 'GET') {
     return res.status(405).json({ success: false, message: 'Método no permitido' });
