@@ -43,7 +43,7 @@ export function createAuthCookie(token) {
   return serialize(TOKEN_NAME, token, {
     httpOnly: true,
     secure: isProd, // Solo HTTPS en producción
-    sameSite: 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 días
     path: '/'
   });
@@ -54,7 +54,7 @@ export function createLogoutCookie() {
   return serialize(TOKEN_NAME, '', {
     httpOnly: true,
     secure: isProd,
-    sameSite: 'lax',
+    sameSite: isProd ? 'none' : 'lax',
     maxAge: 0,
     path: '/'
   });

@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Cuenta - GastoSmart</title>
-    <script src="/assets/vendor/tailwind.min.js"></script>
-    <script src="/assets/js/tailwind-config.js"></script>
+    <script src="assets/vendor/tailwind.min.js"></script>
+    <script src="assets/js/tailwind-config.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet">
 </head>
@@ -13,8 +13,8 @@
     <div class="w-full max-w-md bg-white rounded-3xl shadow-xl shadow-emerald-950/5 p-8 border border-surfaceBorder relative overflow-hidden">
         
         <div class="text-center mb-8">
-            <a href="/index.html" class="inline-flex items-center justify-center gap-2 mb-3">
-                <img src="/logo.png" alt="GastoSmart" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/10b981/ffffff?text=GS'">
+            <a href="index.html" class="inline-flex items-center justify-center gap-2 mb-3">
+                <img src="logo.png" alt="GastoSmart" class="w-12 h-12 object-contain" onerror="this.src='https://placehold.co/48x48/10b981/ffffff?text=GS'">
                 <span class="font-display font-extrabold text-2xl tracking-tight text-textMain">GastoSmart</span>
             </a>
             <h2 class="font-display font-extrabold text-2xl text-textMain">Crea tu Cuenta</h2>
@@ -70,20 +70,20 @@
         </form>
 
         <p class="text-center mt-6 text-sm text-textMuted">
-            ¿Ya tienes una cuenta? <a href="/login.html" class="text-secondary font-extrabold hover:underline">Inicia sesión</a>
+            ¿Ya tienes una cuenta? <a href="login.html" class="text-secondary font-extrabold hover:underline">Inicia sesión</a>
         </p>
 
         <!-- Footer Links Académicos -->
         <div class="mt-6 pt-4 border-t border-surfaceBorder text-center text-xs text-textMuted flex items-center justify-center gap-3">
-            <a href="/terminos.html" class="hover:text-primary transition-colors">Términos</a>
+            <a href="terminos.html" class="hover:text-primary transition-colors">Términos</a>
             <span>•</span>
-            <a href="/sobre-nosotros.html" class="hover:text-primary transition-colors">Nosotros</a>
+            <a href="sobre-nosotros.html" class="hover:text-primary transition-colors">Nosotros</a>
             <span>•</span>
-            <a href="/soporte.html" class="hover:text-primary transition-colors">Soporte</a>
+            <a href="soporte.html" class="hover:text-primary transition-colors">Soporte</a>
         </div>
     </div>
 
-    <script src="/assets/js/auth.js"></script>
+    <script src="assets/js/auth.js"></script>
     <script>
         Auth.checkSession(false);
 
@@ -107,7 +107,7 @@
                     msgBox.innerHTML = '<i class="fas fa-check-circle"></i> <span>¡Cuenta creada con éxito! Entrando al panel...</span>';
                     msgBox.classList.remove('hidden');
                     setTimeout(() => {
-                        window.location.href = '/dashboard.html';
+                        window.location.href = 'dashboard.html';
                     }, 1200);
                 } else {
                     msgBox.className = 'mb-5 p-3.5 text-sm rounded-xl border flex items-center gap-2 bg-rose-50 text-rose-700 border-rose-200';

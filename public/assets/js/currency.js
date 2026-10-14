@@ -15,7 +15,8 @@ const CurrencyManager = {
 
   async init() {
     try {
-      const res = await fetch('/api/currency/rates');
+      const fetchFn = window.apiFetch || fetch;
+      const res = await fetchFn('/api/currency/rates');
       const data = await res.json();
       if (data.success && data.rates) {
         this.rates = data.rates;

@@ -74,6 +74,7 @@ export default async function handler(req, res) {
     return res.status(201).json({
       success: true,
       message: 'Cuenta creada exitosamente',
+      token,
       user: newUser
     });
   } catch (error) {

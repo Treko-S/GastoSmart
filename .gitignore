@@ -27,6 +27,7 @@ cookies.txt
 .DS_Store
 Thumbs.db
 .vscode/
+deploy_hostinger/
 
 # Móvil y Bot
 whatsapp-bot/node_modules/

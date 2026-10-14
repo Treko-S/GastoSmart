@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - GastoSmart</title>
     <!-- Tailwind CSS & Chart.js Locales -->
-    <script src="/assets/vendor/tailwind.min.js"></script>
-    <script src="/assets/vendor/chart.min.js"></script>
-    <script src="/assets/js/tailwind-config.js"></script>
+    <script src="assets/vendor/tailwind.min.js"></script>
+    <script src="assets/vendor/chart.min.js"></script>
+    <script src="assets/js/tailwind-config.js"></script>
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Google Fonts -->
@@ -31,7 +31,7 @@
         <div>
             <!-- Logo -->
             <div class="flex items-center gap-3 mb-8">
-                <img src="/logo.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/40x40/10b981/ffffff?text=GS'">
+                <img src="logo.png" alt="Logo" class="w-10 h-10 object-contain" onerror="this.src='https://placehold.co/40x40/10b981/ffffff?text=GS'">
                 <div>
                     <h1 class="font-display font-black text-xl tracking-tight text-slate-900 leading-none">GastoSmart</h1>
                     <span class="text-[10px] uppercase font-black text-emerald-700 tracking-wider">Control Financiero</span>
@@ -61,19 +61,19 @@
 
         <!-- Footer Sidebar -->
         <div class="pt-6 border-t border-slate-200 space-y-1.5">
-            <a href="/index.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            <a href="index.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                 <i class="fas fa-home w-4 text-slate-400"></i>
                 <span>Volver al Inicio</span>
             </a>
-            <a href="/soporte.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition">
+            <a href="soporte.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-emerald-700 hover:bg-emerald-50 transition">
                 <i class="fas fa-headset w-4 text-emerald-600"></i>
                 <span>Soporte Técnico</span>
             </a>
-            <a href="/sobre-nosotros.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            <a href="sobre-nosotros.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                 <i class="fas fa-info-circle w-4 text-slate-400"></i>
                 <span>Sobre Nosotros</span>
             </a>
-            <a href="/terminos.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
+            <a href="terminos.html" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-xl text-xs font-bold text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition">
                 <i class="fas fa-balance-scale w-4 text-slate-400"></i>
                 <span>Términos y Privacidad</span>
             </a>
@@ -91,7 +91,7 @@
         <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 md:px-8 py-3.5 flex items-center justify-between shadow-xs">
             <div class="flex items-center gap-3">
                 <div class="md:hidden flex items-center gap-2">
-                    <img src="/logo.png" alt="Logo" class="w-8 h-8 object-contain" onerror="this.src='https://placehold.co/32x32/10b981/ffffff?text=GS'">
+                    <img src="logo.png" alt="Logo" class="w-8 h-8 object-contain" onerror="this.src='https://placehold.co/32x32/10b981/ffffff?text=GS'">
                     <span class="font-display font-black text-lg text-slate-900">GastoSmart</span>
                 </div>
                 <!-- Ticker Monedas en Vivo -->
@@ -294,10 +294,10 @@
                             <i class="fas fa-envelope text-emerald-600"></i>
                             <span>Enviar al Correo</span>
                         </button>
-                        <a href="/api/expenses/export" download class="flex-1 sm:flex-initial py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 shadow-2xs">
+                        <button type="button" onclick="downloadExportCsv()" class="flex-1 sm:flex-initial py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 shadow-2xs cursor-pointer">
                             <i class="fas fa-file-csv text-teal-600"></i>
                             <span>Descargar CSV</span>
-                        </a>
+                        </button>
                     </div>
                 </div>
 
@@ -595,11 +595,11 @@
 
                 <!-- Zona de Enlaces Institucionales Móviles -->
                 <div class="md:hidden flex items-center justify-center gap-3 text-[11px] text-slate-400 font-semibold pt-2">
-                    <a href="/soporte.html" class="hover:text-emerald-700 transition">Soporte Técnico</a>
+                    <a href="soporte.html" class="hover:text-emerald-700 transition">Soporte Técnico</a>
                     <span>•</span>
-                    <a href="/sobre-nosotros.html" class="hover:text-emerald-700 transition">Sobre Nosotros</a>
+                    <a href="sobre-nosotros.html" class="hover:text-emerald-700 transition">Sobre Nosotros</a>
                     <span>•</span>
-                    <a href="/terminos.html" class="hover:text-emerald-700 transition">Términos</a>
+                    <a href="terminos.html" class="hover:text-emerald-700 transition">Términos</a>
                 </div>
             </form>
         </div>
@@ -718,8 +718,8 @@
     </nav>
 
     <!-- Scripts -->
-    <script src="/assets/js/currency.js"></script>
-    <script src="/assets/js/auth.js"></script>
-    <script src="/assets/js/app.js"></script>
+    <script src="assets/js/currency.js"></script>
+    <script src="assets/js/auth.js"></script>
+    <script src="assets/js/app.js"></script>
 </body>
 </html>

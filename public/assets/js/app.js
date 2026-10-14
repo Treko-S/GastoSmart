@@ -41,7 +41,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 // ==========================================
 async function loadExpenses(period = 'mes') {
   try {
-    const res = await fetch(`/api/expenses?period=${period}`);
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn(`/api/expenses?period=${period}`);
     const result = await res.json();
 
     if (!result.success) {
@@ -406,7 +407,8 @@ async function deleteExpense(id) {
   if (!confirm('¿Estás seguro de que deseas eliminar este gasto?')) return;
 
   try {
-    const res = await fetch(`/api/expenses/${id}`, { method: 'DELETE' });
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn(`/api/expenses/${id}`, { method: 'DELETE' });
     const data = await res.json();
     if (data.success) {
       showToast('Gasto eliminado exitosamente', 'success');
@@ -433,7 +435,8 @@ async function requestAiAdvice() {
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Analizando tus gastos...</span>';
 
   try {
-    const res = await fetch('/api/ai/advice', { method: 'POST' });
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn('/api/ai/advice', { method: 'POST' });
     const result = await res.json();
 
     if (result.success && result.data) {
@@ -485,7 +488,8 @@ async function sendMonthlyReport() {
   const periodo = localStorage.getItem('gastosmart_budget_period') || 'mensual';
 
   try {
-    const res = await fetch('/api/mail/send-report', {
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn('/api/mail/send-report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ periodo })
@@ -502,6 +506,31 @@ async function sendMonthlyReport() {
   } finally {
     btn.disabled = false;
     btn.innerHTML = '<i class="fas fa-envelope"></i> <span>Enviar Email</span>';
+  }
+}
+
+// ==========================================
+// Descargar Exportación CSV
+// ==========================================
+async function downloadExportCsv() {
+  try {
+    showToast('Generando archivo CSV...', 'info');
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn('/api/expenses/export');
+    if (!res.ok) throw new Error('Error en exportación');
+    const blob = await res.blob();
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `gastosmart_export_${new Date().toISOString().split('T')[0]}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    window.URL.revokeObjectURL(url);
+    showToast('¡Archivo CSV descargado con éxito!', 'success');
+  } catch (e) {
+    console.error('Error exportando CSV:', e);
+    showToast('Error al descargar el archivo CSV', 'error');
   }
 }
 
@@ -602,7 +631,8 @@ document.getElementById('new-expense-form').addEventListener('submit', async (e)
   };
 
   try {
-    const res = await fetch('/api/expenses', {
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn('/api/expenses', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload)
@@ -984,7 +1014,8 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
       : Number(limitInUSD.toFixed(2));
 
   try {
-    const res = await fetch('/api/auth/me', {
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn('/api/auth/me', {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({

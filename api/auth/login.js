@@ -44,6 +44,7 @@ export default async function handler(req, res) {
     return res.status(200).json({
       success: true,
       message: 'Inicio de sesión exitoso',
+      token,
       user: {
         id: user.id,
         nombre: user.nombre,

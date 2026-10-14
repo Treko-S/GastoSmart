@@ -11,7 +11,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function fetchLiveRates() {
         try {
-            const res = await fetch('/api/currency/rates');
+            const fetchFn = window.apiFetch || fetch;
+            const res = await fetchFn('/api/currency/rates');
             const data = await res.json();
             if (data.success && data.rates) {
                 const r = data.rates;
@@ -58,7 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const container = document.getElementById('auth-buttons-container');
                 if (container) {
                     container.innerHTML = `
-                        <a href="/dashboard.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-primary to-secondary shadow-md transition-all transform hover:-translate-y-0.5">
+                        <a href="dashboard.html" class="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-extrabold text-white bg-gradient-to-r from-primary to-secondary shadow-md transition-all transform hover:-translate-y-0.5">
                             <span>Ir a mi Dashboard</span>
                             <i class="fas fa-arrow-right text-xs"></i>
                         </a>
