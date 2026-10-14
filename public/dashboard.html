@@ -284,56 +284,59 @@
                 </div>
             </div>
 
-            <!-- Centro de Exportación y Reportes Bien Estructurado -->
-            <div id="tour-card-export" class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60 flex items-center justify-center text-sm shrink-0">
-                        <i class="fas fa-file-invoice-dollar text-base"></i>
-                    </div>
-                    <div>
-                        <div class="flex items-center gap-2">
-                            <h4 class="font-display font-black text-sm text-slate-900">Centro de Exportación y Reportes</h4>
-                            <span class="text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md">Datos Oficiales</span>
+            <!-- Contenedor Unificado de Historial y Reportes (Para Recorrido Guiado Paso 3) -->
+            <div id="tour-card-history-all" class="space-y-6">
+                <!-- Centro de Exportación y Reportes Bien Estructurado -->
+                <div id="tour-card-export" class="p-4 sm:p-5 rounded-2xl bg-white border border-slate-200 shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div class="flex items-center gap-3">
+                        <div class="w-10 h-10 rounded-xl bg-teal-50 text-teal-700 border border-teal-200/60 flex items-center justify-center text-sm shrink-0">
+                            <i class="fas fa-file-invoice-dollar text-base"></i>
                         </div>
-                        <p class="text-xs text-slate-500 font-medium mt-0.5">Genera resúmenes periódicos a tu correo o descarga la planilla CSV para auditar tus movimientos.</p>
+                        <div>
+                            <div class="flex items-center gap-2">
+                                <h4 class="font-display font-black text-sm text-slate-900">Centro de Exportación y Reportes</h4>
+                                <span class="text-[10px] font-black uppercase tracking-wider bg-teal-50 text-teal-800 border border-teal-200 px-2 py-0.5 rounded-md">Datos Oficiales</span>
+                            </div>
+                            <p class="text-xs text-slate-500 font-medium mt-0.5">Genera resúmenes periódicos a tu correo o descarga la planilla CSV para auditar tus movimientos.</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-2.5 shrink-0">
+                        <button onclick="sendMonthlyReport()" id="btn-brevo-report" class="flex-1 sm:flex-initial py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
+                            <i class="fas fa-envelope text-emerald-600"></i>
+                            <span>Enviar al Correo</span>
+                        </button>
+                        <a href="/api/expenses/export" download class="flex-1 sm:flex-initial py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 shadow-2xs">
+                            <i class="fas fa-file-csv text-teal-600"></i>
+                            <span>Descargar CSV</span>
+                        </a>
                     </div>
                 </div>
-                <div class="flex items-center gap-2.5 shrink-0">
-                    <button onclick="sendMonthlyReport()" id="btn-brevo-report" class="flex-1 sm:flex-initial py-2.5 px-4 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 cursor-pointer shadow-2xs">
-                        <i class="fas fa-envelope text-emerald-600"></i>
-                        <span>Enviar al Correo</span>
-                    </button>
-                    <a href="/api/expenses/export" download class="flex-1 sm:flex-initial py-2.5 px-4 bg-slate-50 hover:bg-slate-100 text-slate-700 border border-slate-200 rounded-xl text-xs font-black transition flex items-center justify-center gap-2 shadow-2xs">
-                        <i class="fas fa-file-csv text-teal-600"></i>
-                        <span>Descargar CSV</span>
-                    </a>
-                </div>
-            </div>
 
-            <!-- Contenedor Responsivo: Cards en Móvil + Tabla en Desktop -->
-            <div id="tour-card-history" class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
-                <!-- Vista Móvil: Lista de Tarjetas (Cards) para Pantallas Pequeñas -->
-                <div id="history-mobile-cards" class="md:hidden divide-y divide-slate-100">
-                    <!-- Inyectado por JS para móvil -->
-                </div>
+                <!-- Contenedor Responsivo: Cards en Móvil + Tabla en Desktop -->
+                <div id="tour-card-history" class="bg-white border border-slate-200 rounded-3xl overflow-hidden shadow-sm">
+                    <!-- Vista Móvil: Lista de Tarjetas (Cards) para Pantallas Pequeñas -->
+                    <div id="history-mobile-cards" class="md:hidden divide-y divide-slate-100">
+                        <!-- Inyectado por JS para móvil -->
+                    </div>
 
-                <!-- Vista Desktop: Tabla Completa -->
-                <div class="hidden md:block overflow-x-auto">
-                    <table class="w-full text-left text-sm">
-                        <thead class="bg-slate-50 text-slate-600 uppercase text-[11px] font-black tracking-wider border-b border-slate-200">
-                            <tr>
-                                <th class="py-3.5 px-4 whitespace-nowrap">Fecha</th>
-                                <th class="py-3.5 px-4">Descripción</th>
-                                <th class="py-3.5 px-4">Categoría</th>
-                                <th class="py-3.5 px-4 text-right whitespace-nowrap">Monto Original</th>
-                                <th class="py-3.5 px-4 text-right whitespace-nowrap">Equivalente USD</th>
-                                <th class="py-3.5 px-4 text-center">Acción</th>
-                            </tr>
-                        </thead>
-                        <tbody id="history-table-body" class="divide-y divide-slate-100">
-                            <!-- Inyectado por JS -->
-                        </tbody>
-                    </table>
+                    <!-- Vista Desktop: Tabla Completa -->
+                    <div class="hidden md:block overflow-x-auto">
+                        <table class="w-full text-left text-sm">
+                            <thead class="bg-slate-50 text-slate-600 uppercase text-[11px] font-black tracking-wider border-b border-slate-200">
+                                <tr>
+                                    <th class="py-3.5 px-4 whitespace-nowrap">Fecha</th>
+                                    <th class="py-3.5 px-4">Descripción</th>
+                                    <th class="py-3.5 px-4">Categoría</th>
+                                    <th class="py-3.5 px-4 text-right whitespace-nowrap">Monto Original</th>
+                                    <th class="py-3.5 px-4 text-right whitespace-nowrap">Equivalente USD</th>
+                                    <th class="py-3.5 px-4 text-center">Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="history-table-body" class="divide-y divide-slate-100">
+                                <!-- Inyectado por JS -->
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
