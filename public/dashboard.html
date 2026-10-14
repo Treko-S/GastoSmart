@@ -541,6 +541,18 @@
                                 <input type="time" id="setting-report-time-monthly" value="09:00" class="px-3 py-1.5 bg-slate-50 border border-slate-200 rounded-lg text-xs font-black text-slate-800 focus:bg-white focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-500 outline-none">
                             </div>
                         </div>
+
+                        <!-- Botón para probar la entrega inmediata del reporte -->
+                        <div class="pt-3 border-t border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2.5">
+                            <span class="text-xs text-slate-600 font-semibold flex items-center gap-1.5">
+                                <i class="fas fa-info-circle text-emerald-600"></i>
+                                <span>¿Quieres probar la entrega inmediata?</span>
+                            </span>
+                            <button type="button" id="btn-brevo-report" onclick="sendMonthlyReport()" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs transition flex items-center justify-center gap-2 cursor-pointer">
+                                <i class="fas fa-paper-plane text-xs"></i>
+                                <span>Enviar Reporte Ahora a mi Correo</span>
+                            </button>
+                        </div>
                     </div>
 
                     <!-- Moneda del Límite -->

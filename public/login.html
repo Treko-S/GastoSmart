@@ -93,7 +93,7 @@
             try {
                 const res = await Auth.login(email, password);
                 if (res.success) {
-                    window.location.href = res.user?.rol === 'admin' ? '/admin.html' : '/dashboard.html';
+                    window.location.href = res.user?.rol === 'admin' ? 'admin.html' : 'dashboard.html';
                 } else {
                     errText.textContent = res.message || 'Error al iniciar sesión';
                     errBox.classList.remove('hidden');
