@@ -139,18 +139,18 @@
                 </div>
             </div>
 
-            <!-- Banner Alerta si supera límite -->
-            <div id="budget-alert-banner" class="hidden p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-between text-rose-800 text-sm shadow-sm">
+            <!-- Banner Alerta si supera o se acerca al límite (90% preventivo o 100% superado) -->
+            <div id="budget-alert-banner" class="hidden p-4 rounded-2xl border flex items-center justify-between text-sm shadow-sm transition-all duration-300">
                 <div class="flex items-center gap-3">
-                    <span class="w-9 h-9 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 font-bold shrink-0">
-                        <i class="fas fa-exclamation-triangle text-base"></i>
+                    <span id="budget-alert-icon-box" class="w-9 h-9 rounded-xl flex items-center justify-center font-bold shrink-0">
+                        <i id="budget-alert-icon" class="fas fa-exclamation-triangle text-base"></i>
                     </span>
                     <div>
-                        <div class="font-bold">¡Has superado tu límite de gasto mensual!</div>
-                        <div class="text-xs text-rose-600">Te enviamos una notificación preventiva por correo electrónico para que estés al tanto.</div>
+                        <div id="budget-alert-title" class="font-black text-sm">Aviso de Presupuesto</div>
+                        <div id="budget-alert-desc" class="text-xs">Te notificamos sobre tu consumo financiero.</div>
                     </div>
                 </div>
-                <button onclick="switchView('ajustes')" class="text-xs font-extrabold underline shrink-0 ml-2 text-rose-700">Ajustar Límite</button>
+                <button onclick="switchView('ajustes')" id="budget-alert-link" class="text-xs font-black underline shrink-0 ml-2 cursor-pointer">Ajustar Límite</button>
             </div>
 
             <!-- Grilla de Métricas Principales (2 Tarjetas de Alto Impacto: Gasto Total y Presupuesto) -->

@@ -130,130 +130,327 @@
             <div class="mt-5 flex flex-wrap items-center justify-center gap-5 text-xs font-semibold text-textLight">
                 <span><i class="fas fa-check text-primary mr-1"></i> 100% Gratis</span>
                 <span><i class="fas fa-check text-primary mr-1"></i> Sin tarjetas de crédito</span>
-                <span><i class="fas fa-check text-primary mr-1"></i> Funciona en celular y compu</span>
-            </div>
-
-            <!-- Tarjeta Visual del Panel (Mockup Blanco & Verde) -->
-            <div data-aos="fade-up" data-aos-delay="500" class="mt-14 w-full max-w-5xl relative animate-float">
+                <span><i class="fas fa-check text-primary mr-1"></i> Funciona en celular y compu</s            <!-- Ventana / Maqueta Real de la Aplicación (Fiel reflejo del Dashboard en Vivo) -->
+            <div data-aos="fade-up" data-aos-delay="500" class="mt-14 w-full max-w-6xl relative animate-float">
                 <div class="absolute -inset-2 bg-gradient-to-r from-primary/20 via-teal-500/15 to-mint/20 rounded-3xl blur-2xl opacity-70"></div>
                 
-                <div class="relative rounded-3xl bg-white border border-emerald-200 p-6 sm:p-8 text-left shadow-2xl shadow-emerald-900/5">
-                    <!-- Cabecera de la Tarjeta -->
-                    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-surfaceBorder">
-                        <div>
-                            <div class="flex items-center gap-2">
-                                <span class="w-2.5 h-2.5 rounded-full bg-primary animate-pulse"></span>
-                                <span class="text-xs uppercase font-extrabold tracking-wider text-textLight">Tu Presupuesto de Este Mes</span>
-                            </div>
-                            <div class="flex items-baseline gap-3 mt-1">
-                                <span class="font-display font-black text-3xl sm:text-4xl text-textMain">$1,200.00 <span class="text-sm font-semibold text-textMuted">USD</span></span>
-                                <span class="text-xs font-extrabold text-primary bg-emerald-50 border border-emerald-200 px-3 py-1 rounded-lg" id="mockup-pyg-calc">≈ 9.060.000 ₲</span>
-                            </div>
+                <div class="relative rounded-3xl bg-white border border-slate-200 overflow-hidden text-left shadow-2xl shadow-emerald-950/10">
+                    
+                    <!-- Barra Superior de Navegador / Ventana de App -->
+                    <div class="flex items-center justify-between px-4 py-3 bg-slate-100 border-b border-slate-200">
+                        <div class="flex items-center gap-2">
+                            <span class="w-3 h-3 rounded-full bg-rose-400 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>
+                            <span class="w-3 h-3 rounded-full bg-emerald-400 inline-block"></span>
+                            <span class="text-[11px] font-bold text-slate-500 ml-2 hidden sm:inline">GastoSmart - Dashboard en Vivo</span>
                         </div>
-
-                        <!-- Selector de Moneda de demostración -->
-                        <div class="flex items-center gap-1.5 bg-surfaceSoft p-1.5 rounded-xl border border-surfaceBorder">
-                            <span class="px-3 py-1.5 rounded-lg text-xs font-bold bg-white text-primary shadow-sm">Dólares ($)</span>
-                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-textMuted">Guaraníes (₲)</span>
-                            <span class="px-3 py-1.5 rounded-lg text-xs font-semibold text-textMuted">Euros (€)</span>
+                        <div class="flex items-center gap-2 px-3 py-1 bg-white border border-slate-200 rounded-lg text-[11px] font-mono text-slate-600 max-w-xs truncate shadow-2xs">
+                            <i class="fas fa-lock text-emerald-600 text-[10px]"></i>
+                            <span>https://programacionutcd2.tech/Kevinio/dashboard.html</span>
+                        </div>
+                        <div class="flex items-center gap-1.5 text-slate-400 text-xs">
+                            <i class="fas fa-minus"></i>
+                            <i class="far fa-square"></i>
+                            <i class="fas fa-times"></i>
                         </div>
                     </div>
 
-                    <!-- Contenido Central Dividido -->
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mt-6 items-start">
-                        
-                        <!-- Columna Izquierda: Gráfico y Resumen -->
-                        <div class="lg:col-span-7 bg-surfaceSoft/50 rounded-2xl p-5 border border-surfaceBorder flex flex-col gap-5">
-                            <div class="flex items-center justify-between">
-                                <h4 class="font-extrabold text-base text-textMain">En qué vas gastando</h4>
-                                <span class="text-xs font-bold text-primary bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200">65% consumido</span>
+                    <!-- Header Interno del Dashboard (Fiel a la App) -->
+                    <div class="px-5 sm:px-6 py-4 bg-white border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-emerald-600 to-teal-700 flex items-center justify-center text-white text-lg font-black shadow-md shadow-emerald-600/20">
+                                <i class="fas fa-chart-line"></i>
                             </div>
-
-                            <!-- Barra Visual de Progreso Verde -->
                             <div>
-                                <div class="flex justify-between text-xs text-textMuted mb-1.5">
-                                    <span>Gastado: <strong class="text-textMain">$780.00</strong></span>
-                                    <span>Te queda disponible: <strong class="text-primary font-bold">$420.00</strong></span>
-                                </div>
-                                <div class="w-full bg-white h-3 rounded-full overflow-hidden border border-surfaceBorder">
-                                    <div class="bg-gradient-to-r from-primary via-emerald-500 to-secondary h-full rounded-full" style="width: 65%;"></div>
-                                </div>
-                            </div>
-
-                            <!-- Lista de Movimientos Cotidianos -->
-                            <div class="space-y-2.5">
-                                <span class="text-xs font-bold text-textLight uppercase tracking-wider">Últimos Gastos Registrados</span>
-                                
-                                <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-surfaceBorder shadow-sm">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-emerald-50 text-primary border border-emerald-200/60 flex items-center justify-center font-bold">
-                                            <i class="fas fa-utensils"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-bold text-textMain">Supermercado y Almuerzo</p>
-                                            <p class="text-xs text-textLight">Pagado en Guaraníes</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-sm font-extrabold text-rose-500">-250.000 ₲</p>
-                                        <p class="text-xs text-textLight">≈ $33.10 USD</p>
-                                    </div>
-                                </div>
-
-                                <div class="flex items-center justify-between p-3 rounded-xl bg-white border border-surfaceBorder shadow-sm">
-                                    <div class="flex items-center gap-3">
-                                        <div class="w-9 h-9 rounded-xl bg-teal-50 text-secondary border border-teal-200/60 flex items-center justify-center font-bold">
-                                            <i class="fas fa-car"></i>
-                                        </div>
-                                        <div>
-                                            <p class="text-sm font-bold text-textMain">Combustible del auto</p>
-                                            <p class="text-xs text-textLight">Pagado en Guaraníes</p>
-                                        </div>
-                                    </div>
-                                    <div class="text-right">
-                                        <p class="text-sm font-extrabold text-rose-500">-180.000 ₲</p>
-                                        <p class="text-xs text-textLight">≈ $23.80 USD</p>
-                                    </div>
-                                </div>
+                                <span class="font-display font-black text-xl text-slate-900 tracking-tight">GastoSmart</span>
+                                <span class="block text-[9px] uppercase font-black tracking-widest text-emerald-700 leading-none">Control Financiero</span>
                             </div>
                         </div>
 
-                        <!-- Columna Derecha: Asistente y Alertas -->
-                        <div class="lg:col-span-5 flex flex-col gap-4">
-                            <!-- Consejo del Asistente -->
-                            <div class="rounded-2xl bg-gradient-to-br from-emerald-50 via-white to-teal-50 p-5 border border-emerald-200 shadow-md">
-                                <div class="flex items-center justify-between mb-3">
-                                    <div class="flex items-center gap-2">
-                                        <div class="w-8 h-8 rounded-xl bg-primary text-white flex items-center justify-center text-sm font-bold shadow-sm">
-                                            <i class="fas fa-lightbulb"></i>
-                                        </div>
-                                        <span class="text-sm font-black text-textMain">Consejo de tu Asistente</span>
-                                    </div>
-                                    <span class="text-[10px] font-extrabold uppercase tracking-wider text-primary bg-emerald-100/70 px-2 py-0.5 rounded-full border border-emerald-200">Ahorro Fácil</span>
+                        <!-- Pill de Cotizaciones en Vivo -->
+                        <div class="inline-flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50/80 border border-emerald-200 rounded-full text-xs font-bold text-emerald-900">
+                            <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <span>1USD ≈ 5.711 Gs.</span>
+                            <span class="text-slate-300">|</span>
+                            <span>1USD ≈ €0.89</span>
+                            <span class="bg-emerald-600 text-white text-[9px] font-black px-2 py-0.5 rounded-full">En vivo</span>
+                        </div>
+
+                        <!-- Perfil Usuario Real -->
+                        <div class="flex items-center gap-2.5 px-3 py-1.5 rounded-2xl bg-slate-50 border border-slate-200">
+                            <div class="w-8 h-8 rounded-full bg-emerald-100 text-emerald-800 font-black text-xs flex items-center justify-center shadow-2xs">K</div>
+                            <div class="text-left hidden sm:block">
+                                <div class="text-xs font-black text-slate-800 leading-tight">Kevin San</div>
+                                <div class="text-[10px] font-bold text-slate-400 leading-tight">Usuario</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cuerpo Dividido: Sidebar Fidedigno + Panel Principal -->
+                    <div class="flex flex-col md:flex-row bg-slate-50/70 min-h-[540px]">
+                        
+                        <!-- Sidebar Izquierda (Réplica de la App) -->
+                        <aside class="hidden md:flex flex-col justify-between w-56 p-4 bg-white border-r border-slate-200 shrink-0">
+                            <div class="space-y-1.5">
+                                <div class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-black text-xs bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-xs">
+                                    <i class="fas fa-chart-pie text-sm"></i>
+                                    <span>Resumen</span>
                                 </div>
-                                <p class="text-xs sm:text-sm text-textMuted leading-relaxed">
-                                    “Tus salidas a cenar subieron un 20% este mes. Si cocinas en casa este fin de semana, <strong>te ahorrarás unos 150.000 ₲</strong> para tu meta de vacaciones.”
-                                </p>
-                                <div class="mt-4">
-                                    <a href="login.html" class="block w-full text-center py-2.5 px-3 rounded-xl bg-gradient-to-r from-primary to-secondary text-white font-extrabold text-xs shadow-md shadow-emerald-500/20 hover:opacity-95 transition-all">
-                                        Ver Mis Consejos Personalizados
-                                    </a>
+                                <div class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-50">
+                                    <i class="fas fa-list-ul text-sm"></i>
+                                    <span>Historial de Gastos</span>
+                                </div>
+                                <div class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-50">
+                                    <i class="fas fa-coins text-sm"></i>
+                                    <span>Conversor Divisas</span>
+                                </div>
+                                <div class="w-full flex items-center gap-3 px-3.5 py-2.5 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-50">
+                                    <i class="fas fa-sliders-h text-sm"></i>
+                                    <span>Ajustes</span>
                                 </div>
                             </div>
 
-                            <!-- Alerta Preventiva -->
-                            <div class="rounded-2xl bg-white p-4 border border-surfaceBorder shadow-sm flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-emerald-50 text-primary border border-emerald-200 flex items-center justify-center text-lg shrink-0">
-                                    <i class="fas fa-envelope-open-text"></i>
+                            <div class="pt-4 border-t border-slate-100 space-y-2 text-[11px] text-slate-400 font-semibold">
+                                <div class="flex items-center gap-2 hover:text-emerald-700 transition cursor-pointer">
+                                    <i class="fas fa-home"></i> <span>Volver al Inicio</span>
                                 </div>
+                                <div class="flex items-center gap-2 hover:text-emerald-700 transition cursor-pointer">
+                                    <i class="fas fa-headset"></i> <span>Soporte Técnico</span>
+                                </div>
+                                <div class="flex items-center gap-2 hover:text-emerald-700 transition cursor-pointer">
+                                    <i class="fas fa-info-circle"></i> <span>Sobre Nosotros</span>
+                                </div>
+                                <div class="flex items-center gap-2 text-rose-500 font-bold hover:text-rose-700 transition cursor-pointer pt-1">
+                                    <i class="fas fa-sign-out-alt"></i> <span>Cerrar Sesión</span>
+                                </div>
+                            </div>
+                        </aside>
+
+                        <!-- Área de Contenido Principal del Dashboard -->
+                        <main class="flex-1 p-5 sm:p-7 space-y-5">
+                            
+                            <!-- Cabecera de Sección + Botón Registrar Gasto -->
+                            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div>
-                                    <h5 class="text-xs font-bold text-textMain">Avisos automáticos a tu correo</h5>
-                                    <p class="text-[11px] text-textMuted mt-0.5">Te llega un aviso preventivo antes de que te pases de presupuesto.</p>
+                                    <div class="flex items-center gap-2">
+                                        <h3 class="font-display font-black text-2xl text-slate-900 tracking-tight">Resumen Financiero</h3>
+                                        <span class="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">En Vivo</span>
+                                    </div>
+                                    <p class="text-xs text-slate-500 font-medium mt-0.5">Controla tus gastos, tu presupuesto semanal y cotizaciones al instante.</p>
                                 </div>
+                                <a href="login.html" class="inline-flex items-center justify-center gap-2 bg-gradient-to-r from-emerald-600 via-emerald-500 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-black text-xs py-2.5 px-4 rounded-xl shadow-md shadow-emerald-600/20 transition cursor-pointer">
+                                    <i class="fas fa-plus text-xs"></i>
+                                    <span>Registrar Gasto</span>
+                                </a>
                             </div>
-                        </div>
+
+                            <!-- Banner Alerta Preventiva 90% (Fiel a la Implementación de Alerta) -->
+                            <div class="p-3.5 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between text-amber-950 text-xs shadow-2xs">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-8 h-8 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 font-bold shrink-0">
+                                        <i class="fas fa-bell"></i>
+                                    </span>
+                                    <div>
+                                        <div class="font-black text-amber-900">⚠️ Aviso Preventivo: Estás al 94% de tu presupuesto semanal</div>
+                                        <div class="text-[11px] text-amber-800">Te quedan Gs. 5.769 para no sobregirarte. Notificación preventiva enviada a tu correo.</div>
+                                    </div>
+                                </div>
+                                <span class="text-[10px] uppercase font-black tracking-wider bg-amber-200/80 text-amber-900 px-2 py-0.5 rounded-md hidden sm:inline">Alerta 90%</span>
+                            </div>
+
+                            <!-- Grilla de Métricas Principales (Fiel a imagen1 e imagen5) -->
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                
+                                <!-- Tarjeta 1: Gasto Total (PYG) -->
+                                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-emerald-300 transition">
+                                    <div class="flex items-center justify-between text-slate-500 mb-1.5">
+                                        <span class="text-xs font-black uppercase tracking-wider text-slate-600">Gasto Total (PYG)</span>
+                                        <span class="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-700 font-black text-xs flex items-center justify-center border border-emerald-200">G</span>
+                                    </div>
+                                    <div class="font-display font-black text-2xl sm:text-3xl text-slate-900">Gs. 94.231</div>
+                                    <div class="text-xs font-bold text-emerald-700 mt-1">≈ $16.50 USD</div>
+                                </div>
+
+                                <!-- Tarjeta 2: Presupuesto Semanal (Con Barra de 94%) -->
+                                <div class="p-5 rounded-2xl bg-white border border-slate-200 shadow-xs hover:border-emerald-300 transition">
+                                    <div class="flex items-center justify-between text-slate-500 mb-1.5">
+                                        <span class="text-xs font-black uppercase tracking-wider text-slate-600">Presupuesto Semanal</span>
+                                        <span class="w-7 h-7 rounded-xl bg-emerald-50 text-emerald-700 font-black text-xs flex items-center justify-center border border-emerald-200">
+                                            <i class="fas fa-wallet text-xs"></i>
+                                        </span>
+                                    </div>
+                                    <div class="font-display font-black text-2xl sm:text-3xl text-slate-900">Gs. 100.000</div>
+                                    <div class="text-xs font-bold text-slate-500 mt-1">≈ $17.51 USD</div>
+                                    
+                                    <!-- Barra de Progreso Naranja (Al 94%) -->
+                                    <div class="mt-3">
+                                        <div class="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden border border-slate-200">
+                                            <div class="bg-amber-500 h-full rounded-full transition-all" style="width: 94%;"></div>
+                                        </div>
+                                        <div class="flex justify-between items-center text-[11px] font-bold mt-1.5 text-slate-600">
+                                            <span class="text-amber-700 font-black">94% consumido</span>
+                                            <span class="text-slate-500">Restante: Gs. 5.769</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <!-- Banner Asistente Inteligente de Ahorro (Fiel a la App) -->
+                            <div class="p-4 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-10 h-10 rounded-2xl bg-emerald-600 text-white flex items-center justify-center text-lg shadow-sm shrink-0">
+                                        <i class="fas fa-lightbulb"></i>
+                                    </div>
+                                    <div>
+                                        <div class="flex items-center gap-2">
+                                            <span class="font-black text-xs sm:text-sm text-slate-900">Tu Asistente Inteligente de Ahorro</span>
+                                            <span class="text-[9px] font-black uppercase bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">Consejos Prácticos</span>
+                                        </div>
+                                        <p class="text-xs text-slate-500 font-medium mt-0.5">Analiza tus compras de este mes y te da 3 ideas claras para cuidar tu dinero</p>
+                                    </div>
+                                </div>
+                                <a href="login.html" class="w-full sm:w-auto px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-black text-xs shadow-xs transition text-center shrink-0">
+                                    Generar Consejos de Ahorro
+                                </a>
+                            </div>
+
+                            <!-- Fila Inferior: Gastos por Categoría (Gráfico Donut) y Últimas Transacciones (Fiel a imagen2) -->
+                            <div class="grid grid-cols-1 lg:grid-cols-12 gap-4">
+                                
+                                <!-- Card Donut: Gastos por Categoría -->
+                                <div class="lg:col-span-5 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs">
+                                    <div class="mb-3">
+                                        <h4 class="font-black text-sm text-slate-900">Gastos por Categoría</h4>
+                                        <p class="text-[11px] text-slate-500 font-medium">Distribución visual de tus compras</p>
+                                    </div>
+                                    <div class="flex flex-col items-center justify-center py-2">
+                                        <!-- Donut SVG Fiel a imagen2 -->
+                                        <div class="relative w-36 h-36 flex items-center justify-center">
+                                            <svg class="w-full h-full transform -rotate-90" viewBox="0 0 36 36">
+                                                <circle cx="18" cy="18" r="14" fill="none" class="stroke-slate-100" stroke-width="4.5"></circle>
+                                                <!-- Alimentación 56.5% (#F59E0B) -->
+                                                <circle cx="18" cy="18" r="14" fill="none" stroke="#F59E0B" stroke-width="4.5" stroke-dasharray="49.7 88" stroke-dashoffset="0"></circle>
+                                                <!-- Entretenimiento 32.3% (#EC4899) -->
+                                                <circle cx="18" cy="18" r="14" fill="none" stroke="#EC4899" stroke-width="4.5" stroke-dasharray="28.4 88" stroke-dashoffset="-49.7"></circle>
+                                                <!-- Transporte 11.3% (#3B82F6) -->
+                                                <circle cx="18" cy="18" r="14" fill="none" stroke="#3B82F6" stroke-width="4.5" stroke-dasharray="9.9 88" stroke-dashoffset="-78.1"></circle>
+                                            </svg>
+                                            <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                                <span class="text-[10px] font-black uppercase text-slate-400">Total</span>
+                                                <span class="text-xs font-black text-slate-900">$15.50</span>
+                                            </div>
+                                        </div>
+
+                                        <!-- Leyenda con datos reales de la imagen2 -->
+                                        <div class="w-full space-y-1.5 mt-3 text-xs">
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-2.5 h-2.5 rounded-full bg-blue-500"></span>
+                                                    <span class="text-slate-600 font-bold">Transporte</span>
+                                                </div>
+                                                <span class="font-black text-slate-800">$1.75 <span class="text-slate-400 text-[10px]">(11.3%)</span></span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-2.5 h-2.5 rounded-full bg-pink-500"></span>
+                                                    <span class="text-slate-600 font-bold">Entretenimiento</span>
+                                                </div>
+                                                <span class="font-black text-slate-800">$5.00 <span class="text-slate-400 text-[10px]">(32.3%)</span></span>
+                                            </div>
+                                            <div class="flex items-center justify-between">
+                                                <div class="flex items-center gap-2">
+                                                    <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+                                                    <span class="text-slate-600 font-bold">Alimentación</span>
+                                                </div>
+                                                <span class="font-black text-slate-800">$8.75 <span class="text-slate-400 text-[10px]">(56.5%)</span></span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Card Transacciones: Últimas Transacciones Fiel a imagen2 -->
+                                <div class="lg:col-span-7 p-5 rounded-2xl bg-white border border-slate-200 shadow-xs flex flex-col justify-between">
+                                    <div>
+                                        <div class="flex items-center justify-between mb-3">
+                                            <div>
+                                                <h4 class="font-black text-sm text-slate-900">Últimas Transacciones</h4>
+                                                <p class="text-[11px] text-slate-500 font-medium">Movimientos recientes registrados</p>
+                                            </div>
+                                            <a href="login.html" class="text-xs font-black text-emerald-700 hover:underline">Ver historial completo →</a>
+                                        </div>
+
+                                        <!-- Filas de movimientos reales de imagen2 -->
+                                        <div class="space-y-2.5">
+                                            
+                                            <!-- Movimiento 1: bolt -->
+                                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm font-bold border border-blue-200">
+                                                        <i class="fas fa-car"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs font-black text-slate-900">bolt</p>
+                                                        <p class="text-[10px] text-slate-400 font-semibold">Hoy, 14 Oct • <span class="text-blue-600">Transporte</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-xs font-black text-slate-900">Gs. 10.000</p>
+                                                    <p class="text-[10px] font-bold text-slate-400">≈ $1.75 USD</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Movimiento 2: compre juego en steam -->
+                                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-9 h-9 rounded-xl bg-pink-50 text-pink-600 flex items-center justify-center text-sm font-bold border border-pink-200">
+                                                        <i class="fas fa-gamepad"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs font-black text-slate-900">compre juego en steam</p>
+                                                        <p class="text-[10px] text-slate-400 font-semibold">13 Oct 2026 • <span class="text-pink-600">Entretenimiento</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-xs font-black text-slate-900">$5.00</p>
+                                                    <p class="text-[10px] font-bold text-slate-400">≈ Gs. 28.555</p>
+                                                </div>
+                                            </div>
+
+                                            <!-- Movimiento 3: gasto de comida -->
+                                            <div class="flex items-center justify-between p-2.5 rounded-xl bg-slate-50/80 border border-slate-200/80">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm font-bold border border-amber-200">
+                                                        <i class="fas fa-utensils"></i>
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-xs font-black text-slate-900">gasto de comida</p>
+                                                        <p class="text-[10px] text-slate-400 font-semibold">13 Oct 2026 • <span class="text-amber-600">Alimentación</span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="text-right">
+                                                    <p class="text-xs font-black text-slate-900">Gs. 50.000</p>
+                                                    <p class="text-[10px] font-bold text-slate-400">≈ $8.75 USD</p>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                    <div class="pt-3 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-500 mt-2">
+                                        <span><i class="fas fa-shield-alt text-emerald-600 mr-1"></i> Multi-divisa con conversión automática</span>
+                                        <a href="login.html" class="font-bold text-emerald-700 hover:text-emerald-900 underline">Probar la app ahora →</a>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </main>
 
                     </div>
+
+                </div>
+            </div>          </div>
                 </div>
             </div>
         </section>

@@ -150,12 +150,34 @@ function renderDashboard(data) {
     progressBar.className = 'bg-gradient-to-r from-emerald-500 to-teal-600 h-2.5 rounded-full transition-all duration-500';
   }
 
-  // Banner Alerta Presupuesto
+  // Banner Alerta Presupuesto (90% preventivo o 100% superado)
   const alertBanner = document.getElementById('budget-alert-banner');
-  if (gastoPeriodoEnMoneda >= storedAmount && storedAmount > 0) {
-    alertBanner.classList.remove('hidden');
-  } else {
-    alertBanner.classList.add('hidden');
+  const alertIconBox = document.getElementById('budget-alert-icon-box');
+  const alertIcon = document.getElementById('budget-alert-icon');
+  const alertTitle = document.getElementById('budget-alert-title');
+  const alertDesc = document.getElementById('budget-alert-desc');
+  const alertLink = document.getElementById('budget-alert-link');
+
+  if (alertBanner && storedAmount > 0) {
+    if (gastoPeriodoEnMoneda >= storedAmount) {
+      alertBanner.className = 'p-4 rounded-2xl bg-rose-50 border border-rose-200 flex items-center justify-between text-rose-800 text-sm shadow-sm';
+      if (alertIconBox) alertIconBox.className = 'w-9 h-9 rounded-xl bg-rose-100 flex items-center justify-center text-rose-600 font-bold shrink-0';
+      if (alertIcon) alertIcon.className = 'fas fa-exclamation-circle text-base';
+      if (alertTitle) alertTitle.textContent = `🚨 ¡Has superado el 100% de tu presupuesto ${storedPeriod}!`;
+      if (alertDesc) alertDesc.textContent = `Has gastado ${CurrencyManager.format(gastoPeriodoEnMoneda, storedCurr)} de tu meta de ${CurrencyManager.format(storedAmount, storedCurr)}. Notificación enviada por correo.`;
+      if (alertLink) alertLink.className = 'text-xs font-black underline shrink-0 ml-2 text-rose-700 cursor-pointer';
+      alertBanner.classList.remove('hidden');
+    } else if (porcentaje >= 90) {
+      alertBanner.className = 'p-4 rounded-2xl bg-amber-50 border border-amber-200 flex items-center justify-between text-amber-900 text-sm shadow-sm';
+      if (alertIconBox) alertIconBox.className = 'w-9 h-9 rounded-xl bg-amber-100 flex items-center justify-center text-amber-600 font-bold shrink-0';
+      if (alertIcon) alertIcon.className = 'fas fa-bell text-base';
+      if (alertTitle) alertTitle.textContent = `⚠️ Aviso Preventivo: Estás al ${porcentaje}% de tu presupuesto ${storedPeriod}`;
+      if (alertDesc) alertDesc.textContent = `Te quedan ${CurrencyManager.format(restanteEnMoneda, storedCurr)} para no sobregirarte. Notificación preventiva enviada por correo.`;
+      if (alertLink) alertLink.className = 'text-xs font-black underline shrink-0 ml-2 text-amber-800 cursor-pointer';
+      alertBanner.classList.remove('hidden');
+    } else {
+      alertBanner.classList.add('hidden');
+    }
   }
 
   // Verificación y emisión automática de Alertas Preventivas (90% o 100%) por Correo
