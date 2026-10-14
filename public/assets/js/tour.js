@@ -1,10 +1,10 @@
 /**
- * GastoSmart - Recorrido Guiado Interactivo Profesional (Spotlight Guided Tour)
- * - Recorte real SVG transparente (Hole Cutout) para que el elemento enfocado esté 100% brillante y nítido.
- * - Fondo oscuro circundante sin tapar ni oscurecer la tarjeta o botón enfocado.
- * - Borde foco esmeralda luminoso con animación fluida entre pasos.
- * - Popover tooltip flotante adyacente (arriba o abajo) sin tapar la pantalla.
- * - Totalmente adaptado para PC y Celulares.
+ * GastoSmart - Recorrido Guiado Interactivo Profesional
+ * Arquitectura de 4 Paneles de Apertura (Aperture Spotlight):
+ * - El elemento enfocado NUNCA queda oscurecido porque no hay ninguna capa sobre él.
+ * - Brillo y colores 100% naturales en la tarjeta o botón enfocado.
+ * - Animación fluida mediante transiciones de hardware.
+ * - Al cerrarse, se oculta completamente (display: none) para garantizar interacción 100% normal en PC y Móvil.
  */
 
 const GastoSmartTour = (() => {
@@ -68,7 +68,7 @@ const GastoSmartTour = (() => {
   ];
 
   function getStorageKey(userId) {
-    return 'gastosmart_tour_v2_' + (userId || 'guest');
+    return 'gastosmart_tour_v3_' + (userId || 'guest');
   }
 
   function clearTargetHighlight() {
@@ -79,50 +79,54 @@ const GastoSmartTour = (() => {
   }
 
   function injectDOMElements() {
-    if (document.getElementById('gs-tour-root')) return;
+    let root = document.getElementById('gs-tour-root');
+    if (root) return root;
 
-    const root = document.createElement('div');
+    root = document.createElement('div');
     root.id = 'gs-tour-root';
-    root.className = 'fixed inset-0 pointer-events-none transition-opacity duration-300 opacity-0';
+    root.style.display = 'none';
+    root.style.position = 'fixed';
+    root.style.inset = '0';
     root.style.zIndex = '99990';
+    root.style.pointerEvents = 'none';
 
     root.innerHTML = `
       <style>
+        .gs-tour-panel {
+          position: fixed;
+          background: rgba(15, 23, 42, 0.75);
+          pointer-events: auto;
+          cursor: pointer;
+          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 99991;
+        }
         .gs-tour-active-element {
           position: relative !important;
-          z-index: 99994 !important;
-          background-color: #ffffff !important;
-          box-shadow: 0 10px 30px rgba(0, 0, 0, 0.18) !important;
+          z-index: 99995 !important;
         }
       </style>
 
-      <!-- Máscara SVG con recorte transparente (El elemento enfocado queda 100% brillante y sin oscuridad) -->
-      <svg id="gs-tour-svg-backdrop" class="fixed inset-0 pointer-events-auto w-full h-full" style="z-index: 99991; width: 100vw; height: 100vh;">
-        <defs>
-          <mask id="gs-spotlight-mask">
-            <!-- 1. Capa blanca: deja visible el telón oscuro general -->
-            <rect x="0" y="0" width="100%" height="100%" fill="white" />
-            <!-- 2. Recorte negro: perfora el telón oscuro para que el foco quede 100% transparente y brillante -->
-            <rect id="gs-mask-cutout" x="0" y="0" width="0" height="0" rx="18" ry="18" fill="black" style="transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);" />
-          </mask>
-        </defs>
-        <!-- Telón oscuro que se recorta sobre la tarjeta -->
-        <rect x="0" y="0" width="100%" height="100%" fill="rgba(15, 23, 42, 0.80)" mask="url(#gs-spotlight-mask)" style="cursor: pointer;" onclick="GastoSmartTour.next()" />
-      </svg>
+      <!-- 4 Paneles que rodean el elemento dejando el centro 100% transparente y brillante -->
+      <div id="gs-panel-top" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
+      <div id="gs-panel-bottom" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
+      <div id="gs-panel-left" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
+      <div id="gs-panel-right" class="gs-tour-panel" onclick="GastoSmartTour.next()"></div>
 
-      <!-- Borde Foco Luminoso Esmeralda en torno al orificio recortado -->
-      <div id="gs-tour-spotlight" class="fixed pointer-events-none transition-all duration-300" style="
+      <!-- Borde Foco Esmeralda Luminoso -->
+      <div id="gs-tour-spotlight" class="fixed pointer-events-none" style="
         border-radius: 18px;
-        box-shadow: 0 0 30px rgba(16, 185, 129, 0.70), inset 0 0 10px rgba(16, 185, 129, 0.20);
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.65), inset 0 0 8px rgba(16, 185, 129, 0.20);
         border: 2.5px solid #10b981;
         z-index: 99996;
+        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       "></div>
 
       <!-- Popover / Tooltip Contextual Inteligente -->
-      <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 transition-all duration-300 flex flex-col" style="
+      <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 flex flex-col" style="
         width: calc(100vw - 32px);
         max-width: 380px;
         z-index: 100000;
+        transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
       ">
         <!-- Cabecera Popover -->
         <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
@@ -183,6 +187,8 @@ const GastoSmartTour = (() => {
       window.addEventListener('scroll', handleViewportChange, true);
       resizeHandlerAttached = true;
     }
+
+    return root;
   }
 
   function handleViewportChange() {
@@ -193,10 +199,6 @@ const GastoSmartTour = (() => {
   function updateSpotlightAndPopover(index, doScroll = true) {
     if (index < 0 || index >= STEPS.length) return;
     const step = STEPS[index];
-    const spotlight = document.getElementById('gs-tour-spotlight');
-    const cutout = document.getElementById('gs-mask-cutout');
-    const popover = document.getElementById('gs-tour-popover');
-    if (!spotlight || !cutout || !popover) return;
 
     let target = step.getTarget();
     if (!target) {
@@ -215,10 +217,13 @@ const GastoSmartTour = (() => {
     currentTargetEl = target;
     target.classList.add('gs-tour-active-element');
 
+    const pTop = document.getElementById('gs-panel-top');
+    const pBottom = document.getElementById('gs-panel-bottom');
+    const pLeft = document.getElementById('gs-panel-left');
+    const pRight = document.getElementById('gs-panel-right');
     const spotlight = document.getElementById('gs-tour-spotlight');
-    const cutout = document.getElementById('gs-mask-cutout');
     const popover = document.getElementById('gs-tour-popover');
-    if (!spotlight || !cutout || !popover) return;
+    if (!pTop || !pBottom || !pLeft || !pRight || !spotlight || !popover) return;
 
     if (doScroll) {
       try {
@@ -235,25 +240,45 @@ const GastoSmartTour = (() => {
       const left = Math.max(0, rect.left - padding);
       const width = rect.width + (padding * 2);
       const height = rect.height + (padding * 2);
+      const right = left + width;
+      const bottom = top + height;
+      const vw = window.innerWidth;
+      const vh = window.innerHeight;
 
-      // Perforar el telón oscuro exactamente sobre la tarjeta con el SVG mask
-      cutout.setAttribute('x', left);
-      cutout.setAttribute('y', top);
-      cutout.setAttribute('width', width);
-      cutout.setAttribute('height', height);
-      cutout.setAttribute('rx', '18');
-      cutout.setAttribute('ry', '18');
+      // 1. Panel Superior
+      pTop.style.top = '0px';
+      pTop.style.left = '0px';
+      pTop.style.width = '100vw';
+      pTop.style.height = `${top}px`;
 
-      // Posicionar Borde Foco Esmeralda
+      // 2. Panel Inferior
+      pBottom.style.top = `${bottom}px`;
+      pBottom.style.left = '0px';
+      pBottom.style.width = '100vw';
+      pBottom.style.height = `${Math.max(0, vh - bottom)}px`;
+
+      // 3. Panel Izquierdo
+      pLeft.style.top = `${top}px`;
+      pLeft.style.left = '0px';
+      pLeft.style.width = `${left}px`;
+      pLeft.style.height = `${height}px`;
+
+      // 4. Panel Derecho
+      pRight.style.top = `${top}px`;
+      pRight.style.left = `${right}px`;
+      pRight.style.width = `${Math.max(0, vw - right)}px`;
+      pRight.style.height = `${height}px`;
+
+      // 5. Borde Foco Esmeralda
       spotlight.style.top = `${top}px`;
       spotlight.style.left = `${left}px`;
       spotlight.style.width = `${width}px`;
       spotlight.style.height = `${height}px`;
 
-      // Posicionar Popover
+      // 6. Posicionar Popover
       positionPopover(rect);
 
-      // Actualizar Contenido del Popover
+      // 7. Actualizar Contenido
       updatePopoverContent(step, index);
     }, delay);
   }
@@ -341,7 +366,6 @@ const GastoSmartTour = (() => {
     currentStep = index;
     const step = STEPS[index];
 
-    // Cambiar la vista de la aplicación si corresponde
     if (typeof switchView === 'function') {
       try {
         switchView(step.view);
@@ -357,17 +381,14 @@ const GastoSmartTour = (() => {
 
   function start(force = false, userId = null) {
     if (userId) currentUserId = userId;
-    injectDOMElements();
-
-    const root = document.getElementById('gs-tour-root');
+    const root = injectDOMElements();
     if (!root) return;
 
     isActive = true;
     currentStep = 0;
 
-    root.classList.remove('pointer-events-none');
-    root.classList.remove('opacity-0');
-    root.classList.add('opacity-100');
+    // Mostrar root únicamente cuando se inicia el tour
+    root.style.display = 'block';
 
     goTo(0);
   }
@@ -375,12 +396,12 @@ const GastoSmartTour = (() => {
   function close() {
     clearTargetHighlight();
     const root = document.getElementById('gs-tour-root');
-    if (!root) return;
-
     isActive = false;
-    root.classList.remove('opacity-100');
-    root.classList.add('opacity-0');
-    root.classList.add('pointer-events-none');
+
+    if (root) {
+      // Ocultar por completo del árbol de renderizado para no bloquear ningún clic
+      root.style.display = 'none';
+    }
 
     if (typeof switchView === 'function') {
       try {
@@ -407,7 +428,7 @@ const GastoSmartTour = (() => {
     markAsCompleted();
     close();
     if (typeof showToast === 'function') {
-      showToast('¡Recorrido interactivo completado!', 'success');
+      showToast('¡Recorrido completado!', 'success');
     }
   }
 
@@ -423,7 +444,7 @@ const GastoSmartTour = (() => {
     try {
       const key = getStorageKey(currentUserId);
       localStorage.setItem(key, 'true');
-      localStorage.setItem('gastosmart_tour_v2_generic', 'true');
+      localStorage.setItem('gastosmart_tour_v3_generic', 'true');
     } catch (e) {
       console.warn('Error guardando estado tour:', e);
     }
@@ -433,7 +454,7 @@ const GastoSmartTour = (() => {
     currentUserId = userId;
     try {
       const key = getStorageKey(userId);
-      const done = localStorage.getItem(key) || localStorage.getItem('gastosmart_tour_v2_generic');
+      const done = localStorage.getItem(key) || localStorage.getItem('gastosmart_tour_v3_generic');
       if (!done) {
         setTimeout(() => {
           start(false, userId);
