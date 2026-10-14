@@ -63,26 +63,6 @@
             ¿No tienes cuenta? <a href="/register.html" class="text-secondary font-extrabold hover:underline">Regístrate gratis</a>
         </p>
 
-        <!-- Test credentials helper -->
-        <div class="mt-6 p-4 bg-emerald-50/70 border border-emerald-200/80 rounded-2xl">
-            <div class="flex items-center gap-2 text-xs font-black text-secondary mb-2">
-                <i class="fas fa-key"></i>
-                <span>Cuentas de Prueba (Clic para autocompletar):</span>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-                <button type="button" onclick="fillCreds('demo@gastos.com', 'password123')"
-                    class="p-2.5 bg-white border border-emerald-200 rounded-xl text-textMain hover:bg-emerald-100/60 text-left transition shadow-sm">
-                    <div class="font-extrabold text-secondary">Usuario Demo</div>
-                    <div class="text-[10px] text-textMuted font-medium">demo@gastos.com</div>
-                </button>
-                <button type="button" onclick="fillCreds('admin@gastos.com', 'password123')"
-                    class="p-2.5 bg-white border border-emerald-200 rounded-xl text-textMain hover:bg-emerald-100/60 text-left transition shadow-sm">
-                    <div class="font-extrabold text-primaryHover">Administrador</div>
-                    <div class="text-[10px] text-textMuted font-medium">admin@gastos.com</div>
-                </button>
-            </div>
-        </div>
-
         <!-- Footer Links Académicos -->
         <div class="mt-6 pt-4 border-t border-surfaceBorder text-center text-xs text-textMuted flex items-center justify-center gap-3">
             <a href="/terminos.html" class="hover:text-primary transition-colors">Términos</a>
@@ -96,11 +76,6 @@
     <script src="/assets/js/auth.js"></script>
     <script>
         Auth.checkSession(false);
-
-        function fillCreds(email, pass) {
-            document.getElementById('email').value = email;
-            document.getElementById('password').value = pass;
-        }
 
         document.getElementById('login-form').addEventListener('submit', async (e) => {
             e.preventDefault();
