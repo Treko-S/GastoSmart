@@ -2,6 +2,10 @@ import { getUserFromRequest } from '../_lib/auth.js';
 import { supabase } from '../_lib/supabase.js';
 
 export default async function handler(req, res) {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   const user = getUserFromRequest(req);
   if (!user || user.rol !== 'admin') {
     return res.status(403).json({ success: false, message: 'Acceso exclusivo para administradores' });

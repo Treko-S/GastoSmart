@@ -64,7 +64,7 @@ export async function sendWelcomeEmail(toEmail, toName) {
             <p style="margin: 5px 0 0; color: #047857; font-size: 14px;">Registra tu presupuesto mensual en Ajustes para recibir alertas tempranas antes de sobrepasar tus límites.</p>
           </div>
           <p style="text-align: center; margin-top: 30px;">
-            <a href="https://gastosmart.vercel.app/login" style="background-color: #10B981; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Acceder a mi Cuenta</a>
+            <a href="https://gastosmart-dun.vercel.app/login" style="background-color: #10B981; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Acceder a mi Cuenta</a>
           </p>
         </div>
         <div style="background: #F9FAFB; padding: 15px; text-align: center; font-size: 12px; color: #9CA3AF; border-top: 1px solid #E5E7EB;">
@@ -110,7 +110,7 @@ export async function sendBudgetAlertEmail(toEmail, toName, currentSpent, limitU
           </table>
           <p style="color: #666; font-size: 14px;">Te recomendamos revisar tu historial de gastos y usar el <strong>Asesor Financiero IA</strong> en tu panel para recortar consumos no esenciales.</p>
           <p style="text-align: center; margin-top: 25px;">
-            <a href="https://gastosmart.vercel.app/dashboard" style="background-color: #EF4444; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Revisar mi Dashboard</a>
+            <a href="https://gastosmart-dun.vercel.app/dashboard" style="background-color: #EF4444; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Revisar mi Dashboard</a>
           </p>
         </div>
       </div>

@@ -6,7 +6,7 @@
 const API_BASE = (
   window.location.hostname.includes('programacionutcd2.tech') || 
   (window.location.hostname === 'localhost' && window.location.port !== '3000' && window.location.port !== '')
-) ? 'https://gastosmart.vercel.app' : '';
+) ? 'https://gastosmart-dun.vercel.app' : '';
 
 window.API_BASE = API_BASE;
 

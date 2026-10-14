@@ -3,6 +3,10 @@ import { supabase } from '../_lib/supabase.js';
 import { sendBudgetAlertEmail } from '../_lib/brevo.js';
 
 export default async function handler(req, res) {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   const user = getUserFromRequest(req);
   if (!user) {
     return res.status(401).json({ success: false, message: 'No autenticado' });

@@ -3,6 +3,10 @@ import { supabase } from '../_lib/supabase.js';
 import { sendEmail } from '../_lib/brevo.js';
 
 export default async function handler(req, res) {
+  if (req.method === 'OPTIONS') {
+    return res.status(200).end();
+  }
+
   if (req.method !== 'POST') {
     return res.status(405).json({ success: false, message: 'Método no permitido' });
   }
@@ -115,7 +119,7 @@ export default async function handler(req, res) {
             </table>
 
             <p style="margin-top: 30px; text-align: center;">
-              <a href="https://gastosmart.vercel.app/dashboard" style="background-color: #10B981; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Ver Dashboard Completo</a>
+              <a href="https://gastosmart-dun.vercel.app/dashboard" style="background-color: #10B981; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Ver Dashboard Completo</a>
             </p>
           </div>
           <div style="background: #F9FAFB; padding: 15px; text-align: center; font-size: 12px; color: #9CA3AF; border-top: 1px solid #E5E7EB;">
