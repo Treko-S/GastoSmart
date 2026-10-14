@@ -116,10 +116,6 @@
                     </div>
                 </div>
 
-                <!-- Botón Tour Guiado / Ayuda en Header -->
-                <button onclick="GastoSmartTour.start(true)" class="flex items-center justify-center w-8 h-8 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-700 border border-emerald-200 transition active:scale-95 cursor-pointer shadow-2xs" title="Ver Recorrido Guiado">
-                    <i class="fas fa-question text-xs"></i>
-                </button>
 
                 <!-- Botón Cerrar Sesión Móvil Directo en Header Superior -->
                 <button onclick="confirmLogout()" class="md:hidden flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 active:bg-rose-200 text-rose-600 border border-rose-200/90 font-extrabold transition active:scale-95 cursor-pointer shadow-2xs" title="Cerrar Sesión">
@@ -415,7 +411,7 @@
                 </div>
 
                 <!-- Tarjeta de Resultado Principal -->
-                <div class="p-6 rounded-2xl bg-gradient-to-br from-emerald-50/90 to-teal-50/60 border border-emerald-200 text-center relative overflow-hidden shadow-2xs">
+                <div id="tour-card-converter-result" class="p-6 rounded-2xl bg-gradient-to-br from-emerald-50/90 to-teal-50/60 border border-emerald-200 text-center relative overflow-hidden shadow-2xs">
                     <span class="text-xs uppercase font-black text-emerald-800 tracking-wider">Resultado de la Conversión</span>
                     <div class="text-3xl sm:text-4xl font-black text-slate-900 mt-2" id="calc-result">
                         ≈ Gs. 0
@@ -472,6 +468,7 @@
 
                 <!-- Período del Presupuesto (Semanal / Mensual) -->
                 <div id="tour-card-budget-settings" class="space-y-4">
+                <div id="tour-card-budget-config" class="space-y-4">
                 <div>
                     <label class="block text-xs font-black uppercase text-slate-700 mb-1.5">Período del Límite de Gasto</label>
                     <div class="grid grid-cols-2 gap-2 p-1 bg-slate-100 rounded-xl border border-slate-200" id="budget-period-selector">
@@ -508,6 +505,8 @@
                         <input type="number" step="any" id="setting-limit" required oninput="updateBudgetEquivalences()"
                             class="w-full pl-9 pr-4 py-3.5 bg-slate-50 border border-slate-200 rounded-xl text-base font-black text-slate-900 outline-none focus:bg-white focus:ring-2 focus:ring-emerald-500/30 focus:border-emerald-500 shadow-2xs">
                     </div>
+                </div>
+                </div>
 
                     <!-- Caja Dinámica de Equivalencias Multi-Moneda -->
                     <div class="mt-3 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 space-y-2">

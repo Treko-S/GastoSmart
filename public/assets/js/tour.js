@@ -51,7 +51,7 @@ const GastoSmartTour = (() => {
       step: 4,
       badge: '4 de 5',
       view: 'conversor',
-      getTarget: () => document.getElementById('tour-card-converter'),
+      getTarget: () => document.getElementById('tour-card-converter-result') || document.getElementById('tour-card-converter'),
       icon: 'fas fa-coins',
       title: 'Conversor y Cotizaciones en Vivo',
       description: 'Consulta cotizaciones oficiales del mercado actualizadas al minuto. Convierte valores de ida y vuelta entre USD, PYG, EUR y BRL con un solo toque.'
@@ -60,10 +60,10 @@ const GastoSmartTour = (() => {
       step: 5,
       badge: '5 de 5',
       view: 'ajustes',
-      getTarget: () => document.getElementById('tour-card-budget-settings'),
+      getTarget: () => document.getElementById('tour-card-budget-config') || document.getElementById('tour-card-budget-settings'),
       icon: 'fas fa-sliders-h',
       title: 'Personaliza tu Límite y Alertas',
-      description: 'Establece tu presupuesto semanal o mensual en tu moneda favorita y activa avisos preventivos a tu correo antes de sobrepasar el límite fijado.'
+      description: 'Establece tu presupuesto semanal o mensual en tu moneda favorita (fijado en <b>$100.00 USD</b> de base) y activa alertas para cuidar tu dinero.'
     }
   ];
 
@@ -87,22 +87,21 @@ const GastoSmartTour = (() => {
     root.style.display = 'none';
     root.style.position = 'fixed';
     root.style.inset = '0';
-    root.style.zIndex = '99990';
+    root.style.zIndex = '999990';
     root.style.pointerEvents = 'none';
 
     root.innerHTML = `
       <style>
         .gs-tour-panel {
           position: fixed;
-          background: rgba(15, 23, 42, 0.75);
+          background: rgba(15, 23, 42, 0.72);
           pointer-events: auto;
           cursor: pointer;
-          transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-          z-index: 99991;
+          transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+          z-index: 999991;
         }
         .gs-tour-active-element {
-          position: relative !important;
-          z-index: 99995 !important;
+          /* No aplicar z-index aquí para no alterar el contexto de apilamiento */
         }
       </style>
 
@@ -117,16 +116,16 @@ const GastoSmartTour = (() => {
         border-radius: 18px;
         box-shadow: 0 0 25px rgba(16, 185, 129, 0.65), inset 0 0 8px rgba(16, 185, 129, 0.20);
         border: 2.5px solid #10b981;
-        z-index: 99996;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        z-index: 999995;
+        transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       "></div>
 
       <!-- Popover / Tooltip Contextual Inteligente -->
       <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-5 sm:p-6 shadow-2xl border border-slate-200 flex flex-col" style="
         width: calc(100vw - 32px);
         max-width: 380px;
-        z-index: 100000;
-        transition: top 0.3s cubic-bezier(0.16, 1, 0.3, 1), left 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+        z-index: 1000000;
+        transition: top 0.25s cubic-bezier(0.16, 1, 0.3, 1), left 0.25s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
       ">
         <!-- Cabecera Popover -->
         <div class="flex items-center justify-between pb-2 mb-2 border-b border-slate-100">
@@ -231,7 +230,7 @@ const GastoSmartTour = (() => {
       } catch (e) {}
     }
 
-    const delay = doScroll ? 180 : 0;
+    const delay = doScroll ? 250 : 0;
     setTimeout(() => {
       const rect = target.getBoundingClientRect();
       const padding = 8;
@@ -275,11 +274,11 @@ const GastoSmartTour = (() => {
       spotlight.style.width = `${width}px`;
       spotlight.style.height = `${height}px`;
 
-      // 6. Posicionar Popover
-      positionPopover(rect);
-
-      // 7. Actualizar Contenido
+      // 6. Actualizar Contenido PRIMERO para que el alto del popover sea real
       updatePopoverContent(step, index);
+
+      // 7. Posicionar Popover con clamping y docking inteligente
+      positionPopover(rect);
     }, delay);
   }
 
@@ -287,41 +286,66 @@ const GastoSmartTour = (() => {
     const popover = document.getElementById('gs-tour-popover');
     if (!popover) return;
 
-    const isMobile = window.innerWidth < 640;
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const isMobile = vw < 640;
     const popRect = popover.getBoundingClientRect();
-    const popHeight = popRect.height || 180;
-    const popWidth = Math.min(380, window.innerWidth - 32);
+    const popHeight = Math.max(180, popRect.height || 210);
+    const popWidth = Math.min(380, vw - 32);
 
     let popTop = 0;
     let popLeft = 16;
 
     if (isMobile) {
-      popLeft = Math.max(16, (window.innerWidth - popWidth) / 2);
+      popLeft = Math.max(16, (vw - popWidth) / 2);
 
-      // Si el elemento está en la mitad inferior de la pantalla, posicionar el tooltip ARRIBA del elemento
-      if (targetRect.top > window.innerHeight / 2) {
-        popTop = Math.max(16, targetRect.top - popHeight - 16);
+      const spaceBelow = vh - targetRect.bottom;
+      const spaceAbove = targetRect.top;
+
+      if (spaceBelow >= popHeight + 16) {
+        popTop = targetRect.bottom + 12;
+      } else if (spaceAbove >= popHeight + 16) {
+        popTop = targetRect.top - popHeight - 12;
       } else {
-        popTop = Math.min(window.innerHeight - popHeight - 16, targetRect.bottom + 16);
+        popTop = vh - popHeight - 16;
       }
     } else {
       // En PC: centrado con respecto al elemento objetivo
       popLeft = targetRect.left + (targetRect.width / 2) - (popWidth / 2);
-      popLeft = Math.max(20, Math.min(window.innerWidth - popWidth - 20, popLeft));
+      popLeft = Math.max(20, Math.min(vw - popWidth - 20, popLeft));
 
-      // Verificar si cabe abajo o arriba
-      if (targetRect.bottom + popHeight + 20 < window.innerHeight) {
+      const spaceBelow = vh - targetRect.bottom;
+      const spaceAbove = targetRect.top;
+
+      // Verificar si cabe abajo o arriba con suficiente margen
+      if (spaceBelow >= popHeight + 18) {
         popTop = targetRect.bottom + 14;
-      } else if (targetRect.top - popHeight - 20 > 0) {
+      } else if (spaceAbove >= popHeight + 18) {
         popTop = targetRect.top - popHeight - 14;
       } else {
-        popTop = Math.max(20, (window.innerHeight - popHeight) / 2);
+        // Si no cabe verticalmente:
+        // Intentar posicionar en el lateral si hay espacio suficiente
+        if (targetRect.left > popWidth + 30) {
+          popLeft = targetRect.left - popWidth - 16;
+          popTop = Math.max(70, Math.min(vh - popHeight - 20, targetRect.top));
+        } else if (vw - targetRect.right > popWidth + 30) {
+          popLeft = targetRect.right + 16;
+          popTop = Math.max(70, Math.min(vh - popHeight - 20, targetRect.top));
+        } else {
+          // Si el elemento es muy amplio/alto, anclar elegantemente abajo a la derecha
+          popLeft = vw - popWidth - 24;
+          popTop = vh - popHeight - 24;
+        }
       }
     }
 
-    popover.style.top = `${popTop}px`;
-    popover.style.left = `${popLeft}px`;
-    popover.style.width = `${popWidth}px`;
+    // Clamping estricto de seguridad: el popover NUNCA se desborda ni se corta
+    popTop = Math.max(16, Math.min(vh - popHeight - 16, popTop));
+    popLeft = Math.max(16, Math.min(vw - popWidth - 16, popLeft));
+
+    popover.style.top = `${Math.round(popTop)}px`;
+    popover.style.left = `${Math.round(popLeft)}px`;
+    popover.style.width = `${Math.round(popWidth)}px`;
   }
 
   function updatePopoverContent(step, index) {
@@ -436,7 +460,7 @@ const GastoSmartTour = (() => {
     markAsCompleted();
     close();
     if (typeof showToast === 'function') {
-      showToast('Recorrido omitido. Puedes repetirlo desde Ajustes o con el botón (?) de ayuda.', 'info');
+      showToast('Recorrido omitido. Puedes repetirlo desde el menú lateral o en Ajustes.', 'info');
     }
   }
 
