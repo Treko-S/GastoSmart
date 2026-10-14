@@ -593,32 +593,42 @@
         </div>
     </div>
 
-    <!-- Bottom Navigation Móvil Estilo Fintech con Botón Central Integrado -->
-    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200/90 px-2 py-1.5 flex justify-between items-center z-40 shadow-2xl">
-        <button onclick="switchView('resumen')" class="nav-btn-mobile flex-1 flex flex-col items-center gap-1 text-emerald-700 text-[11px] font-black" data-view="resumen">
-            <i class="fas fa-chart-pie text-lg"></i>
-            <span>Resumen</span>
-        </button>
-        <button onclick="switchView('historial')" class="nav-btn-mobile flex-1 flex flex-col items-center gap-1 text-slate-500 text-[11px] font-bold" data-view="historial">
-            <i class="fas fa-list-ul text-lg"></i>
-            <span>Historial</span>
-        </button>
-
-        <!-- Botón Central + Elevado para Registrar Gasto (Fácil con el Pulgar, no tapa nada) -->
-        <div class="flex-1 flex justify-center -mt-6">
-            <button onclick="openModal()" class="w-13 h-13 rounded-full bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-600 text-white flex items-center justify-center text-xl shadow-xl shadow-emerald-600/35 border-4 border-white active:scale-90 transition transform cursor-pointer" title="Registrar Gasto">
-                <i class="fas fa-plus"></i>
+    <!-- Bottom Navigation Móvil Profesional (Grid de 5 Columnas Perfectas) -->
+    <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white/95 backdrop-blur-md border-t border-slate-200 z-50 shadow-[0_-4px_25px_rgba(0,0,0,0.07)] h-[64px]">
+        <div class="grid grid-cols-5 h-full max-w-md mx-auto items-center px-1">
+            
+            <!-- 1. Resumen -->
+            <button onclick="switchView('resumen')" class="nav-btn-mobile flex flex-col items-center justify-center h-full text-emerald-700 text-center w-full transition-colors cursor-pointer" data-view="resumen">
+                <i class="fas fa-chart-pie text-lg"></i>
+                <span class="text-[10px] font-black tracking-tight leading-none mt-1">Resumen</span>
             </button>
-        </div>
 
-        <button onclick="switchView('conversor')" class="nav-btn-mobile flex-1 flex flex-col items-center gap-1 text-slate-500 text-[11px] font-bold" data-view="conversor">
-            <i class="fas fa-coins text-lg"></i>
-            <span>Divisas</span>
-        </button>
-        <button onclick="switchView('ajustes')" class="nav-btn-mobile flex-1 flex flex-col items-center gap-1 text-slate-500 text-[11px] font-bold" data-view="ajustes">
-            <i class="fas fa-sliders-h text-lg"></i>
-            <span>Ajustes</span>
-        </button>
+            <!-- 2. Historial -->
+            <button onclick="switchView('historial')" class="nav-btn-mobile flex flex-col items-center justify-center h-full text-slate-400 hover:text-slate-600 text-center w-full transition-colors cursor-pointer" data-view="historial">
+                <i class="fas fa-list-ul text-lg"></i>
+                <span class="text-[10px] font-bold tracking-tight leading-none mt-1">Historial</span>
+            </button>
+
+            <!-- 3. Botón Central + Elevado (Registrar Gasto) -->
+            <div class="flex items-center justify-center h-full">
+                <button onclick="openModal()" class="w-12 h-12 rounded-full bg-gradient-to-tr from-emerald-600 via-emerald-500 to-teal-600 text-white flex items-center justify-center text-xl shadow-lg shadow-emerald-600/40 border-2 border-white -translate-y-3.5 active:scale-90 transition-transform cursor-pointer" title="Registrar Gasto">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+
+            <!-- 4. Divisas -->
+            <button onclick="switchView('conversor')" class="nav-btn-mobile flex flex-col items-center justify-center h-full text-slate-400 hover:text-slate-600 text-center w-full transition-colors cursor-pointer" data-view="conversor">
+                <i class="fas fa-coins text-lg"></i>
+                <span class="text-[10px] font-bold tracking-tight leading-none mt-1">Divisas</span>
+            </button>
+
+            <!-- 5. Ajustes -->
+            <button onclick="switchView('ajustes')" class="nav-btn-mobile flex flex-col items-center justify-center h-full text-slate-400 hover:text-slate-600 text-center w-full transition-colors cursor-pointer" data-view="ajustes">
+                <i class="fas fa-sliders-h text-lg"></i>
+                <span class="text-[10px] font-bold tracking-tight leading-none mt-1">Ajustes</span>
+            </button>
+
+        </div>
     </nav>
 
     <!-- Scripts -->

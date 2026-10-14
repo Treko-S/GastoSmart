@@ -250,25 +250,25 @@ function renderRecentExpenses(expenses) {
     const cat = t.categorias || { nombre: 'Otros', icono: 'fa-tags', color: '#10B981' };
     const dateFormatted = formatDateHuman(t.fecha);
     listEl.innerHTML += `
-      <div class="py-3 flex items-center justify-between gap-3 hover:bg-slate-50/80 px-2 rounded-2xl transition">
-        <div class="flex items-center gap-3 min-w-0">
+      <div class="py-3 flex items-center justify-between gap-2.5 hover:bg-slate-50/80 px-2 rounded-2xl transition">
+        <div class="flex items-center gap-3 min-w-0 flex-1">
           <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold shrink-0 shadow-2xs" style="background-color: ${cat.color}15; color: ${cat.color}; border: 1px solid ${cat.color}30">
             <i class="fas ${cat.icono}"></i>
           </div>
-          <div class="min-w-0">
-            <div class="font-extrabold text-sm text-slate-900 leading-snug truncate">${escapeHtml(t.descripcion || 'Gasto registrado')}</div>
-            <div class="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-0.5">
-              <span class="whitespace-nowrap text-[11px] font-semibold text-slate-500">${dateFormatted}</span>
-              <span class="inline-block w-1 h-1 rounded-full bg-slate-300 shrink-0"></span>
-              <span class="font-bold px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap" style="background-color: ${cat.color}15; color: ${cat.color}">
+          <div class="min-w-0 flex-1">
+            <div class="font-extrabold text-sm text-slate-900 leading-snug truncate" title="${escapeHtml(t.descripcion)}">${escapeHtml(t.descripcion || 'Gasto registrado')}</div>
+            <div class="flex items-center gap-1.5 mt-0.5 text-xs text-slate-500 font-medium overflow-hidden">
+              <span class="whitespace-nowrap shrink-0 text-[10px] text-slate-400 font-semibold">${dateFormatted}</span>
+              <span class="text-slate-300 shrink-0 text-[8px]">•</span>
+              <span class="truncate max-w-[85px] sm:max-w-[130px] font-bold px-1.5 py-0.5 rounded text-[10px] shrink-0" style="background-color: ${cat.color}15; color: ${cat.color}; border: 1px solid ${cat.color}25">
                 ${escapeHtml(cat.nombre)}
               </span>
             </div>
           </div>
         </div>
-        <div class="text-right shrink-0">
+        <div class="text-right shrink-0 pl-1.5">
           <div class="font-black text-sm text-slate-900 whitespace-nowrap">${CurrencyManager.format(t.monto, t.moneda)}</div>
-          <div class="text-[10px] font-bold text-emerald-700 mt-0.5 whitespace-nowrap">≈ $${Number(t.monto_usd).toFixed(2)} USD</div>
+          <div class="text-[10px] font-bold text-emerald-700 mt-0.5 whitespace-nowrap">${t.moneda === 'USD' ? '≈ ' + CurrencyManager.format(CurrencyManager.convert(t.monto, 'USD', 'PYG'), 'PYG') : '≈ $' + Number(t.monto_usd).toFixed(2) + ' USD'}</div>
         </div>
       </div>
     `;
@@ -333,32 +333,32 @@ function renderHistoryTable(expenses) {
       `;
     }
 
-    // 2. Tarjetas Móviles Ultra Fluidas (Nada cortado en pantallas pequeñas)
+    // 2. Tarjetas Móviles Ultra Fluidas (Sin colisiones ni desbordamientos)
     if (cardsEl) {
       cardsEl.innerHTML += `
-        <div class="p-3.5 flex items-center justify-between gap-3 hover:bg-slate-50/70 transition border-b border-slate-100 last:border-none">
-          <div class="flex items-center gap-3 min-w-0">
+        <div class="p-3.5 flex items-center justify-between gap-2.5 hover:bg-slate-50/70 transition border-b border-slate-100 last:border-none">
+          <div class="flex items-center gap-3 min-w-0 flex-1">
             <div class="w-10 h-10 rounded-2xl flex items-center justify-center text-sm font-bold shrink-0 shadow-2xs" style="background-color: ${cat.color}15; color: ${cat.color}; border: 1px solid ${cat.color}30">
               <i class="fas ${cat.icono}"></i>
             </div>
-            <div class="min-w-0">
-              <div class="font-extrabold text-sm text-slate-900 leading-snug truncate">${escapeHtml(t.descripcion || 'Gasto registrado')}</div>
-              <div class="text-xs text-slate-500 font-medium flex items-center gap-1.5 mt-0.5">
-                <span class="whitespace-nowrap text-[11px] font-semibold text-slate-500">${dateFormatted}</span>
-                <span class="inline-block w-1 h-1 rounded-full bg-slate-300 shrink-0"></span>
-                <span class="font-bold px-1.5 py-0.5 rounded text-[10px] whitespace-nowrap" style="background-color: ${cat.color}15; color: ${cat.color}">
+            <div class="min-w-0 flex-1">
+              <div class="font-extrabold text-sm text-slate-900 leading-snug truncate" title="${escapeHtml(t.descripcion)}">${escapeHtml(t.descripcion || 'Gasto registrado')}</div>
+              <div class="flex items-center gap-1.5 mt-0.5 text-xs text-slate-500 font-medium overflow-hidden">
+                <span class="whitespace-nowrap shrink-0 text-[10px] text-slate-400 font-semibold">${dateFormatted}</span>
+                <span class="text-slate-300 shrink-0 text-[8px]">•</span>
+                <span class="truncate max-w-[85px] sm:max-w-[130px] font-bold px-1.5 py-0.5 rounded text-[10px] shrink-0" style="background-color: ${cat.color}15; color: ${cat.color}; border: 1px solid ${cat.color}25">
                   ${escapeHtml(cat.nombre)}
                 </span>
               </div>
             </div>
           </div>
-          <div class="flex items-center gap-2 shrink-0">
+          <div class="flex items-center gap-2 shrink-0 pl-1.5">
             <div class="text-right">
               <div class="font-black text-sm text-slate-900 whitespace-nowrap">${CurrencyManager.format(t.monto, t.moneda)}</div>
-              <div class="text-[10px] font-bold text-emerald-700 mt-0.5 whitespace-nowrap">≈ $${Number(t.monto_usd).toFixed(2)} USD</div>
+              <div class="text-[10px] font-bold text-emerald-700 mt-0.5 whitespace-nowrap">${t.moneda === 'USD' ? '≈ ' + CurrencyManager.format(CurrencyManager.convert(t.monto, 'USD', 'PYG'), 'PYG') : '≈ $' + Number(t.monto_usd).toFixed(2) + ' USD'}</div>
             </div>
-            <button onclick="deleteExpense('${t.id}')" class="w-8 h-8 rounded-xl bg-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition cursor-pointer" title="Eliminar gasto">
-              <i class="fas fa-trash-alt text-xs"></i>
+            <button onclick="deleteExpense('${t.id}')" class="w-7 h-7 rounded-lg bg-slate-100 text-slate-400 hover:text-rose-600 hover:bg-rose-50 flex items-center justify-center transition cursor-pointer shrink-0" title="Eliminar gasto">
+              <i class="fas fa-trash-alt text-[10px]"></i>
             </button>
           </div>
         </div>
@@ -870,12 +870,17 @@ function switchView(viewName) {
     }
   });
 
-  // Actualizar botones móvil
+  // Actualizar botones móvil manteniendo la estructura del grid de 5 columnas
   document.querySelectorAll('.nav-btn-mobile').forEach(btn => {
-    if (btn.dataset.view === viewName) {
-      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-emerald-700 text-xs font-black';
+    const isCurrent = btn.dataset.view === viewName;
+    if (isCurrent) {
+      btn.className = 'nav-btn-mobile flex flex-col items-center justify-center h-full text-emerald-700 text-center w-full transition-colors cursor-pointer';
+      const label = btn.querySelector('span');
+      if (label) label.className = 'text-[10px] font-black tracking-tight leading-none mt-1';
     } else {
-      btn.className = 'nav-btn-mobile flex flex-col items-center gap-1 text-slate-500 text-xs font-bold';
+      btn.className = 'nav-btn-mobile flex flex-col items-center justify-center h-full text-slate-400 hover:text-slate-600 text-center w-full transition-colors cursor-pointer';
+      const label = btn.querySelector('span');
+      if (label) label.className = 'text-[10px] font-bold tracking-tight leading-none mt-1';
     }
   });
 
