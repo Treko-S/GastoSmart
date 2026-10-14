@@ -24,9 +24,28 @@ export default async function handler(req, res) {
       return res.status(404).json({ success: false, message: 'Usuario no encontrado' });
     }
 
-    // 2. Obtener gastos del mes actual
+    // 2. Obtener gastos según la frecuencia configurada (diario, semanal, mensual)
+    const { periodo = 'mensual' } = req.body || {};
     const now = new Date();
-    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+    let startDateStr;
+    let periodTitle = 'Resumen Mensual de Gastos';
+    let periodSub = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+
+    if (periodo === 'diario') {
+      startDateStr = now.toISOString().split('T')[0];
+      periodTitle = 'Resumen Diario de Gastos';
+      periodSub = 'Corte del día ' + startDateStr;
+    } else if (periodo === 'semanal') {
+      const sevenDaysAgo = new Date();
+      sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+      startDateStr = sevenDaysAgo.toISOString().split('T')[0];
+      periodTitle = 'Resumen Semanal de Gastos';
+      periodSub = 'Últimos 7 días consolidados';
+    } else {
+      startDateStr = new Date(now.getFullYear(), now.getMonth(), 1).toISOString().split('T')[0];
+      periodTitle = 'Resumen Mensual de Gastos';
+      periodSub = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
+    }
 
     const { data: transacciones } = await supabase
       .from('transacciones')
@@ -39,7 +58,7 @@ export default async function handler(req, res) {
         categorias ( nombre )
       `)
       .eq('usuario_id', user.id)
-      .gte('fecha', firstDay)
+      .gte('fecha', startDateStr)
       .order('fecha', { ascending: false });
 
     let totalUSD = 0;
@@ -51,8 +70,6 @@ export default async function handler(req, res) {
       const c = t.categorias?.nombre || 'Otros';
       catMap[c] = (catMap[c] || 0) + m;
     });
-
-    const mesNombre = now.toLocaleString('es-ES', { month: 'long', year: 'numeric' });
 
     // 3. Generar HTML para el reporte
     let rowsHtml = '';
@@ -71,8 +88,8 @@ export default async function handler(req, res) {
       <body style="font-family: Arial, sans-serif; background-color: #F3F4F6; padding: 20px; color: #1F2937;">
         <div style="max-width: 600px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
           <div style="background: linear-gradient(135deg, #10B981, #059669); padding: 30px; text-align: center; color: white;">
-            <h1 style="margin: 0; font-size: 24px;">📊 Resumen Mensual de Gastos</h1>
-            <p style="margin: 6px 0 0; opacity: 0.9; text-transform: capitalize;">${mesNombre}</p>
+            <h1 style="margin: 0; font-size: 24px;">📊 ${periodTitle}</h1>
+            <p style="margin: 6px 0 0; opacity: 0.9; text-transform: capitalize;">${periodSub}</p>
           </div>
           <div style="padding: 30px;">
             <p style="font-size: 16px;">Hola <strong>${userData.nombre}</strong>,</p>
@@ -117,7 +134,7 @@ export default async function handler(req, res) {
     const emailResult = await sendEmail({
       toEmail: userData.email,
       toName: userData.nombre || 'Usuario',
-      subject: `📊 Resumen Financiero GastoSmart - ${mesNombre}`,
+      subject: `📊 ${periodTitle} - GastoSmart (${periodSub})`,
       htmlContent
     });
 

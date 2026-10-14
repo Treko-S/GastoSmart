@@ -94,9 +94,14 @@ function renderDashboard(data) {
     }
   }
 
-  // Calcular gasto del período fijado (semanal o mensual)
+  // Calcular gasto del período fijado (diario, semanal o mensual)
   let gastoPeriodoUSD = totalUSD;
-  if (storedPeriod === 'semanal') {
+  if (storedPeriod === 'diario') {
+    const todayStr = new Date().toISOString().split('T')[0];
+    gastoPeriodoUSD = (transacciones || [])
+      .filter(t => t.fecha === todayStr)
+      .reduce((acc, t) => acc + (Number(t.monto_usd) || 0), 0);
+  } else if (storedPeriod === 'semanal') {
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const dateLimitStr = sevenDaysAgo.toISOString().split('T')[0];
@@ -111,7 +116,13 @@ function renderDashboard(data) {
 
   // Actualizar tarjeta métrica de presupuesto adaptada
   const labelEl = document.getElementById('stat-limite-label');
-  if (labelEl) labelEl.textContent = storedPeriod === 'semanal' ? 'Presupuesto Semanal' : 'Presupuesto Mensual';
+  if (labelEl) {
+    labelEl.textContent = storedPeriod === 'diario' 
+      ? 'Presupuesto Diario' 
+      : storedPeriod === 'semanal' 
+        ? 'Presupuesto Semanal' 
+        : 'Presupuesto Mensual';
+  }
 
   document.getElementById('stat-limite-usd').textContent = CurrencyManager.format(storedAmount, storedCurr);
 
@@ -476,8 +487,14 @@ async function sendMonthlyReport() {
   btn.disabled = true;
   btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando...';
 
+  const periodo = localStorage.getItem('gastosmart_budget_period') || 'mensual';
+
   try {
-    const res = await fetch('/api/mail/send-report', { method: 'POST' });
+    const res = await fetch('/api/mail/send-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ periodo })
+    });
     const data = await res.json();
 
     if (data.success) {
@@ -688,7 +705,18 @@ function setCalcCurrencies(from, to) {
   document.getElementById('calc-to').value = to;
   calculateConversion();
   const input = document.getElementById('calc-amount');
-  if (input) input.focus();
+  if (input) {
+    input.focus();
+    const len = input.value ? input.value.length : 0;
+    try {
+      input.setSelectionRange(len, len);
+    } catch (e) {
+      const val = input.value;
+      input.value = '';
+      input.value = val;
+    }
+    input.scrollLeft = input.scrollWidth;
+  }
 }
 
 function renderQuotesBoard() {
@@ -742,6 +770,30 @@ function initUserSettings(user) {
   const storedCurr = localStorage.getItem('gastosmart_budget_curr') || user.moneda_principal || 'USD';
   const storedAmount = localStorage.getItem('gastosmart_budget_amount') || user.limite_mensual_usd || 100;
 
+  // Cargar configuraciones de horarios y días para reportes
+  const storedTimeDaily = localStorage.getItem('gastosmart_report_time_daily') || '20:00';
+  const storedDaysWeekly = localStorage.getItem('gastosmart_report_days_weekly') || 'Vie';
+  const storedTimeWeekly = localStorage.getItem('gastosmart_report_time_weekly') || '19:00';
+  const storedDatesMonthly = localStorage.getItem('gastosmart_report_dates_monthly') || 'ultimo';
+  const storedTimeMonthly = localStorage.getItem('gastosmart_report_time_monthly') || '09:00';
+
+  if (document.getElementById('setting-report-time-daily')) {
+    document.getElementById('setting-report-time-daily').value = storedTimeDaily;
+  }
+  if (document.getElementById('setting-report-days-weekly')) {
+    document.getElementById('setting-report-days-weekly').value = storedDaysWeekly;
+    renderWeeklyDaysChips(storedDaysWeekly.split(','));
+  }
+  if (document.getElementById('setting-report-time-weekly')) {
+    document.getElementById('setting-report-time-weekly').value = storedTimeWeekly;
+  }
+  if (document.getElementById('setting-report-dates-monthly')) {
+    setMonthlyDateOption(storedDatesMonthly);
+  }
+  if (document.getElementById('setting-report-time-monthly')) {
+    document.getElementById('setting-report-time-monthly').value = storedTimeMonthly;
+  }
+
   setBudgetPeriod(storedPeriod, false);
   setBudgetCurrency(storedCurr, false);
 
@@ -752,22 +804,96 @@ function initUserSettings(user) {
 }
 
 function setBudgetPeriod(period, triggerEquivalences = true) {
-  document.getElementById('setting-period').value = period;
-  const btnMensual = document.getElementById('btn-period-mensual');
+  const periodVal = ['diario', 'semanal', 'mensual'].includes(period) ? period : 'mensual';
+  document.getElementById('setting-period').value = periodVal;
+
+  const btnDiario = document.getElementById('btn-period-diario');
   const btnSemanal = document.getElementById('btn-period-semanal');
+  const btnMensual = document.getElementById('btn-period-mensual');
+  const statusEl = document.getElementById('budget-period-status');
   const badge = document.getElementById('budget-projection-badge');
 
-  if (period === 'mensual') {
-    btnMensual.className = 'py-2.5 px-3 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300';
-    btnSemanal.className = 'py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
-    if (badge) badge.textContent = 'Base Mensual';
-  } else {
-    btnSemanal.className = 'py-2.5 px-3 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300';
-    btnMensual.className = 'py-2.5 px-3 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900';
-    if (badge) badge.textContent = 'Base Semanal (x4.33 proyectado)';
+  const panelDiario = document.getElementById('schedule-panel-diario');
+  const panelSemanal = document.getElementById('schedule-panel-semanal');
+  const panelMensual = document.getElementById('schedule-panel-mensual');
+
+  const activeClass = 'py-2.5 px-2 rounded-lg text-xs font-black transition bg-white text-emerald-800 shadow-xs border border-emerald-300 cursor-pointer';
+  const inactiveClass = 'py-2.5 px-2 rounded-lg text-xs font-bold transition text-slate-600 hover:text-slate-900 cursor-pointer';
+
+  if (btnDiario) btnDiario.className = periodVal === 'diario' ? activeClass : inactiveClass;
+  if (btnSemanal) btnSemanal.className = periodVal === 'semanal' ? activeClass : inactiveClass;
+  if (btnMensual) btnMensual.className = periodVal === 'mensual' ? activeClass : inactiveClass;
+
+  if (panelDiario) panelDiario.classList.toggle('hidden', periodVal !== 'diario');
+  if (panelSemanal) panelSemanal.classList.toggle('hidden', periodVal !== 'semanal');
+  if (panelMensual) panelMensual.classList.toggle('hidden', periodVal !== 'mensual');
+
+  if (statusEl) {
+    statusEl.textContent = periodVal === 'diario' ? 'Frecuencia Diaria' : periodVal === 'semanal' ? 'Frecuencia Semanal' : 'Frecuencia Mensual';
+  }
+
+  if (badge) {
+    if (periodVal === 'diario') badge.textContent = 'Base Diaria (x30 proyectado)';
+    else if (periodVal === 'semanal') badge.textContent = 'Base Semanal (x4.33 proyectado)';
+    else badge.textContent = 'Base Mensual';
   }
 
   if (triggerEquivalences) updateBudgetEquivalences();
+}
+
+function toggleWeeklyDay(day) {
+  const input = document.getElementById('setting-report-days-weekly');
+  if (!input) return;
+  let currentDays = input.value ? input.value.split(',').map(d => d.trim()).filter(Boolean) : ['Vie'];
+
+  if (currentDays.includes(day)) {
+    if (currentDays.length > 1) {
+      currentDays = currentDays.filter(d => d !== day);
+    }
+  } else {
+    currentDays.push(day);
+  }
+
+  input.value = currentDays.join(',');
+  renderWeeklyDaysChips(currentDays);
+}
+
+function renderWeeklyDaysChips(selectedDays) {
+  const container = document.getElementById('weekly-days-chips');
+  if (!container) return;
+  const days = ['Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb', 'Dom'];
+  container.innerHTML = days.map(d => {
+    const isSelected = selectedDays.includes(d);
+    return `
+      <button type="button" onclick="toggleWeeklyDay('${d}')" class="weekly-day-chip px-3 py-1.5 rounded-lg text-xs transition cursor-pointer ${
+        isSelected 
+          ? 'font-black bg-emerald-50 text-emerald-800 border border-emerald-300 shadow-2xs' 
+          : 'font-bold bg-white text-slate-600 border border-slate-200 hover:border-slate-300'
+      }" data-day="${d}">${d}</button>
+    `;
+  }).join('');
+}
+
+function setMonthlyDateOption(opt) {
+  const input = document.getElementById('setting-report-dates-monthly');
+  if (input) input.value = opt;
+
+  document.querySelectorAll('.monthly-date-opt').forEach(btn => {
+    const isCurrent = btn.dataset.opt === opt;
+    if (isCurrent) {
+      btn.className = 'monthly-date-opt p-2.5 rounded-xl text-xs border transition bg-emerald-50 text-emerald-800 border-emerald-300 shadow-2xs text-left cursor-pointer';
+      const title = btn.querySelector('div:first-child');
+      const sub = btn.querySelector('div:last-child');
+      if (title) title.className = 'font-black text-emerald-900';
+      if (sub) sub.className = 'text-[10px] text-emerald-700/80 mt-0.5';
+    } else {
+      btn.className = 'monthly-date-opt p-2.5 rounded-xl text-xs border transition bg-white text-slate-700 border-slate-200 text-left hover:border-slate-300 cursor-pointer';
+      const title = btn.querySelector('div:first-child');
+      const sub = btn.querySelector('div:last-child');
+      if (title) title.className = 'font-black text-slate-800';
+      if (sub) sub.className = 'text-[10px] text-slate-500 mt-0.5';
+    }
+  });
 }
 
 function setBudgetCurrency(curr, triggerEquivalences = true) {
@@ -810,7 +936,7 @@ function updateBudgetEquivalences() {
   const inEUR = CurrencyManager.convert(amount, curr, 'EUR');
   const inBRL = CurrencyManager.convert(amount, curr, 'BRL');
 
-  const suffix = period === 'semanal' ? '/sem' : '/mes';
+  const suffix = period === 'diario' ? '/día' : period === 'semanal' ? '/sem' : '/mes';
 
   grid.innerHTML = `
     <div class="p-2.5 rounded-xl bg-white border border-emerald-200 text-center shadow-2xs overflow-hidden">
@@ -845,9 +971,19 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
   const limitPeriod = document.getElementById('setting-period').value;
   const notificaciones_email = document.getElementById('setting-email-alerts').checked;
 
+  const timeDaily = document.getElementById('setting-report-time-daily')?.value || '20:00';
+  const daysWeekly = document.getElementById('setting-report-days-weekly')?.value || 'Vie';
+  const timeWeekly = document.getElementById('setting-report-time-weekly')?.value || '19:00';
+  const datesMonthly = document.getElementById('setting-report-dates-monthly')?.value || 'ultimo';
+  const timeMonthly = document.getElementById('setting-report-time-monthly')?.value || '09:00';
+
   // Calcular el límite normalizado mensual en USD para Supabase
   const limitInUSD = CurrencyManager.convert(limitAmount, limitCurr, 'USD');
-  const monthlyUSD = limitPeriod === 'semanal' ? Number((limitInUSD * 4.33).toFixed(2)) : Number(limitInUSD.toFixed(2));
+  const monthlyUSD = limitPeriod === 'diario'
+    ? Number((limitInUSD * 30.42).toFixed(2))
+    : limitPeriod === 'semanal' 
+      ? Number((limitInUSD * 4.33).toFixed(2)) 
+      : Number(limitInUSD.toFixed(2));
 
   try {
     const res = await fetch('/api/auth/me', {
@@ -863,15 +999,20 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
     });
     const data = await res.json();
     if (data.success) {
-      // Guardar preferencias locales
+      // Guardar preferencias locales completas
       localStorage.setItem('gastosmart_budget_period', limitPeriod);
       localStorage.setItem('gastosmart_budget_curr', limitCurr);
       localStorage.setItem('gastosmart_budget_amount', limitAmount.toString());
+      localStorage.setItem('gastosmart_report_time_daily', timeDaily);
+      localStorage.setItem('gastosmart_report_days_weekly', daysWeekly);
+      localStorage.setItem('gastosmart_report_time_weekly', timeWeekly);
+      localStorage.setItem('gastosmart_report_dates_monthly', datesMonthly);
+      localStorage.setItem('gastosmart_report_time_monthly', timeMonthly);
 
       document.getElementById('user-name').textContent = nombre;
       document.getElementById('user-avatar').textContent = (nombre || 'U').charAt(0).toUpperCase();
 
-      showToast('¡Ajustes guardados exitosamente!', 'success');
+      showToast('¡Ajustes y programación guardados exitosamente!', 'success');
       await loadExpenses('mes');
     } else {
       showToast(data.message || 'Error al guardar ajustes', 'error');

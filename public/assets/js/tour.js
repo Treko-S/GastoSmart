@@ -1,19 +1,18 @@
 /**
- * GastoSmart - Recorrido Guiado Interactivo Profesional
- * - Spotlight Aperture con box-shadow perimetral (centro 100% interactivo)
- * - Posicionamiento adaptativo y a prueba de fallos para PC y Móvil
- * - Sincronización automática con las vistas (Resumen, Historial, Divisas, Ajustes)
- * - Cierre limpio y garantía de rendimiento nativo
+ * GastoSmart - Recorrido Guiado Interactivo Profesional y No Bloqueante
+ * - Experiencia suave, interactiva y segura: NUNCA congela ni bloquea la app
+ * - Spotlight perimetral inteligente (pointer-events: none)
+ * - Popover contextual flotante con botones claros y soporte de tecla Escape
+ * - Sincronización automática con las vistas de la aplicación
  */
 
 const GastoSmartTour = (() => {
   let currentStep = 0;
   let currentUserId = null;
   let isActive = false;
-  let resizeHandlerAttached = false;
   let currentTargetEl = null;
-  let modalObserver = null;
   let rafId = null;
+  let escapeHandlerAttached = false;
 
   const STEPS = [
     {
@@ -23,25 +22,21 @@ const GastoSmartTour = (() => {
       getTarget: () => document.getElementById('tour-card-total') || document.getElementById('tour-card-budget'),
       icon: 'fas fa-wallet',
       title: 'Control Financiero en Vivo',
-      description: 'Visualiza tu <b>Gasto Total</b> sincronizado en tu moneda favorita y tu <b>Presupuesto</b> con barra de progreso y saldo restante en tiempo real.'
+      description: 'Visualiza tu <b>Gasto Total</b> sincronizado en tu moneda favorita y tu <b>Presupuesto</b> con barra de consumo y saldo restante en tiempo real.'
     },
     {
       step: 2,
       badge: '2 de 5 • Registro Rápido',
       view: 'resumen',
       getTarget: () => {
-        const modal = document.getElementById('expense-modal');
-        if (modal && !modal.classList.contains('hidden')) {
-          return document.getElementById('modal-container') || modal;
-        }
         const isMobile = window.innerWidth < 768;
-        return isMobile 
+        return isMobile
           ? (document.getElementById('tour-btn-add-mobile') || document.getElementById('tour-btn-add-desktop'))
           : (document.getElementById('tour-btn-add-desktop') || document.getElementById('tour-btn-add-mobile'));
       },
       icon: 'fas fa-plus-circle',
       title: 'Anotar un Gasto en Segundos',
-      description: '💡 <b>¡Pruébalo!</b> Toca en <b>+ Registrar Gasto</b> para abrir el formulario interactivo multidivisa con fecha asegurada y cálculo automático.'
+      description: '💡 Toca en <b>+ Registrar Gasto</b> en cualquier momento para añadir consumos multidivisa (USD, PYG, EUR, BRL) con cálculo automático.'
     },
     {
       step: 3,
@@ -50,7 +45,7 @@ const GastoSmartTour = (() => {
       getTarget: () => document.getElementById('tour-card-export') || document.getElementById('tour-card-history'),
       icon: 'fas fa-file-invoice-dollar',
       title: 'Historial y Centro de Reportes',
-      description: '💡 <b>¡Pruébalo!</b> Revisa todos tus movimientos anotados, descarga extractos en <b>CSV</b> o envía un resumen financiero mensual a tu correo.'
+      description: '💡 Revisa todos tus movimientos, filtra por categoría, descarga extractos en <b>CSV</b> o envía un resumen financiero a tu correo.'
     },
     {
       step: 4,
@@ -59,7 +54,7 @@ const GastoSmartTour = (() => {
       getTarget: () => document.getElementById('tour-card-converter') || document.getElementById('tour-card-converter-result'),
       icon: 'fas fa-coins',
       title: 'Conversor y Cotizaciones en Vivo',
-      description: '💡 <b>¡Pruébalo ahora!</b> Convierte cualquier monto al instante entre Dólares, Guaraníes, Euros y Reales con tasas de cambio oficiales en directo.'
+      description: '💡 Convierte cualquier monto al instante entre Dólares, Guaraníes, Euros y Reales con cotizaciones oficiales actualizadas en directo.'
     },
     {
       step: 5,
@@ -67,13 +62,13 @@ const GastoSmartTour = (() => {
       view: 'ajustes',
       getTarget: () => document.getElementById('tour-card-budget-settings'),
       icon: 'fas fa-sliders-h',
-      title: 'Personaliza tu Límite y Moneda',
-      description: '💡 <b>¡Pruébalo ahora!</b> Configura tu presupuesto como <b>Semanal o Mensual</b> y selecciona tu moneda preferida (USD, PYG, EUR, BRL).'
+      title: 'Personaliza tu Límite y Frecuencia',
+      description: '💡 Configura tu presupuesto como <b>Diario, Semanal o Mensual</b>, elige el horario de reporte por correo y selecciona tu moneda preferida.'
     }
   ];
 
   function getStorageKey(userId) {
-    return 'gastosmart_tour_v3_' + (userId || 'guest');
+    return 'gastosmart_tour_v4_' + (userId || 'guest');
   }
 
   function clearTargetHighlight() {
@@ -93,38 +88,33 @@ const GastoSmartTour = (() => {
     root.style.position = 'fixed';
     root.style.inset = '0';
     root.style.zIndex = '1000030';
-    root.style.pointerEvents = 'none';
+    root.style.pointerEvents = 'none'; // CRUCIAL: El contenedor raíz nunca bloquea clicks
 
     root.innerHTML = `
       <style>
         .gs-tour-highlighted-element {
           position: relative !important;
-          z-index: 1000036 !important;
-        }
-        #expense-modal.gs-tour-modal-open {
-          background-color: transparent !important;
-          backdrop-filter: none !important;
-          -webkit-backdrop-filter: none !important;
+          z-index: 1000032 !important;
         }
       </style>
 
-      <!-- Backdrop Catcher (Fondo oscuro con orificio spotlight) -->
-      <div id="gs-tour-backdrop-layer" class="fixed inset-0 pointer-events-auto" style="
-        background: rgba(15, 23, 42, 0.65);
-        z-index: 1000031;
-        transition: opacity 0.25s ease;
-      " onclick="GastoSmartTour.handleBackdropClick(event)"></div>
+      <!-- Botón flotante siempre accesible para cerrar el recorrido -->
+      <button type="button" onclick="GastoSmartTour.skip()" class="fixed top-4 right-4 z-[1000060] pointer-events-auto bg-slate-900/85 hover:bg-slate-900 text-white text-xs font-bold px-3.5 py-2 rounded-xl shadow-xl border border-slate-700/60 transition flex items-center gap-1.5 cursor-pointer backdrop-blur-sm active:scale-95">
+        <i class="fas fa-times text-rose-400"></i>
+        <span>Cerrar Guía (Esc)</span>
+      </button>
 
-      <!-- Borde Foco Esmeralda Luminoso con orificio recortado -->
+      <!-- Foco Esmeralda Luminoso con recorte que NO bloquea clics -->
       <div id="gs-tour-spotlight" class="fixed pointer-events-none" style="
         border-radius: 18px;
-        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.65), 0 0 25px rgba(16, 185, 129, 0.7);
+        box-shadow: 0 0 0 9999px rgba(15, 23, 42, 0.55), 0 0 22px rgba(16, 185, 129, 0.6);
         border: 2.5px solid #10b981;
-        z-index: 1000035;
+        z-index: 1000031;
         transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+        display: none;
       "></div>
 
-      <!-- Popover / Tooltip Contextual Inteligente -->
+      <!-- Popover / Tooltip Contextual Flotante -->
       <div id="gs-tour-popover" class="fixed pointer-events-auto bg-white rounded-2xl p-4 sm:p-6 shadow-2xl border border-slate-200 flex flex-col" style="
         width: calc(100vw - 24px);
         max-width: 380px;
@@ -139,7 +129,7 @@ const GastoSmartTour = (() => {
             </span>
             <span class="text-[11px] font-bold text-slate-400">Guía Interactiva</span>
           </div>
-          <button type="button" onclick="GastoSmartTour.skip()" class="text-xs font-bold text-slate-400 hover:text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-lg transition cursor-pointer flex items-center gap-1" title="Omitir recorrido">
+          <button type="button" onclick="GastoSmartTour.skip()" class="text-xs font-bold text-slate-400 hover:text-rose-600 hover:bg-rose-50 px-2 py-1 rounded-lg transition cursor-pointer flex items-center gap-1" title="Cerrar y omitir recorrido">
             <span>Omitir</span>
             <i class="fas fa-times text-xs"></i>
           </button>
@@ -185,66 +175,18 @@ const GastoSmartTour = (() => {
 
     document.body.appendChild(root);
 
-    if (!resizeHandlerAttached) {
+    if (!escapeHandlerAttached) {
+      window.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isActive) {
+          GastoSmartTour.skip();
+        }
+      });
       window.addEventListener('resize', handleViewportChange);
       window.addEventListener('orientationchange', handleViewportChange);
-      const scrollable = document.querySelector('main');
-      if (scrollable) {
-        scrollable.addEventListener('scroll', handleViewportChange, { passive: true });
-      }
-      window.addEventListener('scroll', handleViewportChange, { passive: true });
-      resizeHandlerAttached = true;
+      escapeHandlerAttached = true;
     }
-
-    setupModalObserver();
 
     return root;
-  }
-
-  function setupModalObserver() {
-    if (modalObserver) return;
-    const modal = document.getElementById('expense-modal');
-    if (!modal) return;
-
-    modalObserver = new MutationObserver(() => {
-      if (!isActive) return;
-      const isOpen = !modal.classList.contains('hidden');
-      if (isOpen) {
-        modal.classList.add('gs-tour-modal-open');
-        if (currentStep === 1) {
-          setTimeout(() => {
-            const container = document.getElementById('modal-container');
-            if (container && isActive && currentStep === 1) {
-              positionElements(container, {
-                step: 2,
-                badge: '2 de 5 • En Acción',
-                view: 'resumen',
-                icon: 'fas fa-edit',
-                title: 'Formulario Multidivisa en Acción',
-                description: '💡 <b>¡Pruébalo!</b> Toca las monedas (USD, PYG, EUR, BRL) o anota un monto. La fecha está asegurada. Pulsa la <b>X</b> para cerrar o <b>Siguiente</b> para continuar.'
-              }, 1, false);
-            }
-          }, 150);
-        }
-      } else {
-        modal.classList.remove('gs-tour-modal-open');
-        setTimeout(() => {
-          if (isActive && currentStep === 1) {
-            updateSpotlightAndPopover(1, false);
-          }
-        }, 120);
-      }
-    });
-
-    modalObserver.observe(modal, { attributes: true, attributeFilter: ['class'] });
-  }
-
-  function handleBackdropClick(e) {
-    // Si el clic es fuera del popover y el modal de gastos está abierto, cerrarlo
-    const modal = document.getElementById('expense-modal');
-    if (modal && !modal.classList.contains('hidden') && typeof closeModal === 'function') {
-      closeModal();
-    }
   }
 
   function handleViewportChange() {
@@ -256,24 +198,27 @@ const GastoSmartTour = (() => {
   }
 
   function updateSpotlightAndPopover(index, doScroll = true, retryCount = 0) {
-    if (index < 0 || index >= STEPS.length) return;
+    if (!isActive || index < 0 || index >= STEPS.length) return;
     const step = STEPS[index];
 
     let target = step.getTarget();
-    if (!target || target.offsetParent === null) {
-      if (retryCount < 5) {
+    if (!target || !target.isConnected) {
+      if (retryCount < 4) {
         setTimeout(() => {
           updateSpotlightAndPopover(index, doScroll, retryCount + 1);
-        }, 100);
+        }, 120);
+        return;
       }
+      // Fallback: mostrar popover centrado si el elemento no existe en el DOM
+      positionPopoverCenter(step, index);
       return;
     }
 
     const rect = target.getBoundingClientRect();
-    if (rect.width === 0 && rect.height === 0 && retryCount < 5) {
+    if ((rect.width === 0 || rect.height === 0) && retryCount < 4) {
       setTimeout(() => {
         updateSpotlightAndPopover(index, doScroll, retryCount + 1);
-      }, 100);
+      }, 120);
       return;
     }
 
@@ -281,6 +226,7 @@ const GastoSmartTour = (() => {
   }
 
   function positionElements(target, step, index, doScroll) {
+    if (!isActive) return;
     clearTargetHighlight();
     currentTargetEl = target;
     target.classList.add('gs-tour-highlighted-element');
@@ -289,7 +235,6 @@ const GastoSmartTour = (() => {
     const popover = document.getElementById('gs-tour-popover');
     if (!spotlight || !popover) return;
 
-    // Solo desplazarse si el elemento no está actualmente en pantalla
     if (doScroll) {
       const rectNow = target.getBoundingClientRect();
       const inView = rectNow.top >= 70 && rectNow.bottom <= (window.innerHeight - 70);
@@ -300,8 +245,9 @@ const GastoSmartTour = (() => {
       }
     }
 
-    const delay = doScroll ? 180 : 0;
+    const delay = doScroll ? 150 : 0;
     setTimeout(() => {
+      if (!isActive) return;
       const rect = target.getBoundingClientRect();
       const padding = 10;
 
@@ -310,16 +256,15 @@ const GastoSmartTour = (() => {
       const width = rect.width + (padding * 2);
       const height = rect.height + (padding * 2);
 
-      // 1. Posicionar Spotlight con foco esmeralda
+      // Posicionar foco esmeralda
+      spotlight.style.display = 'block';
       spotlight.style.top = `${Math.round(top)}px`;
       spotlight.style.left = `${Math.round(left)}px`;
       spotlight.style.width = `${Math.round(width)}px`;
       spotlight.style.height = `${Math.round(height)}px`;
 
-      // 2. Actualizar Contenido del Popover
+      // Actualizar Contenido y Posición del Popover
       updatePopoverContent(step, index);
-
-      // 3. Posicionar Popover Contextual
       positionPopover(rect);
     }, delay);
   }
@@ -338,23 +283,7 @@ const GastoSmartTour = (() => {
     let popTop = 80;
     let popLeft = Math.max(12, (vw - popWidth) / 2);
 
-    const isModalTarget = currentTargetEl && (
-      currentTargetEl.id === 'modal-container' || 
-      (currentTargetEl.closest && currentTargetEl.closest('#expense-modal'))
-    );
-
-    if (isModalTarget) {
-      if (vw >= 880 && (vw - targetRect.right >= popWidth + 24)) {
-        popLeft = targetRect.right + 18;
-        popTop = Math.max(74, Math.min(vh - popHeight - 24, targetRect.top + 10));
-      } else if (vw >= 880 && (targetRect.left >= popWidth + 24)) {
-        popLeft = targetRect.left - popWidth - 18;
-        popTop = Math.max(74, Math.min(vh - popHeight - 24, targetRect.top + 10));
-      } else {
-        popLeft = Math.max(12, (vw - popWidth) / 2);
-        popTop = Math.max(70, vh - popHeight - 16);
-      }
-    } else if (isMobile) {
+    if (isMobile) {
       popLeft = Math.max(12, (vw - popWidth) / 2);
       const spaceBelow = (vh - 74) - targetRect.bottom;
       const spaceAbove = targetRect.top - 65;
@@ -366,11 +295,9 @@ const GastoSmartTour = (() => {
       } else {
         popTop = Math.max(68, vh - popHeight - 74);
       }
-
       popTop = Math.max(68, Math.min(vh - popHeight - 74, popTop));
       popLeft = Math.max(12, Math.min(vw - popWidth - 12, popLeft));
     } else {
-      // PC / Pantallas medianas y grandes
       popLeft = targetRect.left + (targetRect.width / 2) - (popWidth / 2);
       popLeft = Math.max(24, Math.min(vw - popWidth - 24, popLeft));
 
@@ -393,13 +320,30 @@ const GastoSmartTour = (() => {
           popTop = vh - popHeight - 24;
         }
       }
-
       popTop = Math.max(74, Math.min(vh - popHeight - 24, popTop));
       popLeft = Math.max(20, Math.min(vw - popWidth - 20, popLeft));
     }
 
     popover.style.top = `${Math.round(popTop)}px`;
     popover.style.left = `${Math.round(popLeft)}px`;
+    popover.style.width = `${Math.round(popWidth)}px`;
+  }
+
+  function positionPopoverCenter(step, index) {
+    const spotlight = document.getElementById('gs-tour-spotlight');
+    if (spotlight) spotlight.style.display = 'none';
+
+    updatePopoverContent(step, index);
+    const popover = document.getElementById('gs-tour-popover');
+    if (!popover) return;
+
+    const vw = window.innerWidth;
+    const vh = window.innerHeight;
+    const popWidth = Math.min(380, vw - 24);
+    const popHeight = 220;
+
+    popover.style.top = `${Math.round(Math.max(74, (vh - popHeight) / 2))}px`;
+    popover.style.left = `${Math.round(Math.max(12, (vw - popWidth) / 2))}px`;
     popover.style.width = `${Math.round(popWidth)}px`;
   }
 
@@ -442,15 +386,6 @@ const GastoSmartTour = (() => {
   function goTo(index, triggerSwitchView = true) {
     if (index < 0 || index >= STEPS.length) return;
 
-    // Si el modal de gastos estaba abierto, cerrarlo limpiamente al cambiar de paso
-    const modal = document.getElementById('expense-modal');
-    if (modal) {
-      modal.classList.remove('gs-tour-modal-open');
-      if (!modal.classList.contains('hidden') && typeof closeModal === 'function') {
-        try { closeModal(); } catch (e) {}
-      }
-    }
-
     currentStep = index;
     const step = STEPS[index];
 
@@ -488,7 +423,6 @@ const GastoSmartTour = (() => {
 
     isActive = true;
     currentStep = 0;
-
     root.style.display = 'block';
 
     goTo(0);
@@ -499,22 +433,10 @@ const GastoSmartTour = (() => {
     const root = document.getElementById('gs-tour-root');
     isActive = false;
 
-    const modal = document.getElementById('expense-modal');
-    if (modal) {
-      modal.classList.remove('gs-tour-modal-open');
-      if (!modal.classList.contains('hidden') && typeof closeModal === 'function') {
-        try { closeModal(); } catch (e) {}
-      }
-    }
-
     if (root) {
       root.style.display = 'none';
-    }
-
-    if (typeof switchView === 'function') {
-      try {
-        switchView('resumen');
-      } catch (e) {}
+      const spotlight = document.getElementById('gs-tour-spotlight');
+      if (spotlight) spotlight.style.display = 'none';
     }
   }
 
@@ -544,7 +466,7 @@ const GastoSmartTour = (() => {
     markAsCompleted();
     close();
     if (typeof showToast === 'function') {
-      showToast('Recorrido omitido. Puedes repetirlo desde el menú lateral.', 'info');
+      showToast('Recorrido finalizado. Puedes repetirlo cuando gustes.', 'info');
     }
   }
 
@@ -552,7 +474,7 @@ const GastoSmartTour = (() => {
     try {
       const key = getStorageKey(currentUserId);
       localStorage.setItem(key, 'true');
-      localStorage.setItem('gastosmart_tour_v3_generic', 'true');
+      localStorage.setItem('gastosmart_tour_v4_generic', 'true');
     } catch (e) {
       console.warn('Error guardando estado tour:', e);
     }
@@ -562,7 +484,7 @@ const GastoSmartTour = (() => {
     currentUserId = userId;
     try {
       const key = getStorageKey(userId);
-      const done = localStorage.getItem(key) || localStorage.getItem('gastosmart_tour_v3_generic');
+      const done = localStorage.getItem(key) || localStorage.getItem('gastosmart_tour_v4_generic');
       if (!done) {
         setTimeout(() => {
           start(false, userId);
@@ -583,7 +505,6 @@ const GastoSmartTour = (() => {
     finish,
     checkAndAutoStart,
     syncWithView,
-    handleBackdropClick,
     isActive: () => isActive
   };
 })();
