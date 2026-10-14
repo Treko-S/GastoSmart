@@ -213,15 +213,13 @@ export default async function handler(req, res) {
         .eq('id', user.id)
         .single();
 
-      let alertaEnviada = false;
       if (userData?.notificaciones_email && userData.limite_mensual_usd > 0) {
         if (totalMes > userData.limite_mensual_usd) {
-          // Disparamos email con Brevo
-          sendBudgetAlertEmail(userData.email, userData.nombre, totalMes, userData.limite_mensual_usd)
-            .then(() => {
-              alertaEnviada = true;
-            })
-            .catch(err => console.error('Error alerta Brevo:', err));
+          sendBudgetAlertEmail(userData.email, userData.nombre, totalMes, userData.limite_mensual_usd, false)
+            .catch(err => console.error('Error alerta 100% Brevo:', err));
+        } else if (totalMes >= userData.limite_mensual_usd * 0.9) {
+          sendBudgetAlertEmail(userData.email, userData.nombre, totalMes, userData.limite_mensual_usd, true)
+            .catch(err => console.error('Error alerta 90% Brevo:', err));
         }
       }
 

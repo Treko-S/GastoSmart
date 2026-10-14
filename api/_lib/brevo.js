@@ -83,35 +83,92 @@ export async function sendWelcomeEmail(toEmail, toName) {
   });
 }
 
-// 2. Alerta de Presupuesto Superado
-export async function sendBudgetAlertEmail(toEmail, toName, currentSpent, limitUSD) {
+// 2. Alerta de Presupuesto (Preventiva al 90% o Superado al 100%)
+export async function sendBudgetAlertEmail(arg1, arg2, arg3, arg4, arg5) {
+  let toEmail, toName, currentSpent, limit, currency = 'USD', period = 'mensual', isWarning90 = false;
+
+  if (typeof arg1 === 'object' && arg1 !== null) {
+    ({ toEmail, toName, currentSpent, limit, currency = 'USD', period = 'mensual', isWarning90 = false } = arg1);
+  } else {
+    toEmail = arg1;
+    toName = arg2;
+    currentSpent = arg3;
+    limit = arg4;
+    isWarning90 = Boolean(arg5);
+  }
+
+  const symbolMap = { USD: '$', PYG: '₲', EUR: '€', BRL: 'R$' };
+  const sym = symbolMap[currency] || '$';
+  const periodText = period === 'diario' ? 'diario' : period === 'semanal' ? 'semanal' : 'mensual';
+
+  const formatAmount = (val) => {
+    const num = Number(val) || 0;
+    if (currency === 'PYG') return Math.round(num).toLocaleString('es-PY') + ' ₲';
+    return sym + num.toFixed(2);
+  };
+
+  const formattedSpent = formatAmount(currentSpent);
+  const formattedLimit = formatAmount(limit);
+  const remaining = Math.max(0, (Number(limit) || 0) - (Number(currentSpent) || 0));
+  const formattedRemaining = formatAmount(remaining);
+
+  const title = isWarning90 
+    ? '⚠️ Aviso Preventivo: 90% de tu Presupuesto Alcanzado' 
+    : '🚨 Alerta de Presupuesto Superado (100%)';
+
+  const headerGradient = isWarning90
+    ? 'linear-gradient(135deg, #F59E0B, #D97706)'
+    : 'linear-gradient(135deg, #EF4444, #DC2626)';
+
+  const cardBg = isWarning90 ? '#FFFBEB' : '#FEF2F2';
+  const cardBorder = isWarning90 ? '#FDE68A' : '#FECACA';
+  const textColor = isWarning90 ? '#92400E' : '#991B1B';
+  const btnColor = isWarning90 ? '#D97706' : '#DC2626';
+
+  const introText = isWarning90
+    ? `Te informamos que tu gasto acumulado ha alcanzado el <strong>90% de tu presupuesto ${periodText}</strong>. Te quedan solo <strong>${formattedRemaining}</strong> para terminar tu período dentro de tu meta.`
+    : `Te informamos que tu gasto acumulado ha superado el <strong>100% del presupuesto ${periodText}</strong> que tenías configurado.`;
+
+  const subject = isWarning90
+    ? `⚠️ Aviso Preventivo (Alerta 90% de Límite) - GastoSmart`
+    : `🚨 Alerta GastoSmart: Has superado tu presupuesto ${periodText}`;
+
   const htmlContent = `
     <!DOCTYPE html>
     <html>
     <head><meta charset="utf-8"></head>
     <body style="font-family: Arial, sans-serif; background-color: #f4f6f8; padding: 20px; color: #333;">
       <div style="max-width: 580px; margin: 0 auto; background: #ffffff; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-        <div style="background: linear-gradient(135deg, #EF4444, #DC2626); padding: 30px; text-align: center; color: white;">
-          <h1 style="margin: 0; font-size: 24px;">⚠️ Alerta de Presupuesto Superado</h1>
-          <p style="margin: 8px 0 0; opacity: 0.9;">GastoSmart - Notificación de Seguridad Financiera</p>
+        <div style="background: ${headerGradient}; padding: 30px; text-align: center; color: white;">
+          <h1 style="margin: 0; font-size: 22px;">${title}</h1>
+          <p style="margin: 8px 0 0; opacity: 0.9; font-size: 13px;">GastoSmart - Notificación de Seguridad Financiera</p>
         </div>
         <div style="padding: 30px;">
           <p style="font-size: 16px;">Hola <strong>${toName}</strong>,</p>
-          <p style="color: #555; line-height: 1.6;">Te informamos que tu gasto acumulado este mes ha superado el presupuesto que tenías configurado.</p>
-          <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background-color: #FEF2F2; border-radius: 8px; overflow: hidden;">
+          <p style="color: #4B5563; line-height: 1.6;">${introText}</p>
+          <table style="width: 100%; border-collapse: collapse; margin: 20px 0; background-color: ${cardBg}; border: 1px solid ${cardBorder}; border-radius: 8px; overflow: hidden;">
             <tr>
-              <td style="padding: 12px 16px; color: #7F1D1D; font-weight: bold;">Límite establecido:</td>
-              <td style="padding: 12px 16px; color: #7F1D1D; text-align: right; font-weight: bold;">$${Number(limitUSD).toFixed(2)} USD</td>
+              <td style="padding: 12px 16px; color: ${textColor}; font-weight: bold;">Límite establecido (${periodText}):</td>
+              <td style="padding: 12px 16px; color: ${textColor}; text-align: right; font-weight: bold;">${formattedLimit}</td>
             </tr>
             <tr>
-              <td style="padding: 12px 16px; color: #991B1B; font-weight: bold;">Total gastado este mes:</td>
-              <td style="padding: 12px 16px; color: #DC2626; text-align: right; font-size: 18px; font-weight: bold;">$${Number(currentSpent).toFixed(2)} USD</td>
+              <td style="padding: 12px 16px; color: ${textColor}; font-weight: bold;">Total consumido:</td>
+              <td style="padding: 12px 16px; color: ${textColor}; text-align: right; font-size: 18px; font-weight: bold;">${formattedSpent}</td>
             </tr>
+            ${isWarning90 ? `
+            <tr>
+              <td style="padding: 12px 16px; color: #047857; font-weight: bold;">Margen restante:</td>
+              <td style="padding: 12px 16px; color: #047857; text-align: right; font-weight: bold;">${formattedRemaining}</td>
+            </tr>
+            ` : ''}
           </table>
-          <p style="color: #666; font-size: 14px;">Te recomendamos revisar tu historial de gastos y usar el <strong>Asesor Financiero IA</strong> en tu panel para recortar consumos no esenciales.</p>
+          <p style="color: #6B7280; font-size: 13px;">Te recomendamos revisar tu historial de gastos y usar el <strong>Asesor Financiero IA</strong> en tu panel para recortar consumos no esenciales.</p>
           <p style="text-align: center; margin-top: 25px;">
-            <a href="https://gastosmart-dun.vercel.app/dashboard" style="background-color: #EF4444; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Revisar mi Dashboard</a>
+            <a href="https://programacionutcd2.tech/Kevinio/dashboard.html" style="background-color: ${btnColor}; color: white; padding: 12px 28px; text-decoration: none; border-radius: 8px; font-weight: bold; display: inline-block;">Revisar mi Dashboard</a>
           </p>
+        </div>
+        <div style="background: #F9FAFB; padding: 15px; text-align: center; font-size: 12px; color: #9CA3AF; border-top: 1px solid #E5E7EB;">
+          © 2026 GastoSmart. Alerta automática preventiva del sistema vía Brevo.
         </div>
       </div>
     </body>
@@ -121,7 +178,7 @@ export async function sendBudgetAlertEmail(toEmail, toName, currentSpent, limitU
   return sendEmail({
     toEmail,
     toName,
-    subject: '⚠️ Alerta GastoSmart: Has superado tu presupuesto mensual',
+    subject,
     htmlContent
   });
 }

@@ -35,9 +35,9 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Inicializar tema guardado
   initTheme();
 
-  // Iniciar verificador de reporte programado
+  // Iniciar verificador de reporte programado cada 15 segundos
   checkAndTriggerScheduledReport();
-  setInterval(checkAndTriggerScheduledReport, 30000);
+  setInterval(checkAndTriggerScheduledReport, 15000);
 });
 
 // ==========================================
@@ -157,6 +157,9 @@ function renderDashboard(data) {
   } else {
     alertBanner.classList.add('hidden');
   }
+
+  // Verificación y emisión automática de Alertas Preventivas (90% o 100%) por Correo
+  checkBudgetAlerts(porcentaje, gastoPeriodoEnMoneda, storedAmount, storedCurr, storedPeriod);
 
   // Tasa de cambio en métricas (si existe)
   const ratePYGEl = document.getElementById('stat-rate-pyg');
@@ -485,12 +488,22 @@ async function requestAiAdvice() {
 // Enviar Reporte por Email (Brevo API)
 // ==========================================
 async function sendMonthlyReport(isAuto = false) {
-  const btn = document.getElementById('btn-brevo-report');
-  if (btn) {
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Enviando reporte...';
-  }
+  const btnSettings = document.getElementById('btn-brevo-report');
+  const btnTop = document.getElementById('btn-brevo-report-top');
 
+  const setBtnsLoading = (loading) => {
+    [btnSettings, btnTop].forEach(b => {
+      if (!b) return;
+      b.disabled = loading;
+      if (loading) {
+        b.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Enviando reporte...</span>';
+      } else {
+        b.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Enviar Reporte Ahora</span>';
+      }
+    });
+  };
+
+  setBtnsLoading(true);
   const periodo = localStorage.getItem('gastosmart_budget_period') || 'mensual';
 
   try {
@@ -503,7 +516,8 @@ async function sendMonthlyReport(isAuto = false) {
     const data = await res.json();
 
     if (data.success) {
-      showToast(isAuto ? '⏰ Reporte programado enviado automáticamente a tu correo' : (data.message || 'Reporte enviado a tu correo'), 'success');
+      showToast(isAuto ? '⏰ ¡Horario cumplido! Reporte financiero enviado con éxito a tu correo' : (data.message || 'Reporte financiero enviado a tu correo'), 'success');
+      updateSchedulerStatusUI();
     } else {
       showToast(data.message || 'Error al enviar email con Brevo', 'error');
     }
@@ -511,18 +525,118 @@ async function sendMonthlyReport(isAuto = false) {
     console.error('Error enviando reporte:', err);
     if (!isAuto) showToast('Fallo de conexión al enviar email', 'error');
   } finally {
-    if (btn) {
-      btn.disabled = false;
-      btn.innerHTML = '<i class="fas fa-paper-plane text-xs"></i> <span>Enviar Reporte Ahora a mi Correo</span>';
-    }
+    setBtnsLoading(false);
   }
 }
 window.sendMonthlyReport = sendMonthlyReport;
 
 // ==========================================
+// Probar Alerta Preventiva 90% por Correo
+// ==========================================
+async function sendTestAlert90() {
+  const btn = document.getElementById('btn-test-alert-90');
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> <span>Enviando alerta 90%...</span>';
+  }
+
+  const storedCurr = localStorage.getItem('gastosmart_budget_curr') || 'USD';
+  const storedPeriod = localStorage.getItem('gastosmart_budget_period') || 'mensual';
+  const storedAmount = parseFloat(localStorage.getItem('gastosmart_budget_amount')) || 100;
+  const spent90 = Number((storedAmount * 0.94).toFixed(2));
+
+  try {
+    const fetchFn = window.apiFetch || fetch;
+    const res = await fetchFn('/api/mail/send-alert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        type: 'warning_90',
+        currentSpent: spent90,
+        limit: storedAmount,
+        currency: storedCurr,
+        period: storedPeriod
+      })
+    });
+    const data = await res.json();
+    if (data.success) {
+      showToast('⚠️ ¡Aviso preventivo (90%) enviado con éxito a tu correo!', 'success');
+    } else {
+      showToast(data.message || 'Error al enviar aviso preventivo', 'error');
+    }
+  } catch (err) {
+    console.error('Error enviando alerta 90%:', err);
+    showToast('Fallo de conexión al enviar alerta', 'error');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      btn.innerHTML = '<i class="fas fa-bell text-amber-600 text-xs"></i> <span>Probar Alerta 90%</span>';
+    }
+  }
+}
+window.sendTestAlert90 = sendTestAlert90;
+
+// ==========================================
+// Reiniciar Bloqueo de Horario de Prueba
+// ==========================================
+function resetScheduleTestLock() {
+  let clearedCount = 0;
+  Object.keys(localStorage).forEach(key => {
+    if (key.startsWith('gastosmart_auto_sent_')) {
+      localStorage.removeItem(key);
+      clearedCount++;
+    }
+  });
+  showToast('¡Bloqueo de horario reiniciado! El programador volverá a evaluar el envío de inmediato.', 'info');
+  updateSchedulerStatusUI();
+  checkAndTriggerScheduledReport();
+}
+window.resetScheduleTestLock = resetScheduleTestLock;
+
+// ==========================================
+// Actualizar Estado en Vivo del Programador en la UI
+// ==========================================
+function updateSchedulerStatusUI() {
+  const statusEl = document.getElementById('scheduler-status-text');
+  if (!statusEl) return;
+
+  const notificaciones = localStorage.getItem('gastosmart_email_alerts') !== 'false';
+  if (!notificaciones) {
+    statusEl.innerHTML = '<span class="text-rose-600 font-bold"><i class="fas fa-bell-slash mr-1"></i> Notificaciones por correo desactivadas en tus ajustes.</span>';
+    return;
+  }
+
+  const period = localStorage.getItem('gastosmart_budget_period') || 'mensual';
+  const now = new Date();
+  const dayNames = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+  const currentDayName = dayNames[now.getDay()];
+
+  let infoText = '';
+  if (period === 'diario') {
+    const timeDaily = localStorage.getItem('gastosmart_report_time_daily') || document.getElementById('setting-report-time-daily')?.value || '20:00';
+    infoText = `Envío <strong>Diario</strong> programado para las <strong>${timeDaily} hs</strong>`;
+  } else if (period === 'semanal') {
+    const daysWeekly = localStorage.getItem('gastosmart_report_days_weekly') || document.getElementById('setting-report-days-weekly')?.value || 'Vie';
+    const timeWeekly = localStorage.getItem('gastosmart_report_time_weekly') || document.getElementById('setting-report-time-weekly')?.value || '19:00';
+    const isToday = daysWeekly.split(',').map(d => d.trim()).includes(currentDayName);
+    infoText = `Envío <strong>Semanal</strong> los días <strong>${daysWeekly}</strong> a las <strong>${timeWeekly} hs</strong> ${isToday ? '<span class="text-emerald-700 font-black ml-1">(¡Hoy es día de reporte!)</span>' : ''}`;
+  } else {
+    const datesMonthly = localStorage.getItem('gastosmart_report_dates_monthly') || document.getElementById('setting-report-dates-monthly')?.value || 'ultimo';
+    const timeMonthly = localStorage.getItem('gastosmart_report_time_monthly') || document.getElementById('setting-report-time-monthly')?.value || '09:00';
+    const optLabel = datesMonthly === 'ultimo' ? 'Fin de mes' : datesMonthly === 'quincenal' ? 'Día 1 y 15' : 'Día 1';
+    infoText = `Envío <strong>Mensual</strong> (${optLabel}) a las <strong>${timeMonthly} hs</strong>`;
+  }
+
+  statusEl.innerHTML = `<span class="flex items-center gap-1.5"><i class="fas fa-clock text-emerald-600"></i> ${infoText}</span><span class="block text-[11px] text-slate-500 font-normal mt-0.5">Se dispara automáticamente mientras la app esté abierta.</span>`;
+}
+window.updateSchedulerStatusUI = updateSchedulerStatusUI;
+
+// ==========================================
 // Programador y Disparador Automático de Reportes
 // ==========================================
 function checkAndTriggerScheduledReport() {
+  updateSchedulerStatusUI();
+
   const notificaciones = localStorage.getItem('gastosmart_email_alerts') !== 'false';
   if (!notificaciones) return;
 
@@ -566,16 +680,76 @@ function checkAndTriggerScheduledReport() {
 
   if (shouldSend) {
     const todayDateStr = now.toISOString().split('T')[0];
-    const runKey = `gastosmart_auto_sent_${todayDateStr}_${period}`;
+    const runKey = `gastosmart_auto_sent_${todayDateStr}_${period}_${targetTime}`;
     const alreadySent = localStorage.getItem(runKey);
     if (!alreadySent) {
       localStorage.setItem(runKey, 'true');
-      console.log('⏰ Horario de entrega programado cumplido. Enviando reporte automáticamente vía Brevo...');
+      console.log(`⏰ Horario cumplido (${currentTime} >= ${targetTime}). Enviando reporte ${period} vía Brevo...`);
       sendMonthlyReport(true);
     }
   }
 }
 window.checkAndTriggerScheduledReport = checkAndTriggerScheduledReport;
+
+// ==========================================
+// Verificación Automática de Alertas Preventivas (90% / 100%)
+// ==========================================
+async function checkBudgetAlerts(pct, spent, limit, currency, period) {
+  const notificaciones = localStorage.getItem('gastosmart_email_alerts') !== 'false';
+  if (!notificaciones || limit <= 0) return;
+
+  const todayStr = new Date().toISOString().split('T')[0];
+  const cycleKey = `${todayStr.slice(0, 7)}_${period}`;
+
+  if (pct >= 100) {
+    const lock100 = `gastosmart_alert_sent_100_${cycleKey}`;
+    if (!localStorage.getItem(lock100)) {
+      localStorage.setItem(lock100, 'true');
+      console.log('🚨 Límite de presupuesto superado (100%). Enviando alerta por correo...');
+      try {
+        const fetchFn = window.apiFetch || fetch;
+        await fetchFn('/api/mail/send-alert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'exceeded_100',
+            currentSpent: spent,
+            limit: limit,
+            currency: currency,
+            period: period
+          })
+        });
+        showToast('🚨 Alerta de presupuesto superado enviada a tu correo', 'error');
+      } catch (e) {
+        console.error('Error enviando alerta 100%:', e);
+      }
+    }
+  } else if (pct >= 90) {
+    const lock90 = `gastosmart_alert_sent_90_${cycleKey}`;
+    if (!localStorage.getItem(lock90)) {
+      localStorage.setItem(lock90, 'true');
+      console.log('⚠️ Aviso preventivo (90% alcanzado). Enviando alerta por correo...');
+      try {
+        const fetchFn = window.apiFetch || fetch;
+        await fetchFn('/api/mail/send-alert', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            type: 'warning_90',
+            currentSpent: spent,
+            limit: limit,
+            currency: currency,
+            period: period
+          })
+        });
+        showToast('⚠️ Aviso preventivo: Has alcanzado el 90% de tu presupuesto. Alerta enviada a tu correo.', 'info');
+      } catch (e) {
+        console.error('Error enviando alerta 90%:', e);
+      }
+    }
+  }
+}
+window.checkBudgetAlerts = checkBudgetAlerts;
 
 // ==========================================
 // Descargar Exportación CSV
@@ -890,6 +1064,23 @@ function initUserSettings(user) {
     document.getElementById('setting-report-time-monthly').value = storedTimeMonthly;
   }
 
+  // Escuchar cambios en los inputs de hora para actualizar el estado en vivo
+  ['setting-report-time-daily', 'setting-report-time-weekly', 'setting-report-time-monthly'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) {
+      el.addEventListener('input', updateSchedulerStatusUI);
+      el.addEventListener('change', updateSchedulerStatusUI);
+    }
+  });
+
+  const alertsCheck = document.getElementById('setting-email-alerts');
+  if (alertsCheck) {
+    alertsCheck.addEventListener('change', () => {
+      localStorage.setItem('gastosmart_email_alerts', alertsCheck.checked ? 'true' : 'false');
+      updateSchedulerStatusUI();
+    });
+  }
+
   setBudgetPeriod(storedPeriod, false);
   setBudgetCurrency(storedCurr, false);
 
@@ -897,6 +1088,7 @@ function initUserSettings(user) {
   if (limitInput) limitInput.value = storedAmount;
 
   updateBudgetEquivalences();
+  updateSchedulerStatusUI();
 }
 
 function setBudgetPeriod(period, triggerEquivalences = true) {
@@ -935,6 +1127,7 @@ function setBudgetPeriod(period, triggerEquivalences = true) {
   }
 
   if (triggerEquivalences) updateBudgetEquivalences();
+  updateSchedulerStatusUI();
 }
 
 function toggleWeeklyDay(day) {
@@ -952,6 +1145,7 @@ function toggleWeeklyDay(day) {
 
   input.value = currentDays.join(',');
   renderWeeklyDaysChips(currentDays);
+  updateSchedulerStatusUI();
 }
 
 function renderWeeklyDaysChips(selectedDays) {
@@ -990,6 +1184,7 @@ function setMonthlyDateOption(opt) {
       if (sub) sub.className = 'text-[10px] text-slate-500 mt-0.5';
     }
   });
+  updateSchedulerStatusUI();
 }
 
 function setBudgetCurrency(curr, triggerEquivalences = true) {
@@ -1100,17 +1295,26 @@ document.getElementById('settings-form').addEventListener('submit', async (e) =>
       localStorage.setItem('gastosmart_budget_period', limitPeriod);
       localStorage.setItem('gastosmart_budget_curr', limitCurr);
       localStorage.setItem('gastosmart_budget_amount', limitAmount.toString());
+      localStorage.setItem('gastosmart_email_alerts', notificaciones_email ? 'true' : 'false');
       localStorage.setItem('gastosmart_report_time_daily', timeDaily);
       localStorage.setItem('gastosmart_report_days_weekly', daysWeekly);
       localStorage.setItem('gastosmart_report_time_weekly', timeWeekly);
       localStorage.setItem('gastosmart_report_dates_monthly', datesMonthly);
       localStorage.setItem('gastosmart_report_time_monthly', timeMonthly);
 
+      // Limpiar bloqueos de envío previos para que el nuevo horario tome efecto inmediato
+      Object.keys(localStorage).forEach(key => {
+        if (key.startsWith('gastosmart_auto_sent_')) {
+          localStorage.removeItem(key);
+        }
+      });
+
       document.getElementById('user-name').textContent = nombre;
       document.getElementById('user-avatar').textContent = (nombre || 'U').charAt(0).toUpperCase();
 
       showToast('¡Ajustes y programación guardados exitosamente!', 'success');
       await loadExpenses('mes');
+      updateSchedulerStatusUI();
       checkAndTriggerScheduledReport();
     } else {
       showToast(data.message || 'Error al guardar ajustes', 'error');
@@ -1198,3 +1402,29 @@ function escapeHtml(str) {
   if (!str) return '';
   return str.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 }
+
+// ==========================================
+// Exportación Explícita Global a Window (Para inline onclick/eventos)
+// ==========================================
+window.setBudgetPeriod = setBudgetPeriod;
+window.toggleWeeklyDay = toggleWeeklyDay;
+window.renderWeeklyDaysChips = renderWeeklyDaysChips;
+window.setMonthlyDateOption = setMonthlyDateOption;
+window.setBudgetCurrency = setBudgetCurrency;
+window.updateBudgetEquivalences = updateBudgetEquivalences;
+window.sendMonthlyReport = sendMonthlyReport;
+window.sendTestAlert90 = sendTestAlert90;
+window.resetScheduleTestLock = resetScheduleTestLock;
+window.checkAndTriggerScheduledReport = checkAndTriggerScheduledReport;
+window.updateSchedulerStatusUI = updateSchedulerStatusUI;
+window.checkBudgetAlerts = checkBudgetAlerts;
+window.useCalcAsExpense = useCalcAsExpense;
+window.openModal = openModal;
+window.closeModal = closeModal;
+window.setExpenseCurrency = setExpenseCurrency;
+window.switchView = switchView;
+window.generateAiAdvice = generateAiAdvice;
+window.downloadExportCsv = downloadExportCsv;
+window.setCalcCurrencies = setCalcCurrencies;
+window.loadExpenses = loadExpenses;
+
